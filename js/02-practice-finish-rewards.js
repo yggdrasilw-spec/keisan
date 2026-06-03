@@ -17,7 +17,7 @@ function collectFinishUnlockRewards() {
     if (allMaster && !badgeData['gem_' + mode + '_' + nn]) {
       badgeData['gem_' + mode + '_' + nn] = 1;
       saveBadgeData();
-      newGems.push({ img: './gem_' + gemIdx + '.png', name: nn + 'をたす マスター' });
+      newGems.push({ img: './img/gem_' + gemIdx + '.png', name: nn + 'をたす マスター' });
     }
   }
 

@@ -35,6 +35,12 @@ function countdownBeep(freqs, dur, vol, type) {
 
 function beginCountdown(done) {
   hideCountdownOverlay();
+  fitEq('? ＋ ? ＝ ？');
+  var fbl = document.getElementById('fbl');
+  if (fbl) {
+    fbl.textContent = '';
+    fbl.className = 'fbl';
+  }
   var ov = document.getElementById('countdown-overlay');
   var num = document.getElementById('countdown-num');
   var sub = document.getElementById('countdown-sub');

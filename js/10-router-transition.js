@@ -25,7 +25,6 @@ function fadeOutSceneWipe(wipe) {
 }
 
 function applyScreenTransition(n, next, body) {
-  if (window.__dbgLog) window.__dbgLog('APPLY→'+n);
   if (typeof syncVisibleScreenDom === 'function') syncVisibleScreenDom(n);
   else {
     var ss = document.querySelectorAll('.sc');

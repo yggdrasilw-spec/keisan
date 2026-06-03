@@ -84,8 +84,14 @@ function renderAnswerFeedbackToUI(fx) {
   fbl.className = fx.cls;
 }
 
+var nextQuestionTimer = null;
 function queueNextQuestion(delay) {
-  setTimeout(function(){ sess.idx++; showP(); }, delay || 0);
+  if (nextQuestionTimer) clearTimeout(nextQuestionTimer);
+  nextQuestionTimer = setTimeout(function(){
+    nextQuestionTimer = null;
+    sess.idx++;
+    showP();
+  }, delay || 0);
 }
 
 function recordAndFeedbackAnswer(v, btn, p, el) {

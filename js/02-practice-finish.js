@@ -5,6 +5,8 @@
 
 function endSess() {
   if (tIv){clearInterval(tIv);tIv=null;}
+  if (typeof nextQuestionTimer !== 'undefined' && nextQuestionTimer) { clearTimeout(nextQuestionTimer); nextQuestionTimer = null; }
+  if (sess) sess._answerLocked = false;
   if (!sess.results||!sess.results.length){show(sessMode==='kotsu'?'kotsu-sub':'course-select');return;}
   finish();
 }
@@ -39,6 +41,8 @@ function renderFinishOutcome(summary, completed) {
 
 function finish(completed) {
   if (tIv){clearInterval(tIv);tIv=null;}
+  if (typeof nextQuestionTimer !== 'undefined' && nextQuestionTimer) { clearTimeout(nextQuestionTimer); nextQuestionTimer = null; }
+  if (sess) sess._answerLocked = false;
   var summary = computeSessionSummary();
   renderFinishSummaryToResultPage(summary, completed);
   renderFinishOutcome(summary, completed);

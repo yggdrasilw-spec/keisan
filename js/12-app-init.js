@@ -92,7 +92,6 @@ function normalizeVisibleScreen() {
   var screenName = (appState && appState.ui && appState.ui.currentScreen)
     ? appState.ui.currentScreen
     : (_currentScreen ? _currentScreen : 'home');
-  if (window.__dbgLog) window.__dbgLog('normalize: screen='+screenName+' timer='+!!(typeof _showTimer!=='undefined'&&_showTimer));
 
   // すでに遷移タイマーが動いている（ユーザーがボタンを押した）なら何もしない
   if (typeof _showTimer !== 'undefined' && _showTimer) return;
@@ -100,7 +99,6 @@ function normalizeVisibleScreen() {
   var ss = document.querySelectorAll('.sc');
   for (var i = 0; i < ss.length; i++) ss[i].classList.remove('on');
   var target = document.getElementById(screenName);
-  if (window.__dbgLog) window.__dbgLog('normalize: target='+(target?target.id:'NULL'));
   if (target) target.classList.add('on');
   if (typeof syncFullBleedScreenClass === 'function') syncFullBleedScreenClass(screenName);
 }

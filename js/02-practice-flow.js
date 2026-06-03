@@ -4,6 +4,7 @@
 // ======================================================
 
 function preparePracticeQuestion(p, tot) {
+  sess._answerLocked = false;
   renderPracticeTop(p, tot);
   calcInput = '';
   sess._calcDone = false;

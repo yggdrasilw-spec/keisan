@@ -32,7 +32,7 @@ function launchSession(queue) {
   var levelLabels = { easy:'かんたん', hard:'むずかしい', mix:'ばらばら' };
   var courseLabels = { '20':'20もん', all:'ぜんぶ', weak:'にがて' };
 
-  setSessionFields({ sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now() }, sessMode: 'normal' });
+  setSessionFields({ sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now(), _answerLocked: false }, sessMode: 'normal' });
 
   var bdg = document.getElementById('pbdg');
   if (bdg) {
