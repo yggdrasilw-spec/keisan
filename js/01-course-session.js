@@ -1,0 +1,59 @@
+// 01-course-session.js
+// ======================================================
+// コース開始 / セッション起動
+// ======================================================
+function startCourse(course) {
+  setSessionField('curCourse', course);
+  var built = buildCourseQueue(curLevel, course);
+  if (built && built.ganbarePs) {
+    if (built.ganbarePs.length > 0) {
+      window._ganbarePs = built.ganbarePs;
+      document.getElementById('ask-ganbare-dialog').style.display = 'flex';
+    } else {
+      showAllMasterPopup();
+    }
+    return;
+  }
+
+  var queue = built;
+  if (!queue || !queue.length) { alert('もんだいがありません'); return; }
+  launchSession(queue);
+}
+
+function launchSession(queue) {
+  try { var ac = getAC(); if (ac && ac.state === 'suspended') ac.resume(); } catch(e) {}
+
+  var levelColors = {
+    easy:  { bdg:'bno', pcardCls:'pcard', peqCls:'peq', pgCol:'#5AAA30', rcardCls:'rcard', rt2Cls:'rt2', ragCls:'rag' },
+    hard:  { bdg:'bcy', pcardCls:'pcard pcard-p', peqCls:'peq peq-p', pgCol:'#7070D0', rcardCls:'rcard rcard-p', rt2Cls:'rt2 rt2-p', ragCls:'rag rag-p' },
+    mix:   { bdg:'bno', pcardCls:'pcard', peqCls:'peq', pgCol:'#F5A623', rcardCls:'rcard', rt2Cls:'rt2', ragCls:'rag' },
+  };
+  var c = levelColors[curLevel] || levelColors.easy;
+  var levelLabels = { easy:'かんたん', hard:'むずかしい', mix:'ばらばら' };
+  var courseLabels = { '20':'20もん', all:'ぜんぶ', weak:'にがて' };
+
+  setSessionFields({ sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now() }, sessMode: 'normal' });
+
+  var bdg = document.getElementById('pbdg');
+  if (bdg) {
+    bdg.textContent = levelLabels[curLevel] + ' ' + courseLabels[curCourse];
+    bdg.className = 'pbdg ' + c.bdg;
+  }
+
+  document.getElementById('pcard').className = c.pcardCls;
+  document.getElementById('peq').className   = c.peqCls;
+  document.getElementById('ptimer').className = 'ptimer' + (curLevel==='hard'?' ptimer-p':'');
+  document.getElementById('pgbar').style.background = c.pgCol;
+  document.getElementById('rcard').className = c.rcardCls;
+  document.getElementById('rt2').className   = c.rt2Cls;
+  document.getElementById('res-again').className = c.ragCls;
+  var rb = document.getElementById('res-back');
+  var ra = document.getElementById('res-again');
+  if (rb) rb.setAttribute('data-action', 'show');
+  if (rb) rb.setAttribute('data-value', 'course-select');
+  if (ra) ra && ra.setAttribute('data-action', 'startCourse');
+  if (ra) ra.setAttribute('data-value', curCourse);
+
+  show('practice');
+  beginCountdown(showP);
+}
