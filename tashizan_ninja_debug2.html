@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>たしざん にんじゃ</title>
+
+<style>
+/* CSSが読み込まれる前の初期非表示（フラッシュ防止） */
+.sc{display:none;}
+.sc.on{display:block;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="./css/00-base.css">
+<link rel="stylesheet" href="./css/01-transitions.css">
+<link rel="stylesheet" href="./css/02-controls-effects.css">
+<link rel="stylesheet" href="./css/03-pages.css">
+<link rel="stylesheet" href="./css/04-handwriting.css">
+<link rel="stylesheet" href="./css/05-achievement.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+</head>
+<body>
+<div id="app">
+
+<!-- ══════════════════════════════════════════
+     トップページ
+══════════════════════════════════════════ -->
+<div id="home" class="sc on">
+  <div class="hdr">
+    <div class="hdr-t">たしざん にんじゃ 🥷</div>
+    <div class="hdr-s">まいにち れんしゅうして にんじゃマスターに なろう！</div>
+  </div>
+
+  <button class="top-btn top-btn-easy" data-action="goLevel" data-value="easy">
+    <span class="top-btn-ico">🌱</span>
+    <span class="top-btn-main">
+      <div class="top-btn-title">かんたん</div>
+      <div class="top-btn-sub">たして 2〜10（くりあがりなし）</div>
+    </span>
+    <span class="top-btn-arr">›</span>
+  </button>
+
+  <button class="top-btn top-btn-hard" data-action="goLevel" data-value="hard">
+    <span class="top-btn-ico">⭐</span>
+    <span class="top-btn-main">
+      <div class="top-btn-title">むずかしい</div>
+      <div class="top-btn-sub">たして 11〜18（くりあがりあり）</div>
+    </span>
+    <span class="top-btn-arr">›</span>
+  </button>
+
+  <button class="top-btn top-btn-random" data-action="goLevel" data-value="mix">
+    <span class="top-btn-ico">🎲</span>
+    <span class="top-btn-main">
+      <div class="top-btn-title">ばらばら</div>
+      <div class="top-btn-sub">ぜんぶまざった ランダム</div>
+    </span>
+    <span class="top-btn-arr">›</span>
+  </button>
+
+  <button class="bot-nav-achievement" data-action="show" data-value="achievement">
+    <span class="bot-nav-ach-ico" id="home-avatar-ico">🥷</span>
+    <span class="bot-nav-ach-text">
+      <span class="bot-nav-ach-label">じっせき</span>
+      <span class="bot-nav-ach-sub" id="home-ach-sub">にんじゃを そだてよう</span>
+    </span>
+    <span class="bot-nav-ach-arr">›</span>
+  </button>
+
+  <div class="bot-nav">
+    <button class="bot-nav-btn" data-action="show" data-value="records-top">
+      <span class="bot-nav-ico">📋</span>きろく
+    </button>
+    <button class="bot-nav-btn" data-action="show" data-value="stats-top">
+      <span class="bot-nav-ico">📊</span>とうけい
+    </button>
+    <button class="bot-nav-btn" data-action="show" data-value="settings">
+      <span class="bot-nav-ico">⚙</span>せってい
+    </button>
+    <button class="bot-nav-btn" data-action="show" data-value="changelog">
+      <span class="bot-nav-ico">📝</span>りれき
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     コース選択ページ（難易度共通）
+══════════════════════════════════════════ -->
+<div id="course-select" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="home">← もどる</button>
+    <span class="page-title" id="cs-title">コース を えらぼう</span>
+  </div>
+
+  <button class="course-btn cb-20" data-action="startCourse" data-value="20">
+    <span class="course-btn-ico">🎯</span>
+    <span class="course-btn-main">
+      <div class="course-btn-title">20もん</div>
+      <div class="course-btn-sub" id="cs-sub-20">20もん チャレンジ</div>
+    </span>
+    <span class="course-btn-arr">›</span>
+  </button>
+
+  <button class="course-btn cb-all" data-action="startCourse" data-value="all">
+    <span class="course-btn-ico">📚</span>
+    <span class="course-btn-main">
+      <div class="course-btn-title">ぜんぶ</div>
+      <div class="course-btn-sub" id="cs-sub-all">ぜんもんチャレンジ</div>
+    </span>
+    <span class="course-btn-arr">›</span>
+  </button>
+
+  <button class="course-btn cb-weak" data-action="startCourse" data-value="weak">
+    <span class="course-btn-ico">💪</span>
+    <span class="course-btn-main">
+      <div class="course-btn-title">にがて</div>
+      <div class="course-btn-sub" id="cs-sub-weak">にがてな もんだいを れんしゅう</div>
+    </span>
+    <span class="course-btn-arr">›</span>
+  </button>
+
+  <button class="course-btn cb-kotsu" id="cs-kotsu-btn" data-action="goKotsuFromCourse">
+    <span class="course-btn-ico">💡</span>
+    <span class="course-btn-main">
+      <div class="course-btn-title">こまかくわけて</div>
+      <div class="course-btn-sub">たすかずごとに れんしゅう</div>
+    </span>
+    <span class="course-btn-arr">›</span>
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     練習画面
+══════════════════════════════════════════ -->
+<div id="practice" class="sc">
+  <div class="ptop">
+    <span class="pctr" id="pctr">1/10</span>
+    <span class="pbdg" id="pbdg">-</span>
+  </div>
+  <div class="pgwrap"><div class="pgbar" id="pgbar" style="width:0%"></div></div>
+  <div class="pcard" id="pcard">
+    <div class="peq" id="peq">? ＋ ? ＝ ？</div>
+    <div class="ptimer" id="ptimer">⏱ 0.0 びょう</div>
+  </div>
+  <div class="fbl" id="fbl"></div>
+
+  <!-- 答えモード切替タブ（手書き対応時のみ表示） -->
+  <div class="ans-mode-tabs" id="ans-mode-tabs" style="display:none;">
+    <button class="ans-tab on"  id="atab-btn" data-action="setAnsTab" data-value="btn">🎲 えらぶ</button>
+    <button class="ans-tab"     id="atab-calc" data-action="setAnsTab" data-value="calc">🔢 でんたく</button>
+    <button class="ans-tab"     id="atab-hw"  data-action="setAnsTab" data-value="hw">✏️ てがき</button>
+  </div>
+
+  <div class="agrid" id="agrid"></div>
+  <div id="calcgrid" style="display:none;"></div>
+
+  <!-- 手書きエリア -->
+  <div class="hw-area" id="hw-area">
+    <div class="hw-model-status" id="hw-model-status">モデル よみこみちゅう…</div>
+    <div class="hw-board-wrap">
+      <canvas id="hw-canvas" width="500" height="220"></canvas>
+      <canvas id="hw-overlay" width="500" height="220"></canvas>
+    </div>
+    <div class="hw-hint" id="hw-hint">すうじを かいてね ✏️</div>
+    <button class="hw-clear-btn" data-action="hwClear">🗑 きれいにする</button>
+  </div>
+
+  <div class="stk" id="stk"></div>
+  <div id="hint-area" style="display:none;margin-top:10px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <button id="hint-btn" data-action="toggleHint" style="border-radius:16px;padding:5px 14px;font-size:12px;font-weight:700;background:#FFF3D6;border:2px solid #F5A623;color:#7A5000;cursor:pointer;font-family:inherit;">💡 ヒントをみる</button>
+    </div>
+    <div id="hint-box" style="display:none;border-radius:16px;border:2px solid #F5A623;background:#FFFBF0;overflow:hidden;padding:10px 8px 8px;">
+      <div id="hint-board" style="position:relative;width:100%;height:210px;background:#fff;border-radius:10px;overflow:hidden;margin-bottom:8px;"></div>
+      <div id="hint-msg" style="font-size:12px;color:#cc6600;font-weight:700;text-align:center;min-height:20px;margin-bottom:6px;"></div>
+      <div style="display:flex;gap:6px;justify-content:center;">
+        <button data-action="hintNext" style="border-radius:14px;padding:5px 16px;font-size:12px;font-weight:700;background:#F5A623;color:#3A2A00;border:none;cursor:pointer;font-family:inherit;">▶ つぎへ</button>
+        <button data-action="hintReset" style="border-radius:14px;padding:5px 14px;font-size:12px;font-weight:700;background:#F5EDE0;color:#8A7050;border:2px solid #E8D8B8;cursor:pointer;font-family:inherit;">↺ はじめから</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     結果画面
+══════════════════════════════════════════ -->
+<div id="result" class="sc">
+  <div class="rcard" id="rcard">
+    <div class="rbi" id="rbi">🎉</div>
+    <div class="rt2" id="rt2">すごい！</div>
+    <div class="rs2" id="rs2"></div>
+    <div class="rsgrid">
+      <div class="rsb"><div class="rsbl">もんだいすう</div><div class="rsbv" id="rv-t">0</div></div>
+      <div class="rsb"><div class="rsbl">せいかいりつ</div><div class="rsbv" id="rv-a">0%</div></div>
+      <div class="rsb"><div class="rsbl">へいきんじかん</div><div class="rsbv" id="rv-avg">0秒</div></div>
+      <div class="rsb"><div class="rsbl">ごうけいじかん</div><div class="rsbv" id="rv-total">-</div></div>
+    </div>
+    <div id="rv-rank-box" style="display:none;background:linear-gradient(135deg,#FFF9E0,#FFF0C0);border-radius:14px;padding:10px 14px;margin-bottom:14px;border:2px solid #F5A623;">
+      <div style="font-size:12px;font-weight:800;color:#7A4000;margin-bottom:4px;">🏆 きろく たっせい！</div>
+      <div id="rv-rank-msg" style="font-size:14px;font-weight:700;color:#3A2A00;"></div>
+    </div>
+    <div class="rbtns">
+      <button class="rbk" id="res-back" data-action="show" data-value="course-select">もどる</button>
+      <button class="rag" id="res-again" data-action="startCourse" data-value="">もう1かい ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     記録トップ（難易度・コース選択）
+══════════════════════════════════════════ -->
+<div id="records-top" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="home">← もどる</button>
+    <span class="page-title">📋 きろく</span>
+  </div>
+  <div style="font-size:12px;font-weight:700;color:#8A7050;margin-bottom:6px;">むずかしさ</div>
+  <div class="diff-tab-row">
+    <button class="diff-tab" id="rtab-easy" data-rec-tab="easy">🌱 かんたん</button>
+    <button class="diff-tab" id="rtab-hard" data-rec-tab="hard">⭐ むずかしい</button>
+    <button class="diff-tab" id="rtab-mix"  data-rec-tab="mix">🎲 ばらばら</button>
+  </div>
+  <div style="font-size:12px;font-weight:700;color:#8A7050;margin-bottom:6px;margin-top:8px;">コース</div>
+  <div class="diff-tab-row">
+    <button class="diff-tab" id="rtab-20"   data-action="selRecCourse" data-value="20">🎯 20もん</button>
+    <button class="diff-tab" id="rtab-all"  data-action="selRecCourse" data-value="all">📚 ぜんぶ</button>
+    <button class="diff-tab" id="rtab-weak" data-action="selRecCourse" data-value="weak">💪 にがて</button>
+  </div>
+  <div class="leg" style="margin-top:10px;">
+    <span><span class="ldot" style="background:#3A90E0"></span>マスター</span>
+    <span><span class="ldot" style="background:#5AAA30"></span>がんばろう</span>
+    <span><span class="ldot" style="background:#D4407E"></span>にがて</span>
+    <span><span class="ldot" style="background:#C0B090"></span>まだ</span>
+  </div>
+  <div class="rlist" id="rlist" style="margin-top:8px;"></div>
+  <div class="ranking-box" id="rec-ranking-box">
+    <div class="ranking-title">🏆 ぜんもんせいかい タイムランキング</div>
+    <div id="rec-ranking-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     統計トップ
+══════════════════════════════════════════ -->
+<div id="stats-top" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="home">← もどる</button>
+    <span class="page-title">📊 とうけい</span>
+  </div>
+  <div class="diff-tab-row">
+    <button class="diff-tab" id="stab-easy" data-stat-tab="easy">🌱 かんたん</button>
+    <button class="diff-tab" id="stab-hard" data-stat-tab="hard">⭐ むずかしい</button>
+    <button class="diff-tab" id="stab-mix"  data-stat-tab="mix">🎲 ばらばら</button>
+  </div>
+  <div class="ssgrid" style="margin-top:10px;">
+    <div class="ssb"><div class="ssbl">マスター</div><div class="ssbv" id="ss-m">0</div></div>
+    <div class="ssb"><div class="ssbl">がんばろう</div><div class="ssbv" id="ss-ok">0</div></div>
+    <div class="ssb"><div class="ssbl">にがて</div><div class="ssbv" id="ss-w">0</div></div>
+  </div>
+  <div class="gsect"><div id="st-gtitle" class="gtitle"></div><div class="hgrid" id="st-hgrid"></div></div>
+  <div class="hleg">
+    <span><span class="hsq" style="background:#3A90E0"></span>マスター</span>
+    <span><span class="hsq" style="background:#7DC95E"></span>がんばろう</span>
+    <span><span class="hsq" style="background:#F0A0BF"></span>にがて</span>
+    <span><span class="hsq" style="background:#E0D0B8;border:1px solid #C0B090"></span>まだ</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     設定
+══════════════════════════════════════════ -->
+<div id="settings" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="home">← もどる</button>
+    <span class="page-title">⚙ せってい</span>
+  </div>
+  <div style="font-size:13px;font-weight:800;color:#3A2A00;margin-bottom:10px;">こたえかた</div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+    <div id="set-btn-random" data-action="setAnswerMode" data-value="random"
+      style="border-radius:18px;padding:14px;border:3px solid;cursor:pointer;background:#E8F8DF;border-color:#5AAA30;transition:all .15s;">
+      <div style="font-size:14px;font-weight:800;color:#2A6010;margin-bottom:2px;">🎲 えらんで こたえる</div>
+      <div style="font-size:11px;color:#5A8040;">ランダムな ボタンから えらぶよ</div>
+    </div>
+    <div id="set-btn-calc" data-action="setAnswerMode" data-value="calc"
+      style="border-radius:18px;padding:14px;border:3px solid;cursor:pointer;background:#fff;border-color:#E8D8B8;transition:all .15s;">
+      <div style="font-size:14px;font-weight:800;color:#3A2A00;margin-bottom:2px;">🔢 でんたくで こたえる</div>
+      <div style="font-size:11px;color:#8A7050;">0〜9のボタンを おすか、キーボードで うつよ</div>
+    </div>
+    <div id="set-btn-hw" data-action="setAnswerMode" data-value="hw"
+      style="border-radius:18px;padding:14px;border:3px solid;cursor:pointer;background:#fff;border-color:#E8D8B8;transition:all .15s;">
+      <div style="font-size:14px;font-weight:800;color:#3A2A00;margin-bottom:2px;">✏️ てがきで こたえる</div>
+      <div style="font-size:11px;color:#8A7050;">すうじを かいて こたえるよ（モデルが必要）</div>
+    </div>
+  </div>
+
+  <div data-action="show" data-value="advanced-settings"
+    style="border-radius:18px;padding:14px 16px;background:linear-gradient(135deg,#F0F0FF,#E8E8F8);border:2.5px solid #AAAAE8;cursor:pointer;transition:transform .12s;display:flex;align-items:center;gap:12px;margin-bottom:12px;"
+    onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform=''">
+    <div style="font-size:26px;flex-shrink:0;">🔧</div>
+    <div style="flex:1;">
+      <div style="font-size:14px;font-weight:800;color:#3A3A9A;margin-bottom:2px;">こうどな せってい</div>
+      <div style="font-size:11px;color:#6060A0;font-weight:600;">こえ・がぞう・ほめことば・エフェクトを かえる</div>
+    </div>
+    <div style="font-size:22px;color:#AAAAE8;">›</div>
+  </div>
+
+  <button data-action="resetData" style="width:100%;border-radius:16px;padding:10px;font-size:13px;font-weight:700;background:#fff;color:#8A7050;border:2px solid #E8D8B8;cursor:pointer;font-family:inherit;">🗑 データ リセット</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     高度な設定
+══════════════════════════════════════════ -->
+<div id="advanced-settings" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="settings">← もどる</button>
+    <span class="page-title">🔧 こうどな せってい</span>
+  </div>
+
+  <div style="font-size:13px;font-weight:800;color:#3A2A00;margin-bottom:10px;">✨ エフェクト せってい</div>
+  <div id="fx-settings-area" style="margin-bottom:20px;"></div>
+
+  <div style="font-size:13px;font-weight:800;color:#3A2A00;margin-bottom:8px;">🔊 こえの せってい</div>
+  <div style="font-size:11px;color:#8A7050;margin-bottom:10px;font-weight:600;">よみあげる こえを えらんで、ピッチやスピードも かえられるよ</div>
+  <div id="voice-not-supported" style="display:none;background:#FFF0F0;border-radius:12px;padding:10px 14px;font-size:12px;color:#A03030;font-weight:700;margin-bottom:12px;">
+    ⚠ このブラウザでは こえのせってい が つかえません
+  </div>
+  <div id="voice-settings-panel" style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+    <div style="background:#fff;border-radius:14px;padding:12px 14px;border:2px solid #E8D8B8;">
+      <div style="font-size:11px;font-weight:800;color:#8A7050;margin-bottom:6px;">こえの しゅるい</div>
+      <select id="voice-select"
+        style="width:100%;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;border:2px solid #E8D8B8;font-family:'Nunito',sans-serif;color:#3A2A00;background:#FAFAFA;outline:none;">
+        <option value="">（よみこみちゅう…）</option>
+      </select>
+    </div>
+    <div style="background:#fff;border-radius:14px;padding:12px 14px;border:2px solid #E8D8B8;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="font-size:11px;font-weight:800;color:#8A7050;">ピッチ（こえの たかさ）</div>
+        <div id="pitch-val" style="font-size:13px;font-weight:800;color:#3A2A00;min-width:36px;text-align:right;">1.0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:#8A7050;font-weight:600;">ひくい</span>
+        <input type="range" id="pitch-slider" min="0.5" max="2.0" step="0.05" value="1.0"
+          style="flex:1;accent-color:#5A5ADF;">
+        <span style="font-size:11px;color:#8A7050;font-weight:600;">たかい</span>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:14px;padding:12px 14px;border:2px solid #E8D8B8;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="font-size:11px;font-weight:800;color:#8A7050;">スピード（はなす はやさ）</div>
+        <div id="rate-val" style="font-size:13px;font-weight:800;color:#3A2A00;min-width:36px;text-align:right;">0.9</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:#8A7050;font-weight:600;">ゆっくり</span>
+        <input type="range" id="rate-slider" min="0.5" max="2.0" step="0.05" value="0.9"
+          style="flex:1;accent-color:#5A5ADF;">
+        <span style="font-size:11px;color:#8A7050;font-weight:600;">はやい</span>
+      </div>
+    </div>
+    <button data-action="previewVoice"
+      style="border-radius:14px;padding:11px;font-size:13px;font-weight:800;background:#EEF0FF;color:#3A3A9A;border:2.5px solid #AAAAE8;cursor:pointer;font-family:inherit;">
+      ▶ このこえで ためしよみ
+    </button>
+  </div>
+  <div style="font-size:13px;font-weight:800;color:#3A2A00;margin-bottom:8px;">🖼 ひょうじする がぞう</div>
+  <div style="font-size:11px;color:#8A7050;margin-bottom:10px;font-weight:600;">「せいかい」「ふせいかい」「マスター」の がぞうを かえられるよ</div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+    <div id="img-set-seikai" class="img-set-row"></div>
+    <div id="img-set-fuseikai" class="img-set-row"></div>
+    <div id="img-set-master" class="img-set-row"></div>
+  </div>
+  <input type="file" id="img-file-input" accept="image/*" style="display:none;">
+  <input type="file" id="praise-audio-input" accept="audio/*" style="display:none;">
+  <div style="font-size:13px;font-weight:800;color:#3A2A00;margin-bottom:8px;">🗣 せいかい した ときの こえ</div>
+  <div style="font-size:11px;color:#8A7050;margin-bottom:10px;font-weight:600;">こたえる はやさに あわせて、よむ ことばや おんせいファイルを えらべるよ</div>
+  <div id="praise-edit-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;"></div>
+  <div style="display:flex;gap:8px;margin-bottom:80px;">
+    <button data-action="savePraiseEdit" style="flex:1;border-radius:16px;padding:10px;font-size:14px;font-weight:800;background:#F5A623;color:#3A2A00;border:none;cursor:pointer;font-family:inherit;box-shadow:0 3px 0 #C07800;">💾 ほぞん</button>
+    <button data-action="resetPraiseEdit" style="border-radius:16px;padding:10px 14px;font-size:13px;font-weight:700;background:#fff;color:#8A7050;border:2px solid #E8D8B8;cursor:pointer;font-family:inherit;">もとにもどす</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     コツホーム（easy/hard のみ）
+══════════════════════════════════════════ -->
+<div id="kotsu-home" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" id="kotsu-home-back" data-action="show" data-value="course-select">← もどる</button>
+    <span class="page-title page-title-p" id="kotsu-home-title">💡 コツをつかもう！</span>
+  </div>
+  <div id="kotsu-home-desc" style="font-size:12px;color:#6060A0;font-weight:600;margin-bottom:14px;"></div>
+  <div class="num-grid" id="num-grid"></div>
+  <div class="leg" style="justify-content:center;margin-top:4px;">
+    <span><span class="ldot" style="background:#3A90E0"></span>マスター</span>
+    <span><span class="ldot" style="background:#5AAA30"></span>がんばろう</span>
+    <span><span class="ldot" style="background:#D4407E"></span>にがて</span>
+    <span><span class="ldot" style="background:#C0B090"></span>まだ</span>
+  </div>
+</div>
+
+<!-- コツサブ -->
+<div id="kotsu-sub" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="showKotsuHome">← もどる</button>
+    <span class="page-title page-title-p" id="ksub-title">２をたすもんだい</span>
+  </div>
+  <div class="kotsu-sub-desc" id="ksub-desc"></div>
+  <div class="frow">
+    <button class="fb fb-a on" id="kfa" data-action="kSelFilt" data-value="all">すべて</button>
+    <button class="fb fb-w" id="kfw" data-action="kSelFilt" data-value="weak">にがて だけ</button>
+  </div>
+  <div class="qi" id="kqi"></div>
+  <button class="go-btn go-btn-p" data-action="kStart">はじめる ▶</button>
+  <div class="sm-row">
+    <button class="sml sml-p" data-action="goKotsuR">きろく</button>
+    <button class="sml sml-p" data-action="goKotsuSt">とうけい</button>
+  </div>
+</div>
+
+<!-- コツきろく -->
+<div id="kotsu-records" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="kotsu-sub">← もどる</button>
+    <span class="page-title page-title-p" id="kr-title">きろく</span>
+  </div>
+  <div class="leg">
+    <span><span class="ldot" style="background:#3A90E0"></span>マスター</span>
+    <span><span class="ldot" style="background:#5AAA30"></span>がんばろう</span>
+    <span><span class="ldot" style="background:#D4407E"></span>にがて</span>
+    <span><span class="ldot" style="background:#C0B090"></span>まだ</span>
+  </div>
+  <div class="rlist" id="kr-list"></div>
+</div>
+
+<!-- コツとうけい -->
+<div id="kotsu-stats" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="kotsu-sub">← もどる</button>
+    <span class="page-title page-title-p" id="ks-title">とうけい</span>
+  </div>
+  <div class="ssgrid">
+    <div class="ssb"><div class="ssbl">マスター</div><div class="ssbv" id="ks-m">0</div></div>
+    <div class="ssb"><div class="ssbl">がんばろう</div><div class="ssbv" id="ks-ok">0</div></div>
+    <div class="ssb"><div class="ssbl">にがて</div><div class="ssbv" id="ks-w">0</div></div>
+  </div>
+  <div class="gsect">
+    <div class="gtitle" id="ks-gtitle">もんだい いちらん</div>
+    <div id="ks-grid" style="display:grid;grid-template-columns:repeat(8,1fr);gap:4px;"></div>
+  </div>
+  <div class="hleg">
+    <span><span class="hsq" style="background:#3A90E0"></span>マスター</span>
+    <span><span class="hsq" style="background:#7DC95E"></span>がんばろう</span>
+    <span><span class="hsq" style="background:#F0A0BF"></span>にがて</span>
+    <span><span class="hsq" style="background:#E0D0B8;border:1px solid #C0B090"></span>まだ</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     じっせき（実績）画面
+══════════════════════════════════════════ -->
+<div id="achievement" class="sc">
+<div class="ach-shell">
+
+  <!-- 左カラム: アバター常時表示 -->
+  <div class="ach-left">
+    <button class="ach-back" data-action="show" data-value="home">← もどる</button>
+    <div class="ach-avatar-stage" id="ach-avatar-stage">
+      <div class="ach-avatar-halo"></div>
+      <img id="ach-avatar-img" class="ach-avatar-img" src="./ninja_1.png" alt="にんじゃ"
+           onerror="this.style.display='none';document.getElementById('ach-avatar-css').textContent='🥷'">
+      <div class="ach-avatar-css" id="ach-avatar-css"></div>
+    </div>
+    <div class="ach-rank-badge" id="ach-rank-badge">Lv.1 みならい忍者</div>
+    <div class="ach-rank-name"  id="ach-rank-name">みならい忍者</div>
+    <div class="ach-rank-desc"  id="ach-rank-desc">まずは「1をたす」をきわめるところから。</div>
+    <div class="ach-progress-wrap">
+      <div class="ach-progress-label">
+        <span id="ach-progress-text">つぎのランクまで</span>
+        <span id="ach-progress-pct">0%</span>
+      </div>
+      <div class="ach-progress-bg">
+        <div class="ach-progress-bar" id="ach-progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="ach-gem-title">🔮 ほうせき コレクション</div>
+    <div class="ach-gems" id="ach-gems"></div>
+  </div>
+
+  <!-- 右カラム: 制覇バッジ -->
+  <div class="ach-right">
+    <div class="ach-topbar">
+      <div class="ach-title-wrap">
+        <div class="ach-eyebrow">🥷 にんじゃの しゅぎょうろく</div>
+        <div class="ach-count" id="ach-count">解除 0 / 0</div>
+      </div>
+    </div>
+    <div class="ach-list-wrap">
+      <div class="ach-group" id="ach-group-badge"></div>
+    </div>
+    <div class="ach-footer">
+      <div class="ach-footer-text" id="ach-footer-next"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- へんこうりれき -->
+<div id="changelog" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="home">← もどる</button>
+    <span class="page-title">📋 へんこうりれき</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #F0E0C0;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="background:#F5A623;color:#fff;font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px;">v2.0</span>
+        <span style="font-size:13px;font-weight:800;color:#3A2A00;">UI ぜんめん リニューアル</span>
+      </div>
+      <div style="font-size:12px;color:#8A7050;">かんたん・むずかしい・ばらばら の３コース追加。20もん・ぜんぶ・にがてコース追加。ぜんもんせいかいタイムランキング追加。エフェクト設定追加。</div>
+    </div>
+    <div style="background:#fff;border-radius:14px;padding:14px 16px;border:1.5px solid #F0E0C0;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="background:#8A7050;color:#fff;font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px;">v1.x</span>
+        <span style="font-size:13px;font-weight:800;color:#3A2A00;">じゅうじ手裏剣・全問正解エフェクト など</span>
+      </div>
+      <div style="font-size:12px;color:#8A7050;">手裏剣エフェクト追加。ページ遷移ワイプ。暗転・稲妻・全問正解エフェクト。連続正解手裏剣。</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<!-- ── 固定UI要素 ── -->
+<div id="sound-bar">
+  <button id="sfx-btn" class="snd-btn on" data-action="toggleSfx">🔔 おと</button>
+  <button id="voice-btn" class="snd-btn on" data-action="toggleVoice">🗣 こえ</button>
+</div>
+<div id="quit-bar">
+  <button class="quit-btn" data-action="endSess">← やめる</button>
+</div>
+<div id="fx-layer"></div>
+<div id="img-overlay"><img id="overlay-img" src="" alt=""></div>
+
+<!-- にがてなし確認ダイアログ -->
+<div id="ask-ganbare-dialog" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:8000;background:rgba(0,0,0,0.45);justify-content:center;align-items:center;">
+  <div style="background:#fff;border-radius:24px;padding:28px 20px 22px;max-width:340px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+    <div style="font-size:36px;margin-bottom:10px;">😊</div>
+    <div style="font-size:16px;font-weight:800;color:#3A2A00;margin-bottom:8px;">にがてな もんだいは ないよ！</div>
+    <div style="font-size:13px;color:#8A7050;font-weight:600;margin-bottom:20px;">「がんばろう」の もんだいを れんしゅう する？</div>
+    <div style="display:flex;gap:10px;">
+      <button data-action="closeAskGanbare" data-value="false" style="flex:1;border-radius:16px;padding:12px;font-size:14px;font-weight:700;background:#fff;color:#8A7050;border:2px solid #E8D8B8;cursor:pointer;font-family:inherit;">やめとく</button>
+      <button data-action="closeAskGanbare" data-value="true" style="flex:1;border-radius:16px;padding:12px;font-size:14px;font-weight:800;background:#5AAA30;color:#fff;border:none;cursor:pointer;font-family:inherit;box-shadow:0 3px 0 #3A8020;">やる！▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- 全マスターポップアップ -->
+<div id="all-master-popup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:8000;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
+  <div style="background:linear-gradient(135deg,#FFF9E0,#FFF0C8);border-radius:28px;padding:28px 20px 24px;max-width:340px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.25);border:4px solid #F5A623;">
+    <img id="master-popup-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" alt="マスター！" style="max-width:140px;max-height:140px;object-fit:contain;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;" onerror="this.style.display=&#39;none&#39;">
+    <div style="font-size:20px;font-weight:900;color:#C07800;letter-spacing:2px;margin-bottom:6px;">🏆 ぜんぶ マスター！！</div>
+    <div style="font-size:13px;color:#8A7050;font-weight:600;margin-bottom:18px;">このコースの もんだいを<br>ぜんぶ かんぺきに おぼえたよ！</div>
+    <button data-action="closeAllMasterPopup" style="border-radius:18px;padding:12px 28px;font-size:14px;font-weight:800;background:#F5A623;color:#3A2A00;border:none;cursor:pointer;font-family:inherit;box-shadow:0 4px 0 #C07800;">とじる</button>
+  </div>
+</div>
+
+<!-- 画面切り替えワイプ -->
+<div id="scene-wipe" aria-hidden="true">
+  <div class="wipe-backdrop"></div>
+  <div class="wipe-burst"></div>
+  <div class="wipe-swipe"></div>
+  <div class="wipe-star"></div>
+</div>
+
+<!-- カウントダウン -->
+<div id="countdown-overlay" aria-hidden="true">
+  <div class="cd-bg"></div>
+  <div class="cd-stripes"></div>
+  <div class="cd-lane"></div>
+  <div class="cd-card">
+    <div class="cd-badge">レース開始</div>
+    <div id="countdown-num" class="cd-num">3</div>
+    <div id="countdown-sub" class="cd-sub">よーい</div>
+    <div class="cd-tip">3・2・1・忍！！</div>
+  </div>
+</div>
+
+<!-- 全問正解エフェクトオーバーレイ -->
+<div id="perfect-overlay" aria-hidden="true">
+  <canvas id="lightning-canvas"></canvas>
+  <div class="pf-flash" id="pf-flash"></div>
+  <div class="pf-chars" id="pf-chars"></div>
+</div>
+
+<!-- DEBUG PANEL -->
+<div id="__dbgPanel" style="position:fixed;left:0;right:0;bottom:0;z-index:99999;background:rgba(0,0,0,0.92);color:#c7ffc7;border-top:2px solid #1f7a1f;box-shadow:0 -6px 18px rgba(0,0,0,0.35);font:12px/1.4 monospace;">
+  <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;flex-wrap:wrap;">
+    <div style="font-weight:700;color:#9cff9c;">DEBUG LOG</div>
+    <div id="__dbgMeta" style="color:#9ad59a;opacity:0.95;">0 lines</div>
+    <button id="__dbgCopy" type="button" style="margin-left:auto;background:#1d6f1d;color:#fff;border:1px solid #2f9a2f;border-radius:10px;padding:6px 10px;font:700 12px monospace;">全ログコピー</button>
+    <button id="__dbgSave" type="button" style="background:#2458a5;color:#fff;border:1px solid #4d7fd8;border-radius:10px;padding:6px 10px;font:700 12px monospace;">TXT保存</button>
+    <button id="__dbgClear" type="button" style="background:#8a2d2d;color:#fff;border:1px solid #c05b5b;border-radius:10px;padding:6px 10px;font:700 12px monospace;">消去</button>
+    <button id="__dbgToggle" type="button" style="background:#4a4a4a;color:#fff;border:1px solid #777;border-radius:10px;padding:6px 10px;font:700 12px monospace;">折りたたみ</button>
+  </div>
+  <div id="__dbgBody" style="padding:0 8px 8px 8px;">
+    <textarea id="__dbgText" readonly style="width:100%;height:170px;resize:none;box-sizing:border-box;background:#031203;color:#9bff9b;border:1px solid #2d6c2d;border-radius:10px;padding:8px;font:12px/1.35 monospace;white-space:pre;overflow:auto;outline:none;"></textarea>
+  </div>
+</div>
+
+
+<script src="./js/00-core.js"></script>
+<script src="./js/00-keys.js"></script>
+<script src="./js/00-storage-utils.js"></script>
+<script src="./js/00-style.js"></script>
+<script src="./js/00-problem.js"></script>
+<script src="./js/00-ranking.js"></script>
+<script src="./js/00-prefs.js"></script>
+<script src="./js/00-fx-settings.js"></script>
+<script src="./js/00-state-core.js"></script>
+<script src="./js/00-state-ui.js"></script>
+<script src="./js/00-state-snapshot.js"></script>
+<script src="./js/00-storage-snapshot.js"></script>
+<script src="./js/00-storage-persist.js"></script>
+<script src="./js/00-storage-backup.js"></script>
+<script src="./js/00-storage-reset.js"></script>
+<script src="./js/00-storage.js"></script>
+<script src="./js/01-problem-helpers.js"></script>
+<script src="./js/01-home.js"></script>
+<script src="./js/01-course-queue.js"></script>
+<script src="./js/01-course-session.js"></script>
+<script src="./js/01-course-popups.js"></script>
+<script src="./js/01-course.js"></script>
+<script src="./js/01-kotsu-core.js"></script>
+<script src="./js/01-kotsu-home.js"></script>
+<script src="./js/01-kotsu-session.js"></script>
+<script src="./js/01-kotsu-records.js"></script>
+<script src="./js/01-kotsu.js"></script>
+<script src="./js/02-practice-ui.js"></script>
+<script src="./js/02-practice-countdown.js"></script>
+<script src="./js/02-practice-flow.js"></script>
+<script src="./js/02-practice-input.js"></script>
+<script src="./js/02-practice-score.js"></script>
+<script src="./js/02-practice-feedback.js"></script>
+<script src="./js/02-practice-answer.js"></script>
+<script src="./js/02-practice-finish-summary.js"></script>
+<script src="./js/02-practice-finish-rewards.js"></script>
+<script src="./js/02-practice-finish.js"></script>
+<script src="./js/03-history-data.js"></script>
+<script src="./js/03-history-view.js"></script>
+<script src="./js/03-history-ui.js"></script>
+<script src="./js/04-settings-fx.js"></script>
+<script src="./js/04-settings-praise.js"></script>
+<script src="./js/04-settings.js"></script>
+<script src="./js/05-hint.js"></script>
+<script src="./js/05-hint-layout.js"></script>
+<script src="./js/05-hint-render.js"></script>
+<script src="./js/05-hint-animate-steps.js"></script>
+<script src="./js/05-hint-animate.js"></script>
+<script src="./js/06-voice-engine.js"></script>
+<script src="./js/06-voice-list.js"></script>
+<script src="./js/06-voice-ui.js"></script>
+<script src="./js/06-voice-settings.js"></script>
+<script src="./js/06-praise-audio.js"></script>
+<script src="./js/07-image-data.js"></script>
+<script src="./js/07-image-ui.js"></script>
+<script src="./js/07-image-settings.js"></script>
+<script src="./js/07-image-display.js"></script>
+<script src="./js/08-sound.js"></script>
+<script src="./js/08-effects-perfect.js"></script>
+<script src="./js/08-effects-shuriken.js"></script>
+<script src="./js/08-effects-button.js"></script>
+<script src="./js/08-effects.js"></script>
+<script src="./js/09-achievement-helpers.js"></script>
+<script src="./js/09-achievement-data.js"></script>
+<script src="./js/09-achievement-badges.js"></script>
+<script src="./js/09-achievement-effects.js"></script>
+<script src="./js/09-achievement-overview.js"></script>
+<script src="./js/09-achievement-collections.js"></script>
+<script src="./js/09-achievement-ui.js"></script>
+<script src="./js/10-router-hooks.js"></script>
+<script src="./js/10-router-transition.js"></script>
+<script src="./js/10-router.js"></script>
+<script src="./js/11-handwriting-state.js"></script>
+<script src="./js/11-handwriting-infer.js"></script>
+<script src="./js/11-handwriting-answer.js"></script>
+<script src="./js/11-handwriting-input.js"></script>
+<script src="./js/11-handwriting.js"></script>
+<script src="./js/13-actions.js"></script>
+<script src="./js/13-actions-navigation.js"></script>
+<script src="./js/13-actions-practice.js"></script>
+<script src="./js/13-actions-settings.js"></script>
+<script src="./js/13-actions-media.js"></script>
+<script src="./js/12-app-init.js"></script>
+
+
+
+</body>
+</html>
