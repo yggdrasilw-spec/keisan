@@ -2,24 +2,16 @@
 // ======================================================
 // ホーム
 // ======================================================
-function renderCourseSelectScreen(level) {
-  var lv = level || curLevel || 'easy';
-  var titles = { easy:'🌱 かんたん', hard:'⭐ むずかしい', mix:'🎲 ばらばら' };
-  var titleEl = document.getElementById('cs-title');
-  if (titleEl) titleEl.textContent = titles[lv] + ' — コース を えらぼう';
-  var allPs = buildPLevel(lv);
-  var allEl = document.getElementById('cs-sub-all');
-  if (allEl) allEl.textContent = allPs.length + 'もん ぜんぶ チャレンジ';
-  var weakPs = getWeakPs(lv);
-  var weakEl = document.getElementById('cs-sub-weak');
-  if (weakEl) weakEl.textContent = weakPs.length + 'もん（にがて）';
-  var kb = document.getElementById('cs-kotsu-btn');
-  if (kb) kb.style.display = lv === 'mix' ? 'none' : 'flex';
-}
-
 function goLevel(level) {
   setSessionField('curLevel', level);
-  renderCourseSelectScreen(level);
+  var titles = { easy:'🌱 かんたん', hard:'⭐ むずかしい', mix:'🎲 ばらばら' };
+  document.getElementById('cs-title').textContent = titles[level] + ' — コース を えらぼう';
+  var allPs = buildPLevel(level);
+  document.getElementById('cs-sub-all').textContent = allPs.length + 'もん ぜんぶ チャレンジ';
+  var weakPs = getWeakPs(level);
+  document.getElementById('cs-sub-weak').textContent = weakPs.length + 'もん（にがて）';
+  var kb = document.getElementById('cs-kotsu-btn');
+  if (kb) kb.style.display = level === 'mix' ? 'none' : 'flex';
   show('course-select');
 }
 

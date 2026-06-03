@@ -3,7 +3,6 @@
 // 画面入場時の再描画処理
 // ======================================================
 var SCREEN_ENTER_HANDLERS = {
-  'course-select': renderCourseSelectScreen,
   'settings': renderSettingsScreen,
   'advanced-settings': renderAdvancedSettingsScreen,
   'records-top': renderRecordsScreen,
@@ -38,7 +37,6 @@ function renderStatsScreen() {
 
 function renderAchievementScreen() {
   renderAchievement();
-  achInitTabs();
 }
 
 function renderScreenEnterHooks(n) {

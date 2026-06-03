@@ -1,24 +1,59 @@
+
 // 09-achievement-overview.js
 // ======================================================
 // じっせきの 概要表示（宝石 / アバター / 進捗）
 // ======================================================
 
+function bindAchGemClicks() {
+  var el = document.getElementById('ach-gems');
+  if (!el || el.__gemClickBound) return;
+  el.__gemClickBound = true;
+  el.addEventListener('click', function(evt) {
+    var node = evt.target && evt.target.closest ? evt.target.closest('.ach-gem') : null;
+    if (!node || node.classList.contains('locked')) return;
+    var idx = Number(node.dataset.gemIndex || '0');
+    if (!idx || !ACH_GEMS[idx - 1]) return;
+    var gem = ACH_GEMS[idx - 1];
+    if (typeof showGemUnlockEffect === 'function') {
+      showGemUnlockEffect(gem.img, gem.gemName);
+    }
+  });
+}
+
 function renderAchGems() {
   var el = document.getElementById('ach-gems');
-  if (!el) return;
+  if (!el) return 0;
   var unlockedCount = 0;
-  var h = '';
+  el.innerHTML = '';
+
   for (var i = 0; i < ACH_GEMS.length; i++) {
     var gem = ACH_GEMS[i];
     var on  = false;
     try { on = gem.check(); } catch(e) {}
     if (on) unlockedCount++;
-    h += '<div class="ach-gem ' + (on ? 'unlocked' : 'locked') + '" title="' + gem.label.replace(/\n/g,' ') + '">'
-      + (on ? '<img src="' + gem.img + '" alt="' + gem.label + '" onerror="this.style.display=&#39;none&#39;">'
-            : '')
-      + '</div>';
+
+    var cell = document.createElement('div');
+    cell.className = 'ach-gem ' + (on ? 'unlocked' : 'locked');
+    cell.dataset.gemIndex = String(i + 1);
+    cell.title = (i + 1) + ' / ' + gem.label + ' / ' + gem.gemName;
+
+    if (on) {
+      var img = document.createElement('img');
+      img.src = gem.img;
+      img.alt = gem.gemName;
+      img.onerror = function(){ this.style.display='none'; };
+      cell.appendChild(img);
+    } else {
+      var lock = document.createElement('div');
+      lock.className = 'ach-gem-lock';
+      lock.textContent = '🔒';
+      cell.appendChild(lock);
+    }
+
+    el.appendChild(cell);
   }
-  el.innerHTML = h;
+
+  bindAchGemClicks();
   return unlockedCount;
 }
 
@@ -38,13 +73,10 @@ function getAchNextStageByGemCount(gemUnlocked) {
 }
 
 function getAchUnlockedCountSummary(gemUnlocked) {
-  var ach = getAchievements();
-  var speedOn = ach.speed.filter(function(i){return i.unlocked;}).length;
-  var comboOn = ach.combo.filter(function(i){return i.unlocked;}).length;
-  var clearOn = ach.clear.filter(function(i){return i.unlocked;}).length;
+  var badgeOn = getUnlockedBadgeCount();
   return {
-    totalOn: typeof gemUnlocked === 'number' ? gemUnlocked + speedOn + comboOn + clearOn : getUnlockedAchievementCount().totalOn,
-    totalAll: ACH_GEMS.length + ach.speed.length + ach.combo.length + ach.clear.length
+    totalOn: typeof gemUnlocked === 'number' ? gemUnlocked + badgeOn : getUnlockedAchievementCount().totalOn,
+    totalAll: ACH_GEMS.length + BADGES.length
   };
 }
 

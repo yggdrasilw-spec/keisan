@@ -1,23 +1,27 @@
+
 // gem unlock effect
 function showGemUnlockEffect(gemImg, gemName, onDone) {
   if (!getFx('fx_perfect')) { if (onDone) onDone(); return; }
   var parts = buildAchievementOverlay();
+  parts.overlay.classList.add('gem-unlock-overlay');
 
+  var card = parts.card;
+  card.classList.add('gem-unlock-card');
+
+  var visual = document.createElement('div');
+  visual.className = 'gem-unlock-visual';
   var img = document.createElement('img');
   img.className = 'gem-burst-img';
   img.src = gemImg;
+  img.alt = gemName;
   img.onerror = function(){ this.style.display='none'; };
-  parts.card.appendChild(img);
+  visual.appendChild(img);
+  card.appendChild(visual);
 
   var title = document.createElement('div');
   title.className = 'gem-burst-title';
-  title.textContent = '✨ ゲット！';
-  parts.card.appendChild(title);
-
-  var sub = document.createElement('div');
-  sub.className = 'gem-burst-sub';
-  sub.textContent = gemName;
-  parts.card.appendChild(sub);
+  title.textContent = gemName + 'ゲット！！';
+  card.appendChild(title);
 
   document.body.appendChild(parts.overlay);
   playAchievementTone([[0,880],[0.12,1100],[0.24,1320],[0.36,1760]],0.18,0.18);

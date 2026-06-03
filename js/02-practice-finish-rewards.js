@@ -1,3 +1,4 @@
+
 // 02-practice-finish-rewards.js
 // ======================================================
 // 結果画面の解放・報酬処理
@@ -17,7 +18,8 @@ function collectFinishUnlockRewards() {
     if (allMaster && !badgeData['gem_' + mode + '_' + nn]) {
       badgeData['gem_' + mode + '_' + nn] = 1;
       saveBadgeData();
-      newGems.push({ img: './img/gem_' + gemIdx + '.png', name: nn + 'をたす マスター' });
+      var gemInfo = ACH_GEMS[gemIdx - 1];
+      newGems.push({ img: './gem_' + gemIdx + '.png', name: gemInfo ? gemInfo.gemName : (nn + 'をたす マスター') });
     }
   }
 
