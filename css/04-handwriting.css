@@ -1,0 +1,251 @@
+  /* ── 手書きモード ── */
+  .hw-area {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .hw-area.show { display: flex; }
+  .hw-board-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+  }
+  #hw-canvas, #hw-overlay {
+    touch-action: none;
+    width: 100%;
+    display: block;
+    border-radius: 14px;
+    height: 160px;
+  }
+  #hw-canvas {
+    background: #fff;
+    border: 3px solid #F5A623;
+  }
+  #hw-overlay {
+    position: absolute;
+    left: 0; top: 0;
+    pointer-events: none;
+  }
+  .hw-hint {
+    font-size: 12px; font-weight: 700; color: #8A7050;
+    min-height: 18px; text-align: center;
+  }
+  .hw-hint.ok { color: #5AAA30; }
+  .hw-hint.ng { color: #E07040; }
+  .hw-clear-btn {
+    border-radius: 14px; padding: 7px 20px;
+    font-size: 13px; font-weight: 700;
+    background: #FFF3D6; border: 2px solid #F5A623;
+    color: #7A4000; cursor: pointer; font-family: 'Nunito', sans-serif;
+  }
+  .ans-mode-tabs { display: flex; gap: 6px; margin-bottom: 6px; }
+  .ans-tab {
+    flex: 1; border-radius: 12px; padding: 7px 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    border: 2px solid #E8D8B8; background: #fff; color: #8A7050;
+    transition: all .12s;
+  }
+  .ans-tab.on { background: #3A2A00; color: #fff; border-color: #3A2A00; }
+  .hw-model-status {
+    font-size: 11px; color: #8A7050; font-weight: 600;
+    text-align: center; min-height: 16px;
+  }
+
+  /* ══════════════════════════════════════════
+     じっせき画面
+  ══════════════════════════════════════════ */
+  #achievement.sc.on {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 100%;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+  }
+  .ach-shell {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: clamp(220px, 26vw, 340px) minmax(0, 1fr);
+    background:
+      radial-gradient(circle at 18% 12%, rgba(103,183,255,.13), transparent 30%),
+      radial-gradient(circle at 82% 5%,  rgba(245,200,76,.10),  transparent 26%),
+      radial-gradient(circle at 50% 95%, rgba(93,211,140,.09),  transparent 30%),
+      linear-gradient(180deg, #0a1020 0%, #0f172a 40%, #111827 100%);
+    color: #f8fafc;
+    font-family: 'Nunito', sans-serif;
+    overflow: hidden;
+  }
+
+  /* ── 左カラム ── */
+  .ach-left {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 12px 10px;
+    gap: 8px;
+    border-right: 1px solid rgba(148,163,184,.12);
+    background: linear-gradient(180deg, rgba(15,23,42,.90), rgba(8,14,28,.95));
+    overflow: hidden;
+    position: relative;
+  }
+  .ach-back {
+    align-self: flex-start;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: #f8fafc;
+    border-radius: 12px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    flex-shrink: 0;
+  }
+  .ach-avatar-stage {
+    flex: 1;
+    min-height: 0;
+    border-radius: 22px;
+    border: 1px solid rgba(103,183,255,.18);
+    background:
+      radial-gradient(circle at 50% 20%, rgba(103,183,255,.22), transparent 50%),
+      linear-gradient(180deg, rgba(8,15,30,.97), rgba(4,8,18,.99));
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+  .ach-avatar-halo {
+    position: absolute;
+    inset: 10%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(103,183,255,.15) 0%, transparent 65%);
+    animation: achPulse 3.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes achPulse {
+    0%,100% { opacity:.5; transform:scale(1); }
+    50%      { opacity:1;  transform:scale(1.08); }
+  }
+  .ach-avatar-img {
+    max-width: 88%;
+    max-height: 88%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,.6));
+    transition: opacity .4s;
+  }
+  /* CSS忍者フォールバック */
+  .ach-avatar-css {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(60px,12vw,120px);
+    z-index: 0;
+    opacity: .7;
+  }
+  .ach-rank-badge {
+    background: rgba(245,200,76,.12);
+    border: 1px solid rgba(245,200,76,.28);
+    color: #ffe58d;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: .06em;
+    flex-shrink: 0;
+  }
+  .ach-rank-name {
+    font-size: 16px;
+    font-weight: 900;
+    color: #f8fafc;
+    text-align: center;
+    letter-spacing: .08em;
+    flex-shrink: 0;
+  }
+  .ach-rank-desc {
+    font-size: 10px;
+    color: #94a3b8;
+    text-align: center;
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+  .ach-progress-wrap { flex-shrink: 0; }
+  .ach-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ach-progress-bg {
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    overflow: hidden;
+  }
+  .ach-progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #67b7ff, #f5c84c);
+    transition: width .6s cubic-bezier(.2,.8,.2,1);
+  }
+  .ach-gem-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: .08em;
+    flex-shrink: 0;
+  }
+  /* 宝石グリッド */
+  .ach-gems {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .ach-gem {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: default;
+    transition: transform .15s;
+  }
+  .ach-gem:hover { transform: scale(1.15); }
+  .ach-gem img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+  }
+  .ach-gem.locked {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+  }
+  .ach-gem.locked::after {
+    content: '🔒';
+    font-size: 10px;
+    position: absolute;
+  }
+  .ach-gem.unlocked {
+    background: rgba(245,200,76,.10);
+    border: 1px solid rgba(245,200,76,.25);
+    box-shadow: 0 0 8px rgba(245,200,76,.18);
+    animation: gemGlow 2.8s ease-in-out infinite;
+  }
+  @keyframes gemGlow {
+    0%,100% { box-shadow: 0 0 6px rgba(245,200,76,.18); }
+    50%      { box-shadow: 0 0 14px rgba(245,200,76,.40); }
+  }

@@ -1,0 +1,138 @@
+  /* トップページ大ボタン */
+  .top-btn {
+    display: flex; align-items: center; gap: 14px;
+    border-radius: 22px; padding: 18px 20px;
+    width: 100%; margin-bottom: 12px; cursor: pointer;
+    border: 3px solid; transition: transform .12s, box-shadow .12s;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 4px 0;
+  }
+  .top-btn:hover { transform: translateY(-2px); }
+  .top-btn:active { transform: translateY(2px); }
+  .top-btn-ico { font-size: 36px; flex-shrink: 0; }
+  .top-btn-main { text-align: left; flex: 1; }
+  .top-btn-title { font-size: 20px; font-weight: 900; margin-bottom: 2px; }
+  .top-btn-sub   { font-size: 12px; font-weight: 600; }
+  .top-btn-arr { font-size: 24px; opacity: 0.6; }
+
+  .top-btn-easy   { background:#F0FFF4; border-color:#5AAA30; box-shadow-color:#3A8020; color:#2A5010; box-shadow:0 4px 0 #3A8020; }
+  .top-btn-hard   { background:#EEF0FF; border-color:#5A5ADF; color:#2A2A80; box-shadow:0 4px 0 #3A3AB0; }
+  .top-btn-random { background:#FFF8E8; border-color:#F5A623; color:#7A4000; box-shadow:0 4px 0 #C07800; }
+
+  /* 下部ナビ */
+  .bot-nav { display: flex; gap: 8px; margin-top: 10px; }
+  .bot-nav-btn {
+    flex: 1; border-radius: 16px; padding: 10px 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    background: #fff; border: 2.5px solid #E8D8B8; color: #8A7050;
+    transition: transform .1s;
+  }
+  .bot-nav-btn:hover { background: #FFF3D6; transform: scale(1.03); }
+  .bot-nav-ico { font-size: 18px; display: block; margin-bottom: 2px; }
+
+  /* コース選択ページ */
+  .course-btn {
+    display: flex; align-items: center; gap: 14px;
+    border-radius: 18px; padding: 16px 18px;
+    width: 100%; margin-bottom: 10px; cursor: pointer;
+    border: 2.5px solid; transition: transform .12s;
+    font-family: 'Nunito', sans-serif;
+    background: #fff;
+  }
+  .course-btn:hover { transform: scale(1.02); }
+  .course-btn-ico { font-size: 28px; flex-shrink: 0; }
+  .course-btn-main { flex: 1; text-align: left; }
+  .course-btn-title { font-size: 16px; font-weight: 800; color: #3A2A00; margin-bottom: 2px; }
+  .course-btn-sub   { font-size: 11px; font-weight: 600; color: #8A7050; }
+  .course-btn-arr { font-size: 20px; color: #C0B090; }
+
+  .cb-20    { border-color: #5AAA30; }
+  .cb-20:hover { background: #F0FFF4; }
+  .cb-all   { border-color: #5A5ADF; }
+  .cb-all:hover { background: #F0F0FF; }
+  .cb-weak  { border-color: #D4407E; }
+  .cb-weak:hover { background: #FFF0F4; }
+  .cb-kotsu { border-color: #F5A623; }
+  .cb-kotsu:hover { background: #FFF8E8; }
+
+  /* 記録・ランキングページ */
+  .diff-tab-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .diff-tab {
+    border-radius: 14px; padding: 7px 14px; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: 'Nunito', sans-serif;
+    border: 2px solid #E8D8B8; background: #fff; color: #8A7050;
+    transition: all .12s;
+  }
+  .diff-tab.on { background: #3A2A00; color: #fff; border-color: #3A2A00; }
+
+  .ranking-box {
+    background: linear-gradient(135deg, #FFF9E0, #FFF0C0);
+    border-radius: 18px; padding: 14px 16px; margin-top: 14px;
+    border: 2px solid #F5A623;
+  }
+  .ranking-title { font-size: 14px; font-weight: 800; color: #7A4000; margin-bottom: 10px; }
+  .ranking-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 0; border-bottom: 1px solid #F0E0C0;
+  }
+  .ranking-row:last-child { border-bottom: none; }
+  .ranking-medal { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .ranking-info { flex: 1; }
+  .ranking-time { font-size: 18px; font-weight: 800; color: #3A2A00; }
+  .ranking-date { font-size: 10px; color: #8A7050; font-weight: 600; }
+  .ranking-empty { font-size: 12px; color: #B0A080; text-align: center; padding: 8px 0; }
+
+  /* エフェクト設定チェックボックス */
+  .fx-check-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; background: #fff; border-radius: 14px;
+    border: 2px solid #E8D8B8; margin-bottom: 8px; cursor: pointer;
+  }
+  .fx-check-row:hover { background: #FFF8F0; }
+  .fx-check-label { font-size: 14px; font-weight: 700; color: #3A2A00; }
+  .fx-check-sub { font-size: 11px; color: #8A7050; font-weight: 600; margin-top: 2px; }
+  .fx-toggle {
+    width: 46px; height: 26px; border-radius: 13px; background: #E0D0B8;
+    position: relative; transition: background .2s; flex-shrink: 0;
+  }
+  .fx-toggle.on { background: #5AAA30; }
+  .fx-toggle::after {
+    content: ''; position: absolute; width: 20px; height: 20px;
+    border-radius: 50%; background: #fff; top: 3px; left: 3px;
+    transition: left .2s; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .fx-toggle.on::after { left: 23px; }
+
+  /* kotsu-home / kotsu-sub は既存のままだが背景色を調整 */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .top-btn { padding: 10px 14px; margin-bottom: 8px; }
+    .top-btn-ico { font-size: 26px; }
+    .top-btn-title { font-size: 15px; }
+    .top-btn-sub   { font-size: 10px; }
+    .hdr-t { font-size: 16px; }
+    .hdr-s { font-size: 10px; margin-top: 1px; }
+    .hdr { padding: 4px 0 4px; }
+    .course-btn { padding: 10px 12px; margin-bottom: 7px; }
+    .course-btn-ico { font-size: 22px; }
+    .course-btn-title { font-size: 13px; }
+    .ptop { padding-top: 36px; margin-bottom: 4px; }
+    .pgwrap { height: 7px; margin-bottom: 8px; }
+    .pcard { padding: 14px 12px 12px; margin-bottom: 6px; }
+    .peq { font-size: 34px; margin-bottom: 2px; }
+    .ptimer { font-size: 11px; }
+    .fbl { height: 18px; font-size: 12px; margin-bottom: 3px; }
+    .agrid { gap: 4px; margin-bottom: 4px; }
+    .abtn { padding: 8px 0; font-size: 16px; }
+    .rcard { padding: 10px 12px; margin: 2px; }
+    .rbi { font-size: 30px; margin-bottom: 3px; }
+    .rt2 { font-size: 14px; margin-bottom: 2px; }
+    .rs2 { font-size: 10px; margin-bottom: 8px; }
+    .rsgrid { gap: 5px; margin-bottom: 8px; }
+    .rsb { padding: 6px; }
+    .rsbl { font-size: 9px; }
+    .rsbv { font-size: 14px; }
+    .rbtns button { padding: 7px; font-size: 11px; }
+    .cd-num { font-size: 72px !important; }
+    .cbtn { padding: 12px 0; font-size: 20px; }
+  }
