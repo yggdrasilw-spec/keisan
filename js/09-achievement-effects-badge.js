@@ -14,15 +14,7 @@ function showBadgeUnlockEffect(badge, onDone) {
   }
 
   var parts = buildAchievementOverlay();
-  var closed = false;
-  function closeEffect() {
-    if (closed) return;
-    closed = true;
-    if (parts.overlay && parts.overlay.parentNode) parts.overlay.parentNode.removeChild(parts.overlay);
-    if (onDone) onDone();
-  }
-  parts.overlay.addEventListener('click', closeEffect);
-  parts.card.addEventListener('click', closeEffect);
+  bindAchievementOverlayClose(parts, onDone);
 
   parts.card.style.borderColor = 'rgba(245,166,35,.6)';
   parts.card.style.maxWidth = 'min(92vw, 720px)';

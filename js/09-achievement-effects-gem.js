@@ -52,16 +52,7 @@ function showGemUnlockEffect(gemImg, gemName, onDone) {
   }
 
   var parts = buildAchievementOverlay();
-  var closed = false;
-  function closeEffect() {
-    if (closed) return;
-    closed = true;
-    if (parts.overlay && parts.overlay.parentNode) parts.overlay.parentNode.removeChild(parts.overlay);
-    if (onDone) onDone();
-  }
-
-  parts.overlay.addEventListener('click', closeEffect);
-  parts.card.addEventListener('click', closeEffect);
+  bindAchievementOverlayClose(parts, onDone);
 
   parts.card.style.maxWidth = 'min(94vw, 760px)';
   parts.card.style.width = 'min(94vw, 760px)';

@@ -26,3 +26,20 @@ function playAchievementTone(seq, gainValue, duration){
     }
   } catch(e){}
 }
+
+
+function bindAchievementOverlayClose(parts, onDone){
+  var closed = false;
+  function closeEffect(ev){
+    if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch(e){} }
+    if (closed) return;
+    closed = true;
+    if (parts.overlay && parts.overlay.parentNode) parts.overlay.parentNode.removeChild(parts.overlay);
+    if (onDone) onDone();
+  }
+  ['pointerdown','touchstart','click'].forEach(function(evt){
+    parts.overlay.addEventListener(evt, closeEffect, {passive:false});
+    parts.card.addEventListener(evt, closeEffect, {passive:false});
+  });
+  return closeEffect;
+}
