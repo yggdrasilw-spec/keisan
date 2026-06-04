@@ -17,54 +17,48 @@ function collectFinishUnlockRewards() {
     if (allMaster && !badgeData['gem_' + mode + '_' + nn]) {
       badgeData['gem_' + mode + '_' + nn] = 1;
       saveBadgeData();
-      newGems.push({ img: './gem_' + gemIdx + '.png', name: nn + 'をたす マスター' });
+      newGems.push({
+        img: './gem_' + gemIdx + '.png',
+        name: (typeof getGemUnlockNameByIndex === 'function')
+          ? getGemUnlockNameByIndex(gemIdx)
+          : (nn + 'をたす マスター')
+      });
     }
   }
 
   var newBadge = null;
   if (sessMode === 'normal' && (curCourse === '20' || curCourse === 'all')) {
-    newBadge = checkAndAwardBadge(curLevel, curCourse, sess.results);
+    if (typeof checkAndAwardBadge === 'function') {
+      newBadge = checkAndAwardBadge(curLevel, curCourse, sess.results);
+    } else if (typeof BADGES !== 'undefined' && BADGES && badgeData) {
+      var allOk = sess.results && sess.results.every(function(r){ return r.ok; });
+      var allFast = sess.results && sess.results.every(function(r){ return r.el <= 3000; });
+      if (allOk && allFast) {
+        var id = curLevel + '_' + curCourse;
+        var badge = BADGES.find(function(b){ return b.id === id; });
+        if (badge && !badgeData[id]) {
+          badgeData[id] = { date: new Date().toLocaleDateString('ja-JP') };
+          saveBadgeData();
+          newBadge = badge;
+        }
+      }
+    }
   }
 
   return { gems: newGems, badge: newBadge };
 }
 
 function playFinishUnlockSequence(gems, badge) {
-  console.log('[DBG] playFinishUnlockSequence', {
-    gems: gems ? gems.length : '(none)',
-    badge: !!badge,
-    fxPerfect: (typeof getFx === 'function') ? getFx('fx_perfect') : '(no getFx)',
-    hasShowPerfectEffect: typeof showPerfectEffect,
-    hasShowGemUnlockEffect: typeof showGemUnlockEffect,
-    hasShowBadgeUnlockEffect: typeof showBadgeUnlockEffect
-  });
   function showChain(gems2, badge2) {
     if (getFx('fx_perfect')) {
       sndPerfect();
       setTimeout(function(){
-        console.log('[DBG] before showPerfectEffect', {
-          gems: gems2 ? gems2.length : '(none)',
-          badge: !!badge2,
-          hasShowPerfectEffect: typeof showPerfectEffect
-        });
         showPerfectEffect(function(){
-          console.log('[DBG] after showPerfectEffect', {
-            gems: gems2 ? gems2.length : '(none)',
-            badge: !!badge2,
-            hasShowGemUnlockEffect: typeof showGemUnlockEffect,
-            hasShowBadgeUnlockEffect: typeof showBadgeUnlockEffect
-          });
           if (gems2.length > 0) {
-            console.log('[DBG] call showGemUnlockEffect', { img: gems2[0].img, name: gems2[0].name });
             showGemUnlockEffect(gems2[0].img, gems2[0].name, function(){
-              console.log('[DBG] gem effect done');
-              if (badge2) {
-                console.log('[DBG] call showBadgeUnlockEffect after gem');
-                showBadgeUnlockEffect(badge2);
-              }
+              if (badge2) showBadgeUnlockEffect(badge2);
             });
           } else if (badge2) {
-            console.log('[DBG] call showBadgeUnlockEffect only');
             showBadgeUnlockEffect(badge2);
           }
         });
@@ -73,20 +67,12 @@ function playFinishUnlockSequence(gems, badge) {
       sndGoodFinish();
       if (gems2.length > 0) {
         setTimeout(function(){
-          console.log('[DBG] call showGemUnlockEffect (fx off)', { img: gems2[0].img, name: gems2[0].name });
           showGemUnlockEffect(gems2[0].img, gems2[0].name, function(){
-            console.log('[DBG] gem effect done (fx off)');
-            if (badge2) {
-              console.log('[DBG] call showBadgeUnlockEffect after gem (fx off)');
-              showBadgeUnlockEffect(badge2);
-            }
+            if (badge2) showBadgeUnlockEffect(badge2);
           });
         }, 300);
       } else if (badge2) {
-        setTimeout(function(){
-          console.log('[DBG] call showBadgeUnlockEffect only (fx off)');
-          showBadgeUnlockEffect(badge2);
-        }, 300);
+        setTimeout(function(){ showBadgeUnlockEffect(badge2); }, 300);
       }
     }
   }

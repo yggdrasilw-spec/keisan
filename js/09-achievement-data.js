@@ -1,4 +1,3 @@
-
 // 09-achievement-data.js
 // ======================================================
 // じっせき（実績）データ
@@ -16,122 +15,118 @@ var ACH_STAGES = [
     desc:'すべてを極めた、最終形態。',                halo:'rgba(255,120,200,.22)' },
 ];
 
-// ── 宝石名（gem_1.png〜gem_18.png の順番に対応）──
-var GEM_NAMES = [
-  '金剛石（ダイヤモンド）',
-  '紅玉（ルビー）',
-  '青玉（サファイア）',
-  '翠玉（エメラルド）',
-  '紫水晶（アメジスト）',
-  '黄玉（トパーズ）',
-  '柘榴石（ガーネット）',
-  '橄欖石（ペリドット）',
-  '蛋白石（オパール）',
-  '電気石（トルマリン）',
-  '翡翠（ヒスイ）',
-  '瑠璃（ラピスラズリ）',
-  '真珠（パール）',
-  '琥珀（コハク）',
-  '風信子石（ジルコン）',
-  '尖晶石（スピネル）',
-  '月長石（ムーンストーン）',
-  '金緑石（アレキサンドライト）'
-];
-
-function makeGemInfo(idx, label, img, check) {
-  return {
-    id: idx,
-    label: label,
-    gemName: GEM_NAMES[idx - 1] || '',
-    img: img,
-    check: check
-  };
-}
-
-// ── 宝石定義（18個）──
+// ── 宝石定義（18個: くりあがりなし 1〜9, くりあがりあり 2〜9 + ぜんぶマスター）──
+// gem_1.png〜gem_18.png, または gem_no1.png / gem_carry2.png 等
+// ファイル名規則: gem_no1〜gem_no9（なし1〜9）, gem_c2〜gem_c9（くりあがり2〜9）
+// ここでは gem_1.png〜gem_18.png のシンプルな連番で対応
 var ACH_GEMS = [];
 (function() {
   for (var n = 1; n <= 9; n++) {
-    ACH_GEMS.push(makeGemInfo(
-      n,
-      n + 'をたす マスター',
-      './gem_' + n + '.png',
-      (function(nn) {
+    ACH_GEMS.push({
+      id: 'no_' + n,
+      label: n + 'をたす マスター',
+      img: './gem_' + n + '.png',
+      idx: n,
+      check: function(nn) {
         return function() {
           return isAllMasterForProblemSet(buildKP_for_no(nn), 'n' + nn + ':');
         };
-      })(n)
-    ));
+      }(n)
+    });
   }
   for (var n2 = 2; n2 <= 9; n2++) {
-    ACH_GEMS.push(makeGemInfo(
-      n2 + 8,
-      n2 + 'をたす マスター(くりあがり)',
-      './gem_' + (n2 + 9) + '.png',
-      (function(nn) {
+    ACH_GEMS.push({
+      id: 'carry_' + n2,
+      label: n2 + 'をたす マスター(くりあがり)',
+      img: './gem_' + (n2 + 9) + '.png',
+      idx: (n2 + 9),
+      check: function(nn) {
         return function() {
           return isAllMasterForProblemSet(buildKP_for_carry(nn), 'k' + nn + ':');
         };
-      })(n2)
-    ));
+      }(n2)
+    });
   }
-  ACH_GEMS.push(makeGemInfo(
-    18,
-    'ぜんぶマスター',
-    './gem_18.png',
-    function() {
+  ACH_GEMS.push({
+    id: 'all_master',
+    label: 'ぜんぶマスター',
+    img: './gem_18.png',
+    idx: 18,
+    check: function() {
       return isAllMasterForLevel('mix');
     }
-  ));
+  });
 })();
 
-// ── 制覇バッジ ──
+// buildKP を mode 固定版として複製（kSt に依存しない）
+
+// ── 実績定義 ──
+function getAchievements() {
+  var easyAllMaster = isAllMasterForLevel('easy');
+  var hardAllMaster = isAllMasterForLevel('hard');
+  var mixAllMaster = isAllMasterForLevel('mix');
+
+  var has20EasyRank  = rkD['easy_20']  && rkD['easy_20'].length  > 0;
+  var has20HardRank  = rkD['hard_20']  && rkD['hard_20'].length  > 0;
+  var hasAllEasyRank = rkD['easy_all'] && rkD['easy_all'].length > 0;
+  var hasAllHardRank = rkD['hard_all'] && rkD['hard_all'].length > 0;
+
+  return {
+    speed: [
+      { ico:'⚡', name:'5びょう以内で正解',    meta:'はやく こたえた記録が残った',         unlocked: has20EasyRank },
+      { ico:'⚡', name:'20もん ぜんもんせいかい（かんたん）', meta:'かんたんコースを ぜんぶ正解', unlocked: has20EasyRank },
+      { ico:'⚡', name:'20もん ぜんもんせいかい（むずかしい）',meta:'むずかしいコースも ぜんぶ正解',unlocked: has20HardRank },
+      { ico:'🏁', name:'ぜんぶコース ぜんもんせいかい（かんたん）',meta:'かんたん全問をノーミスクリア', unlocked: hasAllEasyRank },
+      { ico:'🏆', name:'ぜんぶコース ぜんもんせいかい（むずかしい）',meta:'むずかしい全問をノーミスクリア',unlocked: hasAllHardRank },
+    ],
+    combo: [
+      { ico:'🔥', name:'3れんぞく せいかい',  meta:'コンボの入口。ここで気分が上がる。',  unlocked: false },
+      { ico:'🔥', name:'5れんぞく せいかい',  meta:'流れに乗って、どんどん進む。',        unlocked: false },
+      { ico:'🌪', name:'10れんぞく せいかい', meta:'集中力が高まった強者の証。',          unlocked: false },
+      { ico:'🛡', name:'ノーミス修行',        meta:'まちがえずに最後まで進む。',          unlocked: has20EasyRank || has20HardRank },
+    ],
+    clear: [
+      { ico:'🌱', name:'くりあがりなし 全制覇', meta:'基礎をぜんぶ押さえた証。',         unlocked: easyAllMaster },
+      { ico:'⭐', name:'くりあがりあり 全制覇', meta:'一段上の修行を終えた証。',          unlocked: hardAllMaster },
+      { ico:'🎲', name:'ばらばら ぜんもんせいかい',meta:'全ジャンル混合でノーミス。',      unlocked: rkD['mix_all'] && rkD['mix_all'].length > 0 },
+      { ico:'👑', name:'ぜんぶ マスター',       meta:'伝説の忍者への最終到達点。',        unlocked: mixAllMaster },
+    ],
+  };
+}
+
+// ======================================================
+// 制覇バッジ
+// ======================================================
 var badgeData = storageLoadJSON(LS_BADGE, {});
 
+// 制覇バッジ定義（6個）
+// 条件: 全問正解 + 全問平均3秒以内（=合計ms / 問題数 <= 3000）
 var BADGES = [
-  { id:'easy_20',  ico:'🟢', name:'かんたん
-20もん 制覇！',
-    cond:'かんたん 20もん
-ぜんもん3びょう以内',
+  { id:'easy_20',  ico:'🟢', name:'かんたん\n20もん 制覇！',
+    cond:'かんたん 20もん\nぜんもん3びょう以内',
     img:'./badge_easy20.png',
     level:'easy', course:'20' },
-  { id:'easy_all', ico:'🌿', name:'かんたん
-ぜんぶ 制覇！',
-    cond:'かんたん ぜんもん
-ぜんもん3びょう以内',
+  { id:'easy_all', ico:'🌿', name:'かんたん\nぜんぶ 制覇！',
+    cond:'かんたん ぜんもん\nぜんもん3びょう以内',
     img:'./badge_easy_all.png',
     level:'easy', course:'all' },
-  { id:'hard_20',  ico:'💜', name:'むずかしい
-20もん 制覇！',
-    cond:'むずかしい 20もん
-ぜんもん3びょう以内',
+  { id:'hard_20',  ico:'💜', name:'むずかしい\n20もん 制覇！',
+    cond:'むずかしい 20もん\nぜんもん3びょう以内',
     img:'./badge_hard20.png',
     level:'hard', course:'20' },
-  { id:'hard_all', ico:'⭐', name:'むずかしい
-ぜんぶ 制覇！',
-    cond:'むずかしい ぜんもん
-ぜんもん3びょう以内',
+  { id:'hard_all', ico:'⭐', name:'むずかしい\nぜんぶ 制覇！',
+    cond:'むずかしい ぜんもん\nぜんもん3びょう以内',
     img:'./badge_hard_all.png',
     level:'hard', course:'all' },
-  { id:'mix_20',   ico:'🎲', name:'ばらばら
-20もん 制覇！',
-    cond:'ばらばら 20もん
-ぜんもん3びょう以内',
+  { id:'mix_20',   ico:'🎲', name:'ばらばら\n20もん 制覇！',
+    cond:'ばらばら 20もん\nぜんもん3びょう以内',
     img:'./badge_mix20.png',
     level:'mix', course:'20' },
-  { id:'mix_all',  ico:'👑', name:'ばらばら
-ぜんぶ 制覇！',
-    cond:'ばらばら ぜんもん
-ぜんもん3びょう以内',
+  { id:'mix_all',  ico:'👑', name:'ばらばら\nぜんぶ 制覇！',
+    cond:'ばらばら ぜんもん\nぜんもん3びょう以内',
     img:'./badge_mix_all.png',
     level:'mix', course:'all' },
 ];
-
-function getAchievements() {
-  return {
-    badges: BADGES
-  };
-}
 
 function saveBadgeData() {
   storageSaveJSON(LS_BADGE, badgeData);
