@@ -44,6 +44,9 @@ function applyScreenTransition(n, next, body) {
 function scheduleScreenTransition(n, next, body, useWipe) {
   clearScreenTransitionTimer();
   var wipe = useWipe ? document.getElementById('scene-wipe') : null;
+  if (useWipe && typeof playFileSound === 'function') {
+    playFileSound('./sound/idou.mp3');
+  }
   if (wipe) { wipe.classList.remove('active'); void wipe.offsetWidth; wipe.classList.add('active'); }
   _showTimer = setTimeout(function(){
     applyScreenTransition(n, next, body);

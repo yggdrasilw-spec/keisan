@@ -16,6 +16,19 @@ function setSfxEnabled(nextOn) {
   if (!sfxOn && AC) { try { AC.suspend(); } catch(e){} }
   else if (sfxOn && AC) { try { AC.resume(); } catch(e){} }
 }
+function playFileSound(src) {
+  if (!sfxOn || !src) return null;
+  try {
+    var a = new Audio(src);
+    a.preload = 'auto';
+    a.volume = 1;
+    var p = a.play();
+    if (p && typeof p.catch === 'function') p.catch(function(){});
+    return a;
+  } catch (e) {
+    return null;
+  }
+}
 function toggleSfx() {
   setSfxEnabled(!sfxOn);
   if (typeof syncAudioControlButtons === 'function') syncAudioControlButtons();

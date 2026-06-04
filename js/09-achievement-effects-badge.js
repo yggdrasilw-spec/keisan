@@ -15,30 +15,23 @@ function showBadgeUnlockEffect(badge, onDone) {
 
   var parts = buildAchievementOverlay();
   parts.card.style.borderColor = 'rgba(245,166,35,.6)';
-  parts.card.style.maxWidth = 'min(90vw, 620px)';
-  parts.card.style.padding = '24px 24px 18px';
-
-  var ico = document.createElement('div');
-  ico.style.cssText = 'font-size:56px;line-height:1;filter:drop-shadow(0 0 12px rgba(245,200,76,.8))';
-  ico.textContent = badge.ico;
-  parts.card.appendChild(ico);
+  parts.card.style.maxWidth = 'min(92vw, 760px)';
+  parts.card.style.padding = '28px 34px 24px';
 
   var img = document.createElement('img');
-  img.className = 'gem-burst-img';
+  img.className = 'gem-burst-img badge-burst-img';
   img.src = badge.img;
   img.alt = badge.name;
   img.onerror = function(){ this.style.display='none'; };
   parts.card.appendChild(img);
 
   var title = document.createElement('div');
-  title.className = 'gem-burst-title';
-  title.textContent = badge.unlockTitle ? (badge.unlockTitle + 'ゲット！') : '🏅 せいはバッジゲット！';
+  title.className = 'gem-burst-title badge-burst-title';
+  var mainTitle = badge.unlockTitle ? String(badge.unlockTitle).replace(/[ 　]*せいはバッジ\s*$/, '') : 'せいはバッジ';
+  title.innerHTML = '';
+  title.style.whiteSpace = 'pre-line';
+  title.textContent = mainTitle + '\nせいはバッジゲット！';
   parts.card.appendChild(title);
-
-  var sub = document.createElement('div');
-  sub.className = 'gem-burst-sub';
-  sub.textContent = badge.name.replace(/\n/g, ' ');
-  parts.card.appendChild(sub);
 
   document.body.appendChild(parts.overlay);
   try {
