@@ -344,37 +344,62 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    pointer-events: auto;
-    background: rgba(0,0,0,.48);
+    pointer-events: none;
+    background: rgba(0,0,0,0);
+    animation: gemOverlayFade 1.8s ease forwards;
+  }
+  @keyframes gemOverlayFade {
+    0%,50% { background: rgba(0,0,0,0); }
+    55%    { background: rgba(0,0,0,.45); }
+    85%    { background: rgba(0,0,0,.45); }
+    100%   { background: rgba(0,0,0,0); }
   }
   .gem-burst-card {
     background: linear-gradient(135deg, #1a2540, #0f172a);
     border: 2px solid rgba(245,200,76,.40);
     border-radius: 24px;
-    padding: 30px 40px;
+    padding: 28px 36px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     box-shadow: 0 0 40px rgba(245,200,76,.25);
-    animation: gemBurst .5s cubic-bezier(.2,.8,.2,1.3) .02s both;
-    max-width: min(92vw, 720px);
+    animation: gemBurst .5s cubic-bezier(.2,.8,.2,1.3) .1s both;
+    width: min(94vw, 760px);
+    max-width: min(94vw, 760px);
     cursor: pointer;
   }
   .gem-burst-img {
-    width: min(62vw, 520px);
+    width: min(56vw, 480px);
     height: auto;
-    max-height: 56vh;
+    max-height: 52vh;
     object-fit: contain;
     filter: drop-shadow(0 0 16px rgba(245,200,76,.6));
   }
   .gem-burst-title {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+  }
+  .gem-burst-title-main {
     font-size: clamp(22px, 4.6vw, 36px);
     font-weight: 900;
     color: #f5c84c;
     letter-spacing: .06em;
-    text-align: center;
-    white-space: pre-line;
+    line-height: 1.1;
+  }
+  .gem-burst-title-sub {
+    font-size: clamp(18px, 3.8vw, 30px);
+    font-weight: 900;
+    color: #f8fafc;
+    letter-spacing: .03em;
+    line-height: 1.1;
+    white-space: nowrap;
+    max-width: 100%;
   }
   .gem-burst-sub {
     font-size: 14px;
