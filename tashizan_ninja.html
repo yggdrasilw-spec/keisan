@@ -28,7 +28,7 @@ body.booting #app {
 #startup-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9950;
+  z-index: 2147483646;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,7 +36,9 @@ body.booting #app {
     radial-gradient(circle at 50% 42%, rgba(255,255,255,.08), transparent 26%),
     linear-gradient(180deg, rgba(0,0,0,.98), rgba(0,0,0,.94));
   opacity: 1;
-  transition: opacity .28s ease;
+  transition: opacity .18s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 #startup-overlay.hidden {
   opacity: 0;
@@ -116,6 +118,8 @@ body.booting #app {
     <div class="startup-tip">タップして はじめる</div>
   </button>
 </div>
+<audio id="startup-kiru-audio" src="./sound/kiru.mp3" preload="auto"></audio>
+<audio id="transition-idou-audio" src="./sound/idou.mp3" preload="auto"></audio>
 
 <div id="app">
 
