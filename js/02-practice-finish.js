@@ -5,8 +5,12 @@
 
 function endSess() {
   if (tIv){clearInterval(tIv);tIv=null;}
-  if (typeof nextQuestionTimer !== 'undefined' && nextQuestionTimer) { clearTimeout(nextQuestionTimer); nextQuestionTimer = null; }
-  if (sess) sess._answerLocked = false;
+  console.log('[DBG] endSess', {
+    mode: sessMode,
+    resultsLen: sess && sess.results ? sess.results.length : '(none)',
+    idx: sess && typeof sess.idx === 'number' ? sess.idx : '(none)',
+    queueLen: sess && sess.queue ? sess.queue.length : '(none)'
+  });
   if (!sess.results||!sess.results.length){show(sessMode==='kotsu'?'kotsu-sub':'course-select');return;}
   finish();
 }
@@ -15,6 +19,13 @@ function renderFinishOutcome(summary, completed) {
   var tot = summary.tot;
   var cor = summary.cor;
   var acc = summary.acc;
+  console.log('[DBG] renderFinishOutcome', {
+    completed: !!completed,
+    tot: tot,
+    cor: cor,
+    acc: acc,
+    fxPerfect: (typeof getFx === 'function') ? getFx('fx_perfect') : '(no getFx)'
+  });
 
   if (acc===100 && completed) {
     document.getElementById('rbi').textContent='🎉';
@@ -23,6 +34,13 @@ function renderFinishOutcome(summary, completed) {
     show('result');
 
     var unlocks = collectFinishUnlockRewards();
+    console.log('[DBG] perfect branch', {
+      gems: unlocks && unlocks.gems ? unlocks.gems.length : '(none)',
+      badge: !!(unlocks && unlocks.badge),
+      hasShowPerfectEffect: typeof showPerfectEffect,
+      hasShowGemUnlockEffect: typeof showGemUnlockEffect,
+      hasShowBadgeUnlockEffect: typeof showBadgeUnlockEffect
+    });
     playFinishUnlockSequence(unlocks.gems, unlocks.badge);
     return;
   } else if (acc===100 || acc>=70) {
@@ -41,9 +59,13 @@ function renderFinishOutcome(summary, completed) {
 
 function finish(completed) {
   if (tIv){clearInterval(tIv);tIv=null;}
-  if (typeof nextQuestionTimer !== 'undefined' && nextQuestionTimer) { clearTimeout(nextQuestionTimer); nextQuestionTimer = null; }
-  if (sess) sess._answerLocked = false;
   var summary = computeSessionSummary();
+  console.log('[DBG] finish', {
+    completed: !!completed,
+    tot: summary && summary.tot,
+    cor: summary && summary.cor,
+    acc: summary && summary.acc
+  });
   renderFinishSummaryToResultPage(summary, completed);
   renderFinishOutcome(summary, completed);
 }

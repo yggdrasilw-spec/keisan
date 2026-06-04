@@ -84,12 +84,23 @@ function renderAnswerFeedbackToUI(fx) {
   fbl.className = fx.cls;
 }
 
-var nextQuestionTimer = null;
 function queueNextQuestion(delay) {
-  if (nextQuestionTimer) clearTimeout(nextQuestionTimer);
-  nextQuestionTimer = setTimeout(function(){
-    nextQuestionTimer = null;
+  console.log('[DBG] queueNextQuestion', {
+    delay: delay || 0,
+    idx: sess && sess.idx,
+    queueLen: sess && sess.queue ? sess.queue.length : '(none)',
+    resultsLen: sess && sess.results ? sess.results.length : '(none)'
+  });
+  setTimeout(function(){
+    console.log('[DBG] queueNextQuestion->showP(before)', {
+      idx: sess && sess.idx,
+      queueLen: sess && sess.queue ? sess.queue.length : '(none)'
+    });
     sess.idx++;
+    console.log('[DBG] queueNextQuestion->showP(after)', {
+      idx: sess && sess.idx,
+      queueLen: sess && sess.queue ? sess.queue.length : '(none)'
+    });
     showP();
   }, delay || 0);
 }

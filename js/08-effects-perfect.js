@@ -7,7 +7,17 @@ function showPerfectEffect(onDone) {
   var canvas = document.getElementById('lightning-canvas');
   var flashEl = document.getElementById('pf-flash');
   var charsEl = document.getElementById('pf-chars');
-  if (!ov) { if (onDone) onDone(); return; }
+  console.log('[DBG] showPerfectEffect enter', {
+    hasOverlay: !!ov,
+    hasCanvas: !!canvas,
+    hasFlash: !!flashEl,
+    hasChars: !!charsEl
+  });
+  if (!ov) { 
+    console.log('[DBG] showPerfectEffect abort: missing overlay');
+    if (onDone) onDone(); 
+    return; 
+  }
 
   var W = window.innerWidth, H = window.innerHeight;
   canvas.width = W; canvas.height = H;
@@ -143,6 +153,7 @@ function showPerfectEffect(onDone) {
       ov.classList.remove('show');
       ov.style.transition = '';
       ov.style.opacity = '';
+      console.log('[DBG] showPerfectEffect done');
       if (onDone) onDone();
     }, 420);
   }, totalDur + 300);
