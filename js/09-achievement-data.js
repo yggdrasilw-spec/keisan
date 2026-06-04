@@ -25,7 +25,7 @@ var ACH_GEMS = [];
     ACH_GEMS.push({
       idx: n,
       id: 'no_' + n,
-      label: n + 'をたす マスター',
+      label: n + 'をたすマスター',
       img: './img/gem_' + n + '.png',
       check: function(nn) {
         return function() {
@@ -38,7 +38,7 @@ var ACH_GEMS = [];
     ACH_GEMS.push({
       idx: n2 + 9,
       id: 'carry_' + n2,
-      label: n2 + 'をたす マスター(くりあがり)',
+      label: n2 + 'をたすマスター（くりあがり）',
       img: './img/gem_' + (n2 + 9) + '.png',
       check: function(nn) {
         return function() {

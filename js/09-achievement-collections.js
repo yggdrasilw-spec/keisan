@@ -77,9 +77,13 @@ function makeGemCard(gem, on) {
 
   var meta = document.createElement('div');
   meta.className = 'ach-gem-card-meta';
-  meta.textContent = (gem.id === 'all_master')
-    ? '18こ ぜんぶの ほうせきを てにいれた！'
-    : gem.label.replace(/\n/g, ' ').replace('マスター', '').replace(/（.*?）/g, '').trim() + ' をぜんぶマスター';
+  if (gem.id === 'all_master') {
+    meta.textContent = '18こ ぜんぶの ほうせきを てにいれた！';
+  } else if (/（くりあがり）/.test(gem.label)) {
+    meta.textContent = gem.label.replace(/\n/g, ' ').replace('マスター（くりあがり）', '').trim() + ' をぜんぶマスター（くりあがり）';
+  } else {
+    meta.textContent = gem.label.replace(/\n/g, ' ').replace('マスター', '').trim() + ' をぜんぶマスター';
+  }
   item.appendChild(meta);
 
   var pill = document.createElement('div');
