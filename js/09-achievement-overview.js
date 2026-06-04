@@ -38,20 +38,11 @@ function getAchNextStageByGemCount(gemUnlocked) {
 }
 
 function getAchUnlockedCountSummary(gemUnlocked) {
-  if (typeof gemUnlocked !== 'number') {
-    return getUnlockedAchievementCount();
-  }
-
-  var badgeOn = 0;
-  if (typeof BADGES !== 'undefined' && Array.isArray(BADGES)) {
-    for (var i = 0; i < BADGES.length; i++) {
-      if (badgeData && badgeData[BADGES[i].id]) badgeOn++;
-    }
-  }
-
+  var ach = getAchievements();
+  var badgeOn = ach.badge.filter(function(i){return i.unlocked;}).length;
   return {
-    totalOn: gemUnlocked + badgeOn,
-    totalAll: ACH_GEMS.length + (typeof BADGES !== 'undefined' && Array.isArray(BADGES) ? BADGES.length : 0)
+    totalOn: typeof gemUnlocked === 'number' ? gemUnlocked + badgeOn : getUnlockedAchievementCount().totalOn,
+    totalAll: ACH_GEMS.length + ach.badge.length
   };
 }
 

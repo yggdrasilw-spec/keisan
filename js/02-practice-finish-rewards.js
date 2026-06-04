@@ -17,7 +17,7 @@ function collectFinishUnlockRewards() {
     if (allMaster && !badgeData['gem_' + mode + '_' + nn]) {
       badgeData['gem_' + mode + '_' + nn] = 1;
       saveBadgeData();
-      newGems.push({ img: './img/gem_' + gemIdx + '.png', idx: gemIdx, name: getGemUnlockDisplayNameByIndex(gemIdx) });
+      newGems.push({ img: './img/gem_' + gemIdx + '.png', idx: gemIdx, unlockText: nn + 'をたすマスター' });
     }
   }
 
@@ -36,7 +36,7 @@ function playFinishUnlockSequence(gems, badge) {
       setTimeout(function(){
         showPerfectEffect(function(){
           if (gems2.length > 0) {
-            showGemUnlockEffect(gems2[0].img, gems2[0].name, function(){
+            showGemUnlockEffect(gems2[0].img, gems2[0].unlockText, gems2[0].idx, function(){
               if (badge2) showBadgeUnlockEffect(badge2);
             });
           } else if (badge2) {
@@ -48,7 +48,7 @@ function playFinishUnlockSequence(gems, badge) {
       sndGoodFinish();
       if (gems2.length > 0) {
         setTimeout(function(){
-          showGemUnlockEffect(gems2[0].img, gems2[0].name, function(){
+          showGemUnlockEffect(gems2[0].img, gems2[0].unlockText, gems2[0].idx, function(){
             if (badge2) showBadgeUnlockEffect(badge2);
           });
         }, 300);

@@ -26,15 +26,10 @@ function getUnlockedGemCount() {
 }
 
 function getUnlockedAchievementCount() {
-  var gemOn = getUnlockedGemCount();
-  var badgeOn = 0;
-  if (typeof BADGES !== 'undefined' && Array.isArray(BADGES)) {
-    for (var i = 0; i < BADGES.length; i++) {
-      if (badgeData && badgeData[BADGES[i].id]) badgeOn++;
-    }
-  }
+  var ach = getAchievements();
+  var badgeOn = ach.badge.filter(function(i){ return i.unlocked; }).length;
   return {
-    totalOn: gemOn + badgeOn,
-    totalAll: ACH_GEMS.length + (typeof BADGES !== 'undefined' && Array.isArray(BADGES) ? BADGES.length : 0)
+    totalOn: getUnlockedGemCount() + badgeOn,
+    totalAll: ACH_GEMS.length + ach.badge.length
   };
 }

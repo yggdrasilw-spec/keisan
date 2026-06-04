@@ -24,45 +24,22 @@ var ACH_GEM_NAMES = {
   18: '金緑石（アレキサンドライト）'
 };
 
-var ACH_GEM_PREFIXES = {
-  1: '1をたすマスター',
-  2: '2をたすマスター',
-  3: '3をたすマスター',
-  4: '4をたすマスター',
-  5: '5をたすマスター',
-  6: '6をたすマスター',
-  7: '7をたすマスター',
-  8: '8をたすマスター',
-  9: '9をたすマスター',
-  10: '2をたすマスター(くりあがり)',
-  11: '3をたすマスター(くりあがり)',
-  12: '4をたすマスター(くりあがり)',
-  13: '5をたすマスター(くりあがり)',
-  14: '6をたすマスター(くりあがり)',
-  15: '7をたすマスター(くりあがり)',
-  16: '8をたすマスター(くりあがり)',
-  17: '9をたすマスター(くりあがり)',
-  18: 'ぜんぶマスター'
-};
-
 function getGemUnlockNameByIndex(idx) {
   return ACH_GEM_NAMES[idx] || ('宝石' + idx);
 }
 
-function getGemUnlockPrefixByIndex(idx) {
-  return ACH_GEM_PREFIXES[idx] || ('宝石' + idx);
-}
-
-function getGemUnlockDisplayNameByIndex(idx) {
-  return getGemUnlockPrefixByIndex(idx) + '！' + getGemUnlockNameByIndex(idx);
-}
-
-function showGemUnlockEffect(gemImg, gemName, onDone) {
+function showGemUnlockEffect(gemImg, masterLabel, gemIdx, onDone) {
+  if (typeof gemIdx === 'function') {
+    onDone = gemIdx;
+    gemIdx = 0;
+  }
   if (typeof getFx === 'function' && !getFx('fx_perfect')) {
     if (onDone) onDone();
     return;
   }
 
+  var gemName = getGemUnlockNameByIndex(gemIdx || 0);
+  var masterText = masterLabel ? String(masterLabel).replace(/\s+/g, '') : '';
   var parts = buildAchievementOverlay();
   parts.card.style.maxWidth = 'min(90vw, 620px)';
   parts.card.style.padding = '24px 24px 18px';
@@ -76,7 +53,7 @@ function showGemUnlockEffect(gemImg, gemName, onDone) {
 
   var title = document.createElement('div');
   title.className = 'gem-burst-title';
-  title.textContent = gemName + ' ゲット！！';
+  title.textContent = (masterText ? masterText + '！' : '') + gemName + 'ゲット！！';
   parts.card.appendChild(title);
 
   document.body.appendChild(parts.overlay);

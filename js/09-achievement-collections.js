@@ -1,7 +1,9 @@
 // 09-achievement-collections.js
 // ======================================================
-// じっせきの 一覧表示（実績 / バッジ）
+// じっせきの 一覧表示（実績 / バッジ / タブ）
 // ======================================================
+
+var _achTabsBound = false;
 
 function makeAchItem(ico, name, meta, unlocked, gemImg) {
   var div = document.createElement('div');
@@ -32,30 +34,30 @@ function makeAchItem(ico, name, meta, unlocked, gemImg) {
 
 function renderAchList() {
   var gemEl = document.getElementById('ach-group-gem');
-  if (!gemEl) return;
-  gemEl.innerHTML = '';
-
-  for (var i = 0; i < ACH_GEMS.length; i++) {
-    var gem = ACH_GEMS[i];
-    var on = false;
-    try { on = gem.check(); } catch (e) {}
-    var title = gem.label;
-    var meta = gem.label;
-    if (on && typeof getGemUnlockDisplayNameByIndex === 'function') {
-      meta = getGemUnlockDisplayNameByIndex(gem.idx || (i + 1));
+  if (gemEl) {
+    gemEl.innerHTML = '';
+    for (var i = 0; i < ACH_GEMS.length; i++) {
+      var gem = ACH_GEMS[i];
+      var on = false;
+      try { on = gem.check(); } catch (e) {}
+      var title = gem.label.split('\n').join(' ');
+      var meta = (gem.id === 'all_master')
+        ? '18こ ぜんぶの ほうせきを てにいれた！'
+        : gem.label.split('\n').join(' ').replace('マスター', '').replace(/（.*?）/g, '').trim() + ' をぜんぶマスター';
+      var item = makeAchItem('💎', title, meta, on, gem.img);
+      if (on && typeof showGemUnlockEffect === 'function') {
+        item.style.cursor = 'pointer';
+        item.title = 'タップで ひょうじ';
+        (function(g) {
+          item.addEventListener('click', function() {
+            showGemUnlockEffect(g.img, g.unlockText || g.name, g.idx || 0, null);
+          });
+        })(gem);
+      }
+      gemEl.appendChild(item);
     }
-    var item = makeAchItem('💎', title, meta, on, gem.img);
-    if (on && typeof showGemUnlockEffect === 'function' && typeof getGemUnlockDisplayNameByIndex === 'function') {
-      item.style.cursor = 'pointer';
-      item.title = 'タップで ひょうじ';
-      (function(g) {
-        item.addEventListener('click', function() {
-          showGemUnlockEffect(g.img, getGemUnlockDisplayNameByIndex(g.idx || 0), null);
-        });
-      })(gem);
-    }
-    gemEl.appendChild(item);
   }
+
 }
 
 function achInitTabs() {

@@ -15,17 +15,37 @@ var ACH_STAGES = [
     desc:'すべてを極めた、最終形態。',                halo:'rgba(255,120,200,.22)' },
 ];
 
-// ── 宝石定義（18個: くりあがりなし 1〜9, くりあがりあり 2〜9 + ぜんぶマスター）──
-// img/gem_1.png〜img/gem_18.png, または img/gem_no1.png / img/gem_carry2.png 等
-// ファイル名規則: gem_no1〜gem_no9（なし1〜9）, gem_c2〜gem_c9（くりあがり2〜9）
-// ここでは img/gem_1.png〜img/gem_18.png のシンプルな連番で対応
+// ── 宝石定義（18個）──
+var ACH_GEM_LABELS = {
+  1: '金剛石（ダイヤモンド）',
+  2: '紅玉（ルビー）',
+  3: '青玉（サファイア）',
+  4: '翠玉（エメラルド）',
+  5: '紫水晶（アメジスト）',
+  6: '黄玉（トパーズ）',
+  7: '柘榴石（ガーネット）',
+  8: '橄欖石（ペリドット）',
+  9: '蛋白石（オパール）',
+  10: '電気石（トルマリン）',
+  11: '翡翠（ヒスイ）',
+  12: '瑠璃（ラピスラズリ）',
+  13: '真珠（パール）',
+  14: '琥珀（コハク）',
+  15: '風信子石（ジルコン）',
+  16: '尖晶石（スピネル）',
+  17: '月長石（ムーンストーン）',
+  18: '金緑石（アレキサンドライト）'
+};
+
 var ACH_GEMS = [];
 (function() {
   for (var n = 1; n <= 9; n++) {
     ACH_GEMS.push({
-      idx: n,
       id: 'no_' + n,
-      label: n + 'をたすマスター',
+      idx: n,
+      name: n + 'をたすマスター',
+      unlockText: n + 'をたすマスター',
+      label: n + 'をたすマスター ' + ACH_GEM_LABELS[n],
       img: './img/gem_' + n + '.png',
       check: function(nn) {
         return function() {
@@ -36,9 +56,11 @@ var ACH_GEMS = [];
   }
   for (var n2 = 2; n2 <= 9; n2++) {
     ACH_GEMS.push({
-      idx: n2 + 8,
       id: 'carry_' + n2,
-      label: n2 + 'をたすマスター(くりあがり)',
+      idx: n2 + 9,
+      name: n2 + 'をたすマスター（くりあがり）',
+      unlockText: n2 + 'をたすマスター',
+      label: n2 + 'をたすマスター（くりあがり） ' + ACH_GEM_LABELS[n2 + 9],
       img: './img/gem_' + (n2 + 9) + '.png',
       check: function(nn) {
         return function() {
@@ -48,9 +70,11 @@ var ACH_GEMS = [];
     });
   }
   ACH_GEMS.push({
-    idx: 18,
     id: 'all_master',
-    label: 'ぜんぶマスター',
+    idx: 18,
+    name: 'ぜんぶマスター',
+    unlockText: 'ぜんぶマスター',
+    label: 'ぜんぶマスター ' + ACH_GEM_LABELS[18],
     img: './img/gem_18.png',
     check: function() {
       return isAllMasterForLevel('mix');
@@ -62,7 +86,17 @@ var ACH_GEMS = [];
 
 // ── 実績定義 ──
 function getAchievements() {
-  return {};
+  return {
+    badge: BADGES.map(function(badge) {
+      return {
+        ico: badge.ico,
+        name: badge.name,
+        meta: badge.cond,
+        unlocked: !!badgeData[badge.id],
+        unlockText: badge.unlockText || badge.name.replace(/\n/g, ' ')
+      };
+    })
+  };
 }
 
 // ======================================================
@@ -73,27 +107,33 @@ var badgeData = storageLoadJSON(LS_BADGE, {});
 // 制覇バッジ定義（6個）
 // 条件: 全問正解 + 全問平均3秒以内（=合計ms / 問題数 <= 3000）
 var BADGES = [
-  { id:'easy_20',  ico:'🟢', name:'かんたん20もん せいはバッジ',
+  { id:'easy_20',  ico:'🟢', name:'かんたん\n20もん 制覇！',
+    unlockText:'かんたん２０もん　せいはバッジ',
     cond:'かんたん 20もん\nぜんもん3びょう以内',
     img:'./img/badge_easy20.png',
     level:'easy', course:'20' },
-  { id:'easy_all', ico:'🌿', name:'かんたんぜんぶ せいはバッジ',
+  { id:'easy_all', ico:'🌿', name:'かんたん\nぜんぶ 制覇！',
+    unlockText:'かんたんぜんぶ　せいはバッジ',
     cond:'かんたん ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_easy_all.png',
     level:'easy', course:'all' },
-  { id:'hard_20',  ico:'💜', name:'むずかしい20もん せいはバッジ',
+  { id:'hard_20',  ico:'💜', name:'むずかしい\n20もん 制覇！',
+    unlockText:'むずかしい２０もん　せいはバッジ',
     cond:'むずかしい 20もん\nぜんもん3びょう以内',
     img:'./img/badge_hard20.png',
     level:'hard', course:'20' },
-  { id:'hard_all', ico:'⭐', name:'むずかしいぜんぶ せいはバッジ',
+  { id:'hard_all', ico:'⭐', name:'むずかしい\nぜんぶ 制覇！',
+    unlockText:'むずかしいぜんぶ　せいはバッジ',
     cond:'むずかしい ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_hard_all.png',
     level:'hard', course:'all' },
-  { id:'mix_20',   ico:'🎲', name:'ばらばら20もん せいはバッジ',
+  { id:'mix_20',   ico:'🎲', name:'ばらばら\n20もん 制覇！',
+    unlockText:'ばらばら２０もん　せいはバッジ',
     cond:'ばらばら 20もん\nぜんもん3びょう以内',
     img:'./img/badge_mix20.png',
     level:'mix', course:'20' },
-  { id:'mix_all',  ico:'👑', name:'ばらばらぜんぶ せいはバッジ',
+  { id:'mix_all',  ico:'👑', name:'ばらばら\nぜんぶ 制覇！',
+    unlockText:'ばらばらぜんぶ　せいはバッジ',
     cond:'ばらばら ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_mix_all.png',
     level:'mix', course:'all' },
