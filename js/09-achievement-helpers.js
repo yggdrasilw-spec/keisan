@@ -25,11 +25,17 @@ function getUnlockedGemCount() {
   return cnt;
 }
 
+function getUnlockedBadgeCount() {
+  var cnt = 0;
+  for (var i = 0; i < BADGES.length; i++) {
+    if (badgeData[BADGES[i].id]) cnt++;
+  }
+  return cnt;
+}
+
 function getUnlockedAchievementCount() {
-  var ach = getAchievements();
-  var badgeOn = ach.badge.filter(function(i){ return i.unlocked; }).length;
   return {
-    totalOn: getUnlockedGemCount() + badgeOn,
-    totalAll: ACH_GEMS.length + ach.badge.length
+    totalOn: getUnlockedGemCount() + getUnlockedBadgeCount(),
+    totalAll: ACH_GEMS.length + BADGES.length
   };
 }

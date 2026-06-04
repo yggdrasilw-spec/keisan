@@ -9,6 +9,11 @@ var _currentAnsTab = null; // btn / calc / hw
 
 function setAnsTab(mode) {
   _currentAnsTab = mode;
+  var answerModeMap = { btn:'random', calc:'calc', hw:'hw' };
+  var mappedMode = answerModeMap[mode] || 'random';
+  if (typeof setAnswerMode === 'function' && answerMode !== mappedMode) {
+    setAnswerMode(mappedMode);
+  }
   // タブUI
   ['btn','calc','hw'].forEach(function(m) {
     var el=document.getElementById('atab-'+m);

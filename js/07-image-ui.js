@@ -66,7 +66,7 @@ function resetImg(key) {
   syncImageSettingsUI();
   if (key === 'master') {
     var mImg = document.getElementById('master-popup-img');
-    if (mImg) mImg.src = IMG_B64_DEFAULT.master;
+    if (mImg) mImg.src = imgSrc('master');
   }
 }
 

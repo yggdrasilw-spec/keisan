@@ -24,22 +24,26 @@ var ACH_GEM_NAMES = {
   18: '金緑石（アレキサンドライト）'
 };
 
+function toFullWidthDigits(n) {
+  return String(n).replace(/[0-9]/g, function(ch) {
+    return '０１２３４５６７８９'.charAt(parseInt(ch, 10));
+  });
+}
+
 function getGemUnlockNameByIndex(idx) {
   return ACH_GEM_NAMES[idx] || ('宝石' + idx);
 }
 
-function showGemUnlockEffect(gemImg, masterLabel, gemIdx, onDone) {
-  if (typeof gemIdx === 'function') {
-    onDone = gemIdx;
-    gemIdx = 0;
-  }
+function getGemUnlockTextByIndex(idx) {
+  return toFullWidthDigits(idx) + 'をたすマスター！' + getGemUnlockNameByIndex(idx);
+}
+
+function showGemUnlockEffect(gemImg, gemName, onDone) {
   if (typeof getFx === 'function' && !getFx('fx_perfect')) {
     if (onDone) onDone();
     return;
   }
 
-  var gemName = getGemUnlockNameByIndex(gemIdx || 0);
-  var masterText = masterLabel ? String(masterLabel).replace(/\s+/g, '') : '';
   var parts = buildAchievementOverlay();
   parts.card.style.maxWidth = 'min(90vw, 620px)';
   parts.card.style.padding = '24px 24px 18px';
@@ -53,7 +57,7 @@ function showGemUnlockEffect(gemImg, masterLabel, gemIdx, onDone) {
 
   var title = document.createElement('div');
   title.className = 'gem-burst-title';
-  title.textContent = (masterText ? masterText + '！' : '') + gemName + 'ゲット！！';
+  title.textContent = gemName + 'ゲット！！';
   parts.card.appendChild(title);
 
   document.body.appendChild(parts.overlay);

@@ -1,9 +1,8 @@
+var _achTabsBound = false;
 // 09-achievement-collections.js
 // ======================================================
 // じっせきの 一覧表示（実績 / バッジ / タブ）
 // ======================================================
-
-var _achTabsBound = false;
 
 function makeAchItem(ico, name, meta, unlocked, gemImg) {
   var div = document.createElement('div');
@@ -32,32 +31,67 @@ function makeAchItem(ico, name, meta, unlocked, gemImg) {
   return div;
 }
 
+function makeGemCard(gem, on) {
+  var item = document.createElement('div');
+  item.className = 'ach-gem-card ' + (on ? 'unlocked' : 'locked');
+
+  var icoDiv = document.createElement('div');
+  icoDiv.className = 'ach-gem-card-ico' + (gem.img && !on ? ' locked-gem' : '');
+  if (gem.img) {
+    var img = document.createElement('img');
+    img.src = gem.img;
+    img.alt = gem.label;
+    img.onerror = function(){ this.style.display='none'; this.parentNode.textContent = on ? '💎' : '🔒'; };
+    if (!on) { img.style.opacity='0.2'; img.style.filter='grayscale(1)'; }
+    icoDiv.appendChild(img);
+  } else {
+    icoDiv.textContent = '💎';
+  }
+  item.appendChild(icoDiv);
+
+  var name = document.createElement('div');
+  name.className = 'ach-gem-card-name';
+  name.textContent = gem.label.replace(/\n/g, ' ');
+  item.appendChild(name);
+
+  var meta = document.createElement('div');
+  meta.className = 'ach-gem-card-meta';
+  meta.textContent = (gem.id === 'all_master')
+    ? '18こ ぜんぶの ほうせきを てにいれた！'
+    : gem.label.replace(/\n/g, ' ').replace('マスター', '').replace(/（.*?）/g, '').trim() + ' をぜんぶマスター';
+  item.appendChild(meta);
+
+  var pill = document.createElement('div');
+  pill.className = 'ach-gem-card-pill ' + (on ? 'unlocked' : 'locked');
+  pill.textContent = on ? '解除済み' : '未解除';
+  item.appendChild(pill);
+
+  if (on && typeof showGemUnlockEffect === 'function' && typeof getGemUnlockTextByIndex === 'function') {
+    item.style.cursor = 'pointer';
+    item.title = 'タップで ひょうじ';
+    item.addEventListener('click', function() {
+      showGemUnlockEffect(gem.img, getGemUnlockTextByIndex(gem.idx || 0), null);
+    });
+  }
+  return item;
+}
+
 function renderAchList() {
   var gemEl = document.getElementById('ach-group-gem');
   if (gemEl) {
     gemEl.innerHTML = '';
+    var grid = document.createElement('div');
+    grid.className = 'ach-gem-grid';
     for (var i = 0; i < ACH_GEMS.length; i++) {
       var gem = ACH_GEMS[i];
       var on = false;
       try { on = gem.check(); } catch (e) {}
-      var title = gem.label.split('\n').join(' ');
-      var meta = (gem.id === 'all_master')
-        ? '18こ ぜんぶの ほうせきを てにいれた！'
-        : gem.label.split('\n').join(' ').replace('マスター', '').replace(/（.*?）/g, '').trim() + ' をぜんぶマスター';
-      var item = makeAchItem('💎', title, meta, on, gem.img);
-      if (on && typeof showGemUnlockEffect === 'function') {
-        item.style.cursor = 'pointer';
-        item.title = 'タップで ひょうじ';
-        (function(g) {
-          item.addEventListener('click', function() {
-            showGemUnlockEffect(g.img, g.unlockText || g.name, g.idx || 0, null);
-          });
-        })(gem);
-      }
-      gemEl.appendChild(item);
+      grid.appendChild(makeGemCard(gem, on));
     }
+    gemEl.appendChild(grid);
   }
 
+  renderAchBadges();
 }
 
 function achInitTabs() {
@@ -78,5 +112,4 @@ function achInitTabs() {
 
 function renderAchievementCollections() {
   renderAchList();
-  renderAchBadges();
 }

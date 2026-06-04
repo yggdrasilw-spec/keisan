@@ -7,9 +7,9 @@ var IMG_LABELS = { seikai:'🎉 せいかい！', fuseikai:'😢 ふせいかい
 
 // デフォルト画像（HTMLに埋め込み済みBase64）
 var IMG_B64_DEFAULT = {
-  seikai:   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  fuseikai: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  master:   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+  seikai:  './img/seikai.png',
+  fuseikai:'./img/fuseikai.png',
+  master:  './img/master.png'
 };
 
 // カスタム画像キャッシュ（localStorage）

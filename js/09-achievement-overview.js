@@ -38,11 +38,10 @@ function getAchNextStageByGemCount(gemUnlocked) {
 }
 
 function getAchUnlockedCountSummary(gemUnlocked) {
-  var ach = getAchievements();
-  var badgeOn = ach.badge.filter(function(i){return i.unlocked;}).length;
+  var badgeOn = getUnlockedBadgeCount();
   return {
     totalOn: typeof gemUnlocked === 'number' ? gemUnlocked + badgeOn : getUnlockedAchievementCount().totalOn,
-    totalAll: ACH_GEMS.length + ach.badge.length
+    totalAll: ACH_GEMS.length + BADGES.length
   };
 }
 

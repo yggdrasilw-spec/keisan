@@ -32,7 +32,7 @@ function showBadgeUnlockEffect(badge, onDone) {
 
   var title = document.createElement('div');
   title.className = 'gem-burst-title';
-  title.textContent = (badge.unlockText || badge.name.replace(/\n/g, ' ')) + 'ゲット！';
+  title.textContent = badge.unlockTitle ? (badge.unlockTitle + 'ゲット！') : '🏅 せいはバッジゲット！';
   parts.card.appendChild(title);
 
   var sub = document.createElement('div');
