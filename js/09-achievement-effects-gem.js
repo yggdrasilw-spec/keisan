@@ -35,7 +35,7 @@ function getGemUnlockNameByIndex(idx) {
 }
 
 function getGemUnlockTextByIndex(idx) {
-  return toFullWidthDigits(idx) + 'をたすマスター！\n' + getGemUnlockNameByIndex(idx) + 'ゲット！';
+  return toFullWidthDigits(idx) + 'をたすマスター！' + getGemUnlockNameByIndex(idx);
 }
 
 function showGemUnlockEffect(gemImg, gemName, onDone) {
@@ -45,8 +45,18 @@ function showGemUnlockEffect(gemImg, gemName, onDone) {
   }
 
   var parts = buildAchievementOverlay();
-  parts.card.style.maxWidth = 'min(92vw, 760px)';
-  parts.card.style.padding = '28px 34px 24px';
+  var closed = false;
+  function closeEffect() {
+    if (closed) return;
+    closed = true;
+    if (parts.overlay && parts.overlay.parentNode) parts.overlay.parentNode.removeChild(parts.overlay);
+    if (onDone) onDone();
+  }
+  parts.overlay.addEventListener('click', closeEffect);
+  parts.card.addEventListener('click', closeEffect);
+
+  parts.card.style.maxWidth = 'min(92vw, 720px)';
+  parts.card.style.padding = '30px 40px';
 
   var img = document.createElement('img');
   img.className = 'gem-burst-img';
@@ -55,37 +65,14 @@ function showGemUnlockEffect(gemImg, gemName, onDone) {
   img.onerror = function(){ this.style.display='none'; };
   parts.card.appendChild(img);
 
-  var titleWrap = document.createElement('div');
-  titleWrap.className = 'gem-burst-title';
-  titleWrap.style.display = 'flex';
-  titleWrap.style.flexDirection = 'column';
-  titleWrap.style.alignItems = 'center';
-  titleWrap.style.gap = '4px';
-  titleWrap.style.textAlign = 'center';
-  titleWrap.style.width = '100%';
-
-  var lines = String(gemName || '').split(/\n+/);
-  var mainLine = document.createElement('div');
-  mainLine.className = 'gem-burst-title-main';
-  mainLine.textContent = lines[0] || '';
-  titleWrap.appendChild(mainLine);
-
-  if (lines.length > 1) {
-    var subLine = document.createElement('div');
-    subLine.className = 'gem-burst-title-sub';
-    subLine.textContent = lines.slice(1).join(' ');
-    titleWrap.appendChild(subLine);
-  }
-  parts.card.appendChild(titleWrap);
+  var title = document.createElement('div');
+  title.className = 'gem-burst-title';
+  title.textContent = gemName + String.fromCharCode(10) + 'ゲット！！';
+  parts.card.appendChild(title);
 
   document.body.appendChild(parts.overlay);
 
   try {
     playAchievementTone([[0,880],[0.12,1100],[0.24,1320],[0.36,1760]],0.18,0.18);
   } catch (e) {}
-
-  setTimeout(function(){
-    if (parts.overlay && parts.overlay.parentNode) parts.overlay.parentNode.removeChild(parts.overlay);
-    if (onDone) onDone();
-  }, 1900);
 }
