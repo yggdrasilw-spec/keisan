@@ -58,15 +58,22 @@
     flex: 1;
     min-height: 0;
     min-width: 0;
-    overflow-y: auto;
+    overflow: hidden;
     padding: 12px 14px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,.12) transparent;
   }
   .ach-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
+  }
+  .ach-group[data-tab='gem'] {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    align-content: start;
+  }
+  .ach-group[data-tab='badge'] {
+    display: block;
   }
   /* 実績アイテム */
   .ach-item {
@@ -84,6 +91,37 @@
     border-color: rgba(93,211,140,.20);
   }
   .ach-item.unlocked:hover { background: rgba(93,211,140,.10); }
+  .ach-group[data-tab='gem'] .ach-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 10px 9px;
+    min-height: 108px;
+  }
+  .ach-group[data-tab='gem'] .ach-ico {
+    font-size: 20px;
+    width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .ach-group[data-tab='gem'] .ach-ico img {
+    width: 30px;
+    height: 30px;
+  }
+  .ach-group[data-tab='gem'] .ach-info {
+    width: 100%;
+  }
+  .ach-group[data-tab='gem'] .ach-name {
+    font-size: 12px;
+    line-height: 1.15;
+  }
+  .ach-group[data-tab='gem'] .ach-meta {
+    font-size: 10px;
+    line-height: 1.25;
+  }
+  .ach-group[data-tab='gem'] .ach-pill {
+    align-self: flex-end;
+  }
   .ach-ico {
     font-size: 22px;
     width: 36px;
@@ -159,6 +197,21 @@
     .ach-rank-desc, .ach-gem-title, .ach-gems { display: none; }
     .ach-progress-wrap { display: none; }
     .ach-back { display: none; }
+    .ach-group[data-tab='gem'] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .ach-group[data-tab='gem'] .ach-item {
+      min-height: 96px;
+      padding: 9px 8px 8px;
+    }
+    .ach-badge-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .ach-badge-item {
+      min-height: 96px;
+    }
   }
 
   /* じっせきボタン（トップページ） */
@@ -212,13 +265,14 @@
   /* 制覇バッジ */
   .ach-badge-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
     padding: 4px 0;
   }
   .ach-badge-item {
     border-radius: 14px;
     padding: 10px 8px;
+    min-height: 102px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -247,7 +301,7 @@
     font-size: 10px;
     font-weight: 800;
     color: #e2e8f0;
-    line-height: 1.3;
+    line-height: 1.25;
   }
   .ach-badge-item.locked .ach-badge-name { color: #475569; }
   .ach-badge-cond {
