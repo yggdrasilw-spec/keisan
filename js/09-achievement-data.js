@@ -3,30 +3,29 @@
 // じっせき（実績）データ
 // ======================================================
 
-// ── アバター段階定義（PNG: ninja_1.png〜ninja_4.png）──
+// ── アバター段階定義（PNG: img/ninja_1.png〜img/ninja_4.png）──
 var ACH_STAGES = [
-  { min:0,  img:'./ninja_1.png', lv:'Lv.1', name:'みならい忍者',
+  { min:0,  img:'./img/ninja_1.png', lv:'Lv.1', name:'みならい忍者',
     desc:'まずは「1をたす」をきわめるところから。',   halo:'rgba(103,183,255,.20)' },
-  { min:5,  img:'./ninja_2.png', lv:'Lv.2', name:'てがた忍者',
+  { min:5,  img:'./img/ninja_2.png', lv:'Lv.2', name:'てがた忍者',
     desc:'手裏剣がさえてきた。修行の成果が出ている。', halo:'rgba(93,211,140,.22)' },
-  { min:12, img:'./ninja_3.png', lv:'Lv.3', name:'かみなり忍者',
+  { min:12, img:'./img/ninja_3.png', lv:'Lv.3', name:'かみなり忍者',
     desc:'雷のオーラで、かなりの達人感。',            halo:'rgba(245,200,76,.25)' },
-  { min:20, img:'./ninja_4.png', lv:'Lv.4', name:'でんせつの忍者',
+  { min:20, img:'./img/ninja_4.png', lv:'Lv.4', name:'でんせつの忍者',
     desc:'すべてを極めた、最終形態。',                halo:'rgba(255,120,200,.22)' },
 ];
 
 // ── 宝石定義（18個: くりあがりなし 1〜9, くりあがりあり 2〜9 + ぜんぶマスター）──
-// gem_1.png〜gem_18.png, または gem_no1.png / gem_carry2.png 等
+// img/gem_1.png〜img/gem_18.png, または img/gem_no1.png / img/gem_carry2.png 等
 // ファイル名規則: gem_no1〜gem_no9（なし1〜9）, gem_c2〜gem_c9（くりあがり2〜9）
-// ここでは gem_1.png〜gem_18.png のシンプルな連番で対応
+// ここでは img/gem_1.png〜img/gem_18.png のシンプルな連番で対応
 var ACH_GEMS = [];
 (function() {
   for (var n = 1; n <= 9; n++) {
     ACH_GEMS.push({
       id: 'no_' + n,
       label: n + 'をたす マスター',
-      img: './gem_' + n + '.png',
-      idx: n,
+      img: './img/gem_' + n + '.png',
       check: function(nn) {
         return function() {
           return isAllMasterForProblemSet(buildKP_for_no(nn), 'n' + nn + ':');
@@ -38,8 +37,7 @@ var ACH_GEMS = [];
     ACH_GEMS.push({
       id: 'carry_' + n2,
       label: n2 + 'をたす マスター(くりあがり)',
-      img: './gem_' + (n2 + 9) + '.png',
-      idx: (n2 + 9),
+      img: './img/gem_' + (n2 + 9) + '.png',
       check: function(nn) {
         return function() {
           return isAllMasterForProblemSet(buildKP_for_carry(nn), 'k' + nn + ':');
@@ -50,8 +48,7 @@ var ACH_GEMS = [];
   ACH_GEMS.push({
     id: 'all_master',
     label: 'ぜんぶマスター',
-    img: './gem_18.png',
-    idx: 18,
+    img: './img/gem_18.png',
     check: function() {
       return isAllMasterForLevel('mix');
     }
@@ -104,27 +101,27 @@ var badgeData = storageLoadJSON(LS_BADGE, {});
 var BADGES = [
   { id:'easy_20',  ico:'🟢', name:'かんたん\n20もん 制覇！',
     cond:'かんたん 20もん\nぜんもん3びょう以内',
-    img:'./badge_easy20.png',
+    img:'./img/badge_easy20.png',
     level:'easy', course:'20' },
   { id:'easy_all', ico:'🌿', name:'かんたん\nぜんぶ 制覇！',
     cond:'かんたん ぜんもん\nぜんもん3びょう以内',
-    img:'./badge_easy_all.png',
+    img:'./img/badge_easy_all.png',
     level:'easy', course:'all' },
   { id:'hard_20',  ico:'💜', name:'むずかしい\n20もん 制覇！',
     cond:'むずかしい 20もん\nぜんもん3びょう以内',
-    img:'./badge_hard20.png',
+    img:'./img/badge_hard20.png',
     level:'hard', course:'20' },
   { id:'hard_all', ico:'⭐', name:'むずかしい\nぜんぶ 制覇！',
     cond:'むずかしい ぜんもん\nぜんもん3びょう以内',
-    img:'./badge_hard_all.png',
+    img:'./img/badge_hard_all.png',
     level:'hard', course:'all' },
   { id:'mix_20',   ico:'🎲', name:'ばらばら\n20もん 制覇！',
     cond:'ばらばら 20もん\nぜんもん3びょう以内',
-    img:'./badge_mix20.png',
+    img:'./img/badge_mix20.png',
     level:'mix', course:'20' },
   { id:'mix_all',  ico:'👑', name:'ばらばら\nぜんぶ 制覇！',
     cond:'ばらばら ぜんもん\nぜんもん3びょう以内',
-    img:'./badge_mix_all.png',
+    img:'./img/badge_mix_all.png',
     level:'mix', course:'all' },
 ];
 

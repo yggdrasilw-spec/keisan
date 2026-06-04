@@ -17,32 +17,13 @@ function collectFinishUnlockRewards() {
     if (allMaster && !badgeData['gem_' + mode + '_' + nn]) {
       badgeData['gem_' + mode + '_' + nn] = 1;
       saveBadgeData();
-      newGems.push({
-        img: './gem_' + gemIdx + '.png',
-        name: (typeof getGemUnlockNameByIndex === 'function')
-          ? getGemUnlockNameByIndex(gemIdx)
-          : (nn + 'をたす マスター')
-      });
+      newGems.push({ img: './img/gem_' + gemIdx + '.png', name: nn + 'をたす マスター' });
     }
   }
 
   var newBadge = null;
   if (sessMode === 'normal' && (curCourse === '20' || curCourse === 'all')) {
-    if (typeof checkAndAwardBadge === 'function') {
-      newBadge = checkAndAwardBadge(curLevel, curCourse, sess.results);
-    } else if (typeof BADGES !== 'undefined' && BADGES && badgeData) {
-      var allOk = sess.results && sess.results.every(function(r){ return r.ok; });
-      var allFast = sess.results && sess.results.every(function(r){ return r.el <= 3000; });
-      if (allOk && allFast) {
-        var id = curLevel + '_' + curCourse;
-        var badge = BADGES.find(function(b){ return b.id === id; });
-        if (badge && !badgeData[id]) {
-          badgeData[id] = { date: new Date().toLocaleDateString('ja-JP') };
-          saveBadgeData();
-          newBadge = badge;
-        }
-      }
-    }
+    newBadge = checkAndAwardBadge(curLevel, curCourse, sess.results);
   }
 
   return { gems: newGems, badge: newBadge };
