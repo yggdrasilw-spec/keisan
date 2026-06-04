@@ -121,7 +121,116 @@ function scheduleInitialScreenNormalize() {
   }
 }
 
+
+var __startupOverlayBound = false;
+var __startupOverlayStarting = false;
+var __startupOverlayCleanup = null;
+
+function __hideStartupOverlayNow(overlay) {
+  if (!overlay) return;
+  overlay.classList.add('hidden');
+  overlay.style.pointerEvents = 'none';
+  setTimeout(function() {
+    overlay.style.display = 'none';
+  }, 220);
+}
+
+function __playStartupSound() {
+  try {
+    var audio = document.getElementById('startup-kiru-audio');
+    if (audio) {
+      try { audio.pause(); } catch (e) {}
+      try { audio.currentTime = 0; } catch (e) {}
+      var p = audio.play();
+      if (p && typeof p.catch === 'function') p.catch(function(){});
+      return;
+    }
+  } catch (e) {}
+  if (typeof playFileSound === 'function') {
+    try { playFileSound('./sound/kiru.mp3'); } catch (e) {}
+  }
+}
+
+function initStartupOverlay() {
+  var overlay = document.getElementById('startup-overlay');
+  var stage = document.getElementById('startup-stage');
+  if (!overlay || __startupOverlayBound) return;
+  __startupOverlayBound = true;
+
+  var cleanup = function() {
+    if (__startupOverlayCleanup) {
+      __startupOverlayCleanup();
+      __startupOverlayCleanup = null;
+    }
+  };
+
+  var start = function(ev) {
+    if (__startupOverlayStarting) return;
+    __startupOverlayStarting = true;
+
+    if (ev) {
+      if (typeof ev.preventDefault === 'function') ev.preventDefault();
+      if (typeof ev.stopPropagation === 'function') ev.stopPropagation();
+    }
+
+    cleanup();
+    __playStartupSound();
+    __hideStartupOverlayNow(overlay);
+
+    setTimeout(function() {
+      if (document.body) document.body.classList.remove('booting');
+      if (typeof show === 'function') {
+        try { show('home'); } catch (e) {}
+      } else if (typeof setCurrentScreen === 'function') {
+        setCurrentScreen('home');
+      }
+      if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
+      __startupOverlayStarting = false;
+    }, 160);
+  };
+
+  var opts = { passive: false, capture: true };
+  var events = ['pointerdown', 'touchstart', 'mousedown', 'click', 'keydown'];
+  var bound = [];
+  var handler = function(ev) {
+    if (ev && ev.type === 'keydown') {
+      var key = ev.key || ev.code || '';
+      if (key !== 'Enter' && key !== ' ' && key !== 'Spacebar') return;
+    }
+    start(ev);
+  };
+
+  for (var i = 0; i < events.length; i++) {
+    overlay.addEventListener(events[i], handler, opts);
+    bound.push([overlay, events[i], handler, opts]);
+  }
+  if (stage && stage !== overlay) {
+    for (var j = 0; j < events.length; j++) {
+      stage.addEventListener(events[j], handler, opts);
+      bound.push([stage, events[j], handler, opts]);
+    }
+  }
+  if (document && document.body) {
+    for (var k = 0; k < events.length; k++) {
+      document.body.addEventListener(events[k], handler, opts);
+      bound.push([document.body, events[k], handler, opts]);
+    }
+  }
+
+  __startupOverlayCleanup = function() {
+    for (var x = 0; x < bound.length; x++) {
+      try {
+        bound[x][0].removeEventListener(bound[x][1], bound[x][2], bound[x][3]);
+      } catch (e) {}
+    }
+    bound = [];
+  };
+}
+
 function initApp() {
+
   // 画像カスタムを先に読み込む
   imgCustomLoad();
 
@@ -155,6 +264,7 @@ function initApp() {
   if (typeof syncHistoryTabButtons === 'function') syncHistoryTabButtons();
   setAnswerMode(answerMode);
   resetTransientUi();
+  initStartupOverlay();
   scheduleInitialScreenNormalize();
 
   // ボタン演出は設定に応じて後から有効化
