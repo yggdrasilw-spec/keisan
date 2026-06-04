@@ -20,6 +20,15 @@ function buildAchBadgeItemEl(badge) {
   var on = !!badgeData[badge.id];
   var item = document.createElement('div');
   item.className = 'ach-badge-item ' + (on ? 'unlocked' : 'locked');
+  if (on) {
+    item.style.cursor = 'pointer';
+    item.title = 'タップで ひょうじ';
+    item.addEventListener('click', function() {
+      if (typeof showBadgeUnlockEffect === 'function') {
+        showBadgeUnlockEffect(badge, null);
+      }
+    });
+  }
   item.appendChild(buildAchBadgeIconEl(badge, on));
 
   var name = document.createElement('div');
@@ -33,14 +42,6 @@ function buildAchBadgeItemEl(badge) {
     ? '🗓 ' + (badgeData[badge.id].date || '')
     : badge.cond.replace(/\n/g, ' ');
   item.appendChild(cond);
-
-  if (on && typeof showBadgeUnlockEffect === 'function') {
-    item.style.cursor = 'pointer';
-    item.title = 'タップで ひょうじ';
-    item.addEventListener('click', function() {
-      showBadgeUnlockEffect(badge, null);
-    });
-  }
 
   return item;
 }
