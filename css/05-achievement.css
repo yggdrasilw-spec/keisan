@@ -340,21 +340,23 @@
   .gem-burst-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 9800;
+    z-index: 10020;
     display: flex;
     align-items: center;
     justify-content: center;
     pointer-events: auto;
-    background: rgba(0,0,0,0);
-    animation: gemOverlayFade 1.8s ease forwards;
+    background: transparent;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
   }
-  @keyframes gemOverlayFade {
-    0% { background: rgba(0,0,0,0); }
-    12% { background: rgba(0,0,0,.45); }
-    88% { background: rgba(0,0,0,.45); }
-    100% { background: rgba(0,0,0,0); }
+  .gem-burst-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.45);
   }
   .gem-burst-card {
+    position: relative;
+    z-index: 1;
     background: linear-gradient(135deg, #1a2540, #0f172a);
     border: 2px solid rgba(245,200,76,.40);
     border-radius: 24px;
