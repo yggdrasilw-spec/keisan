@@ -4,6 +4,27 @@ var _achTabsBound = false;
 // じっせきの 一覧表示（実績 / バッジ / タブ）
 // ======================================================
 
+function getAchActiveTab() {
+  var active = document.querySelector('.ach-tab.active');
+  return active && active.dataset ? active.dataset.tab : 'gem';
+}
+
+function setAchTabView(target) {
+  var next = target || 'gem';
+  var groups = document.querySelectorAll('.ach-group');
+  for (var i = 0; i < groups.length; i++) {
+    var g = groups[i];
+    g.style.display = (g.dataset && g.dataset.tab === next) ? '' : 'none';
+  }
+
+  var tabs = document.querySelectorAll('.ach-tab');
+  for (var j = 0; j < tabs.length; j++) {
+    var tab = tabs[j];
+    if (tab.dataset && tab.dataset.tab === next) tab.classList.add('active');
+    else tab.classList.remove('active');
+  }
+}
+
 function makeAchItem(ico, name, meta, unlocked, gemImg) {
   var div = document.createElement('div');
   div.className = 'ach-item ' + (unlocked ? 'unlocked' : 'locked');
@@ -95,21 +116,34 @@ function renderAchList() {
 }
 
 function achInitTabs() {
-  if (_achTabsBound) return;
+  if (_achTabsBound) {
+    setAchTabView(getAchActiveTab());
+    return;
+  }
   _achTabsBound = true;
-  var tabs = document.querySelectorAll('.ach-tab');
-  tabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      tabs.forEach(function(t){ t.classList.remove('active'); });
-      tab.classList.add('active');
-      var target = tab.dataset.tab;
-      document.querySelectorAll('.ach-group').forEach(function(g) {
-        g.style.display = g.dataset.tab === target ? '' : 'none';
-      });
+
+  var tabsWrap = document.getElementById('ach-tabs');
+  if (tabsWrap) {
+    tabsWrap.addEventListener('click', function(evt) {
+      var tab = evt.target && evt.target.closest ? evt.target.closest('.ach-tab') : null;
+      if (!tab || !tab.dataset) return;
+      setAchTabView(tab.dataset.tab);
     });
-  });
+  } else {
+    var tabs = document.querySelectorAll('.ach-tab');
+    for (var i = 0; i < tabs.length; i++) {
+      (function(tab) {
+        tab.addEventListener('click', function() {
+          if (tab && tab.dataset) setAchTabView(tab.dataset.tab);
+        });
+      })(tabs[i]);
+    }
+  }
+
+  setAchTabView(getAchActiveTab());
 }
 
 function renderAchievementCollections() {
   renderAchList();
+  achInitTabs();
 }
