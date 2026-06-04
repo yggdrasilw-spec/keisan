@@ -11,6 +11,90 @@
 .sc.on{display:block;}
 </style>
 
+
+<style>
+body.booting {
+  background: #000;
+  overflow: hidden;
+}
+body.booting #app {
+  opacity: 0;
+  pointer-events: none;
+}
+#app {
+  opacity: 1;
+  transition: opacity .32s ease;
+}
+#startup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,255,255,.08), transparent 26%),
+    linear-gradient(180deg, rgba(0,0,0,.98), rgba(0,0,0,.94));
+  opacity: 1;
+  transition: opacity .28s ease;
+}
+#startup-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.startup-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255,255,255,.12), transparent 28%),
+    radial-gradient(circle at 50% 60%, rgba(245,166,35,.08), transparent 34%);
+}
+.startup-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.startup-title-img {
+  width: min(90vw, 820px);
+  max-height: 68vh;
+  object-fit: contain;
+  opacity: 0;
+  transform: translateY(10px) scale(.985);
+  animation: startupTitleIn .95s ease .16s forwards;
+  filter: drop-shadow(0 0 26px rgba(255,255,255,.12)) drop-shadow(0 0 18px rgba(245,166,35,.12));
+}
+@keyframes startupTitleIn {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.startup-tip {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,.9);
+  font-size: clamp(13px, 3vw, 18px);
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-shadow: 0 2px 8px rgba(0,0,0,.6);
+  opacity: .85;
+  animation: startupTipPulse 1.8s ease-in-out infinite;
+}
+@keyframes startupTipPulse {
+  0%,100% { opacity: .55; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 1; transform: translateX(-50%) translateY(-3px); }
+}
+</style>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
@@ -23,7 +107,16 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 </head>
-<body>
+<body class="booting">
+
+<div id="startup-overlay" aria-hidden="true">
+  <div class="startup-backdrop"></div>
+  <button type="button" id="startup-stage" class="startup-stage" aria-label="タップしてはじめる">
+    <img src="./img/title.png" alt="たしざん にんじゃ" class="startup-title-img" onerror="this.style.display='none'">
+    <div class="startup-tip">タップして はじめる</div>
+  </button>
+</div>
+
 <div id="app">
 
 <!-- ══════════════════════════════════════════
