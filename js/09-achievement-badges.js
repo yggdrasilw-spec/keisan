@@ -34,6 +34,14 @@ function buildAchBadgeItemEl(badge) {
     : badge.cond.replace(/\n/g, ' ');
   item.appendChild(cond);
 
+  if (on && typeof showBadgeUnlockEffect === 'function') {
+    item.style.cursor = 'pointer';
+    item.title = 'タップで ひょうじ';
+    item.addEventListener('click', function() {
+      showBadgeUnlockEffect(badge, null);
+    });
+  }
+
   return item;
 }
 
