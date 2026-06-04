@@ -32,12 +32,12 @@ function showBadgeUnlockEffect(badge, onDone) {
 
   var title = document.createElement('div');
   title.className = 'gem-burst-title';
-  title.textContent = '🏅 制覇バッジ ゲット！';
+  title.textContent = badge.name + 'ゲット！';
   parts.card.appendChild(title);
 
   var sub = document.createElement('div');
   sub.className = 'gem-burst-sub';
-  sub.textContent = badge.name.replace(/\n/g, ' ');
+  sub.textContent = badge.cond.replace(/\n/g, ' ');
   parts.card.appendChild(sub);
 
   document.body.appendChild(parts.overlay);

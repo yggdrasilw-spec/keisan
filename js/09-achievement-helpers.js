@@ -1,4 +1,3 @@
-
 // 09-achievement-helpers.js
 // ======================================================
 // じっせきの 共通判定ヘルパー
@@ -26,19 +25,16 @@ function getUnlockedGemCount() {
   return cnt;
 }
 
-function getUnlockedBadgeCount() {
-  var cnt = 0;
-  for (var i = 0; i < BADGES.length; i++) {
-    if (badgeData && badgeData[BADGES[i].id]) cnt++;
-  }
-  return cnt;
-}
-
 function getUnlockedAchievementCount() {
   var gemOn = getUnlockedGemCount();
-  var badgeOn = getUnlockedBadgeCount();
+  var badgeOn = 0;
+  if (typeof BADGES !== 'undefined' && Array.isArray(BADGES)) {
+    for (var i = 0; i < BADGES.length; i++) {
+      if (badgeData && badgeData[BADGES[i].id]) badgeOn++;
+    }
+  }
   return {
     totalOn: gemOn + badgeOn,
-    totalAll: ACH_GEMS.length + BADGES.length
+    totalAll: ACH_GEMS.length + (typeof BADGES !== 'undefined' && Array.isArray(BADGES) ? BADGES.length : 0)
   };
 }

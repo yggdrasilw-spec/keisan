@@ -24,8 +24,37 @@ var ACH_GEM_NAMES = {
   18: '金緑石（アレキサンドライト）'
 };
 
+var ACH_GEM_PREFIXES = {
+  1: '1をたすマスター',
+  2: '2をたすマスター',
+  3: '3をたすマスター',
+  4: '4をたすマスター',
+  5: '5をたすマスター',
+  6: '6をたすマスター',
+  7: '7をたすマスター',
+  8: '8をたすマスター',
+  9: '9をたすマスター',
+  10: '2をたすマスター(くりあがり)',
+  11: '3をたすマスター(くりあがり)',
+  12: '4をたすマスター(くりあがり)',
+  13: '5をたすマスター(くりあがり)',
+  14: '6をたすマスター(くりあがり)',
+  15: '7をたすマスター(くりあがり)',
+  16: '8をたすマスター(くりあがり)',
+  17: '9をたすマスター(くりあがり)',
+  18: 'ぜんぶマスター'
+};
+
 function getGemUnlockNameByIndex(idx) {
   return ACH_GEM_NAMES[idx] || ('宝石' + idx);
+}
+
+function getGemUnlockPrefixByIndex(idx) {
+  return ACH_GEM_PREFIXES[idx] || ('宝石' + idx);
+}
+
+function getGemUnlockDisplayNameByIndex(idx) {
+  return getGemUnlockPrefixByIndex(idx) + '！' + getGemUnlockNameByIndex(idx);
 }
 
 function showGemUnlockEffect(gemImg, gemName, onDone) {

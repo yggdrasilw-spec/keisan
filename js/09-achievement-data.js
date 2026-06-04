@@ -23,8 +23,9 @@ var ACH_GEMS = [];
 (function() {
   for (var n = 1; n <= 9; n++) {
     ACH_GEMS.push({
+      idx: n,
       id: 'no_' + n,
-      label: n + 'をたす マスター',
+      label: n + 'をたすマスター',
       img: './img/gem_' + n + '.png',
       check: function(nn) {
         return function() {
@@ -35,8 +36,9 @@ var ACH_GEMS = [];
   }
   for (var n2 = 2; n2 <= 9; n2++) {
     ACH_GEMS.push({
+      idx: n2 + 8,
       id: 'carry_' + n2,
-      label: n2 + 'をたす マスター(くりあがり)',
+      label: n2 + 'をたすマスター(くりあがり)',
       img: './img/gem_' + (n2 + 9) + '.png',
       check: function(nn) {
         return function() {
@@ -46,6 +48,7 @@ var ACH_GEMS = [];
     });
   }
   ACH_GEMS.push({
+    idx: 18,
     id: 'all_master',
     label: 'ぜんぶマスター',
     img: './img/gem_18.png',
@@ -59,36 +62,7 @@ var ACH_GEMS = [];
 
 // ── 実績定義 ──
 function getAchievements() {
-  var easyAllMaster = isAllMasterForLevel('easy');
-  var hardAllMaster = isAllMasterForLevel('hard');
-  var mixAllMaster = isAllMasterForLevel('mix');
-
-  var has20EasyRank  = rkD['easy_20']  && rkD['easy_20'].length  > 0;
-  var has20HardRank  = rkD['hard_20']  && rkD['hard_20'].length  > 0;
-  var hasAllEasyRank = rkD['easy_all'] && rkD['easy_all'].length > 0;
-  var hasAllHardRank = rkD['hard_all'] && rkD['hard_all'].length > 0;
-
-  return {
-    speed: [
-      { ico:'⚡', name:'5びょう以内で正解',    meta:'はやく こたえた記録が残った',         unlocked: has20EasyRank },
-      { ico:'⚡', name:'20もん ぜんもんせいかい（かんたん）', meta:'かんたんコースを ぜんぶ正解', unlocked: has20EasyRank },
-      { ico:'⚡', name:'20もん ぜんもんせいかい（むずかしい）',meta:'むずかしいコースも ぜんぶ正解',unlocked: has20HardRank },
-      { ico:'🏁', name:'ぜんぶコース ぜんもんせいかい（かんたん）',meta:'かんたん全問をノーミスクリア', unlocked: hasAllEasyRank },
-      { ico:'🏆', name:'ぜんぶコース ぜんもんせいかい（むずかしい）',meta:'むずかしい全問をノーミスクリア',unlocked: hasAllHardRank },
-    ],
-    combo: [
-      { ico:'🔥', name:'3れんぞく せいかい',  meta:'コンボの入口。ここで気分が上がる。',  unlocked: false },
-      { ico:'🔥', name:'5れんぞく せいかい',  meta:'流れに乗って、どんどん進む。',        unlocked: false },
-      { ico:'🌪', name:'10れんぞく せいかい', meta:'集中力が高まった強者の証。',          unlocked: false },
-      { ico:'🛡', name:'ノーミス修行',        meta:'まちがえずに最後まで進む。',          unlocked: has20EasyRank || has20HardRank },
-    ],
-    clear: [
-      { ico:'🌱', name:'くりあがりなし 全制覇', meta:'基礎をぜんぶ押さえた証。',         unlocked: easyAllMaster },
-      { ico:'⭐', name:'くりあがりあり 全制覇', meta:'一段上の修行を終えた証。',          unlocked: hardAllMaster },
-      { ico:'🎲', name:'ばらばら ぜんもんせいかい',meta:'全ジャンル混合でノーミス。',      unlocked: rkD['mix_all'] && rkD['mix_all'].length > 0 },
-      { ico:'👑', name:'ぜんぶ マスター',       meta:'伝説の忍者への最終到達点。',        unlocked: mixAllMaster },
-    ],
-  };
+  return {};
 }
 
 // ======================================================
@@ -99,27 +73,27 @@ var badgeData = storageLoadJSON(LS_BADGE, {});
 // 制覇バッジ定義（6個）
 // 条件: 全問正解 + 全問平均3秒以内（=合計ms / 問題数 <= 3000）
 var BADGES = [
-  { id:'easy_20',  ico:'🟢', name:'かんたん\n20もん 制覇！',
+  { id:'easy_20',  ico:'🟢', name:'かんたん20もん せいはバッジ',
     cond:'かんたん 20もん\nぜんもん3びょう以内',
     img:'./img/badge_easy20.png',
     level:'easy', course:'20' },
-  { id:'easy_all', ico:'🌿', name:'かんたん\nぜんぶ 制覇！',
+  { id:'easy_all', ico:'🌿', name:'かんたんぜんぶ せいはバッジ',
     cond:'かんたん ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_easy_all.png',
     level:'easy', course:'all' },
-  { id:'hard_20',  ico:'💜', name:'むずかしい\n20もん 制覇！',
+  { id:'hard_20',  ico:'💜', name:'むずかしい20もん せいはバッジ',
     cond:'むずかしい 20もん\nぜんもん3びょう以内',
     img:'./img/badge_hard20.png',
     level:'hard', course:'20' },
-  { id:'hard_all', ico:'⭐', name:'むずかしい\nぜんぶ 制覇！',
+  { id:'hard_all', ico:'⭐', name:'むずかしいぜんぶ せいはバッジ',
     cond:'むずかしい ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_hard_all.png',
     level:'hard', course:'all' },
-  { id:'mix_20',   ico:'🎲', name:'ばらばら\n20もん 制覇！',
+  { id:'mix_20',   ico:'🎲', name:'ばらばら20もん せいはバッジ',
     cond:'ばらばら 20もん\nぜんもん3びょう以内',
     img:'./img/badge_mix20.png',
     level:'mix', course:'20' },
-  { id:'mix_all',  ico:'👑', name:'ばらばら\nぜんぶ 制覇！',
+  { id:'mix_all',  ico:'👑', name:'ばらばらぜんぶ せいはバッジ',
     cond:'ばらばら ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_mix_all.png',
     level:'mix', course:'all' },
