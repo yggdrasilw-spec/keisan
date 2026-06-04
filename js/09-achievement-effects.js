@@ -2,12 +2,20 @@
 // shared helpers for achievement effects
 
 function buildAchievementOverlay(){
-  var ov=document.createElement('div');
-  ov.className='gem-burst-overlay';
-  var card=document.createElement('div');
-  card.className='gem-burst-card';
+  var ov = document.createElement('div');
+  ov.className = 'gem-burst-overlay';
+  ov.setAttribute('role', 'dialog');
+  ov.setAttribute('aria-modal', 'true');
+
+  var backdrop = document.createElement('div');
+  backdrop.className = 'gem-burst-backdrop';
+
+  var card = document.createElement('div');
+  card.className = 'gem-burst-card';
+
+  ov.appendChild(backdrop);
   ov.appendChild(card);
-  return {overlay:ov,card:card};
+  return {overlay: ov, backdrop: backdrop, card: card};
 }
 
 function playAchievementTone(seq, gainValue, duration){
@@ -30,16 +38,30 @@ function playAchievementTone(seq, gainValue, duration){
 
 function bindAchievementOverlayClose(parts, onDone){
   var closed = false;
+  var events = ['pointerdown', 'touchstart', 'click'];
+  var cleanup = function() {
+    events.forEach(function(evt) {
+      document.removeEventListener(evt, closeEffect, true);
+      if (parts.overlay) parts.overlay.removeEventListener(evt, closeEffect, true);
+      if (parts.card) parts.card.removeEventListener(evt, closeEffect, true);
+      if (parts.backdrop) parts.backdrop.removeEventListener(evt, closeEffect, true);
+    });
+  };
   function closeEffect(ev){
-    if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch(e){} }
+    if (ev) {
+      try { ev.preventDefault(); ev.stopPropagation(); } catch(e){}
+    }
     if (closed) return;
     closed = true;
+    cleanup();
     if (parts.overlay && parts.overlay.parentNode) parts.overlay.parentNode.removeChild(parts.overlay);
     if (onDone) onDone();
   }
-  ['pointerdown','touchstart','click'].forEach(function(evt){
-    parts.overlay.addEventListener(evt, closeEffect, {passive:false});
-    parts.card.addEventListener(evt, closeEffect, {passive:false});
+  events.forEach(function(evt){
+    document.addEventListener(evt, closeEffect, true);
+    if (parts.overlay) parts.overlay.addEventListener(evt, closeEffect, {passive:false, capture:true});
+    if (parts.card) parts.card.addEventListener(evt, closeEffect, {passive:false, capture:true});
+    if (parts.backdrop) parts.backdrop.addEventListener(evt, closeEffect, {passive:false, capture:true});
   });
   return closeEffect;
 }
