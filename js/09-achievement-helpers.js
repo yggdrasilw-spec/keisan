@@ -39,3 +39,12 @@ function getUnlockedAchievementCount() {
     totalAll: ACH_GEMS.length + BADGES.length
   };
 }
+
+
+function hasUnlockedCoreBadges() {
+  var ids = ['easy_20', 'easy_all', 'hard_20', 'hard_all', 'mix_20', 'mix_all'];
+  for (var i = 0; i < ids.length; i++) {
+    if (!badgeData[ids[i]]) return false;
+  }
+  return true;
+}

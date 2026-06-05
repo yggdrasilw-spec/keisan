@@ -4,8 +4,6 @@
 // ======================================================
 
 function submitPracticeAnswer(v, btn, p) {
-  if (sess._answerLocked) return null;
-  sess._answerLocked = true;
   if (tIv){clearInterval(tIv);tIv=null;}
   var el = Date.now() - sess.startTime;
   var ok = recordAndFeedbackAnswer(v, btn, p, el);
@@ -13,9 +11,17 @@ function submitPracticeAnswer(v, btn, p) {
 }
 
 function resolvePracticeAnswer(v, btn, p, submitted) {
-  if (!submitted) return;
   var fx = playAnswerFeedback(submitted.ok, submitted.elapsed, btn, p);
   renderAnswerFeedbackToUI(fx);
+  if (!submitted.ok && sessMode === 'mugen') {
+    if (sess) sess._specialOver = true;
+    clearSpecialModeTimer();
+    if (tIv) { clearInterval(tIv); tIv = null; }
+    setTimeout(function() {
+      finish(false);
+    }, fx && fx.delay ? fx.delay : 900);
+    return;
+  }
   queueNextQuestion(fx.delay);
 }
 

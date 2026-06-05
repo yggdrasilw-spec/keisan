@@ -21,3 +21,15 @@ function showAllMasterPopup() {
   if (mImg) { mImg.src = imgSrc('master'); mImg.style.display = ''; }
   document.getElementById('all-master-popup').style.display = 'flex';
 }
+
+
+function closeEndContentLock() {
+  hideCountdownOverlay();
+  var dlg = document.getElementById('end-content-lock-dialog');
+  if (dlg) dlg.style.display = 'none';
+}
+
+function showEndContentLock() {
+  var dlg = document.getElementById('end-content-lock-dialog');
+  if (dlg) dlg.style.display = 'flex';
+}

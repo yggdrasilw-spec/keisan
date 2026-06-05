@@ -50,7 +50,7 @@ var ACH_GEMS = [];
   ACH_GEMS.push({
     idx: 18,
     id: 'all_master',
-    label: 'ぜんぶマスター',
+    label: 'すべてをマスター',
     img: './img/gem_10.png',
     check: function() {
       return isAllMasterForLevel('mix');
@@ -81,7 +81,7 @@ function getAchievements() {
 // ======================================================
 var badgeData = storageLoadJSON(LS_BADGE, {});
 
-// 制覇バッジ定義（6個）
+// 制覇バッジ定義（9個）
 // 条件: 全問正解 + 全問平均3秒以内（=合計ms / 問題数 <= 3000）
 var BADGES = [
   { id:'easy_20',  ico:'🟢', name:'かんたん\n20もん 制覇！', unlockTitle:'かんたん２０もん　せいはバッジ',
@@ -108,10 +108,34 @@ var BADGES = [
     cond:'ばらばら ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_mix_all.png',
     level:'mix', course:'all' },
+
+  { id:'easy_shinsoku', ico:'⚡', name:'かんたん\n神速（しんそく） クリア！', unlockTitle:'かんたん神速（しんそく）　せいはバッジ',
+    cond:'かんたん 神速（しんそく）\n2びょう以内で クリア',
+    img:'./img/shinsoku_easy.png',
+    level:'easy', course:'shinsoku' },
+  { id:'hard_shinsoku', ico:'⚡', name:'むずかしい\n神速（しんそく） クリア！', unlockTitle:'むずかしい神速（しんそく）　せいはバッジ',
+    cond:'むずかしい 神速（しんそく）\n2びょう以内で クリア',
+    img:'./img/shinsoku_hard.png',
+    level:'hard', course:'shinsoku' },
+  { id:'mix_shinsoku', ico:'⚡', name:'ばらばら\n神速（しんそく） クリア！', unlockTitle:'ばらばら神速（しんそく）　せいはバッジ',
+    cond:'ばらばら 神速（しんそく）\n2びょう以内で クリア',
+    img:'./img/shinsoku_barabara.png',
+    level:'mix', course:'shinsoku' },
 ];
 
 function saveBadgeData() {
   storageSaveJSON(LS_BADGE, badgeData);
+}
+
+function awardBadgeById(id) {
+  var badge = BADGES.find(function(b){ return b.id === id; });
+  if (!badge) return null;
+  if (!badgeData[id]) {
+    badgeData[id] = { date: new Date().toLocaleDateString('ja-JP') };
+    saveBadgeData();
+    return badge;
+  }
+  return null;
 }
 
 // finish() から呼ぶ: 全問正解 + 全問3秒以内 → バッジ付与
@@ -122,13 +146,5 @@ function checkAndAwardBadge(level, course, results) {
   if (!allOk || !allFast) return null;
 
   var id = level + '_' + course;
-  var badge = BADGES.find(function(b){ return b.id === id; });
-  if (!badge) return null;
-
-  if (!badgeData[id]) {
-    badgeData[id] = { date: new Date().toLocaleDateString('ja-JP') };
-    saveBadgeData();
-    return badge; // 新規獲得
-  }
-  return null; // 既に持っている
+  return awardBadgeById(id); // 新規獲得 or null
 }

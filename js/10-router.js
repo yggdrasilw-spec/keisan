@@ -26,6 +26,7 @@ function clearRuntimeTimers() {
   try { if (typeof countdownTimer !== 'undefined' && countdownTimer) { clearTimeout(countdownTimer); countdownTimer = null; } } catch (e) {}
   try { if (typeof clearScreenTransitionTimer === 'function') clearScreenTransitionTimer(); } catch (e) {}
   try { if (typeof tIv !== 'undefined' && tIv) { clearInterval(tIv); tIv = null; } } catch (e) {}
+  try { if (typeof specialModeTimerIv !== 'undefined' && specialModeTimerIv) { clearInterval(specialModeTimerIv); specialModeTimerIv = null; } } catch (e) {}
 }
 
 function show(n) {

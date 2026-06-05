@@ -26,6 +26,12 @@
     goKotsuFromCourse: function () {
       return typeof goKotsuFromCourse === 'function' && goKotsuFromCourse();
     },
+    startEndMode: function (value) {
+      return typeof startEndMode === 'function' && startEndMode(value);
+    },
+    closeEndContentLock: function () {
+      return typeof closeEndContentLock === 'function' && closeEndContentLock();
+    },
     showKotsuSub: function (value) {
       return typeof showKotsuSub === 'function' && showKotsuSub(Number(value));
     },

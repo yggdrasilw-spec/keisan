@@ -28,3 +28,23 @@ function buildCourseQueue(level, course) {
   }
   return [];
 }
+
+
+function buildRandomQuestionForLevel(level) {
+  var pool = buildPLevel(level);
+  if (!pool || !pool.length) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function buildEndModeQueue(level, mode) {
+  if (mode === 'mugen') {
+    var out = [];
+    for (var i = 0; i < 1000; i++) {
+      var q = buildRandomQuestionForLevel(level);
+      if (!q) break;
+      out.push({ a: q.a, b: q.b, ans: q.ans });
+    }
+    return out;
+  }
+  return sh(buildPLevel(level).slice());
+}

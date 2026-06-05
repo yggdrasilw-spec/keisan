@@ -14,15 +14,26 @@ function renderFinishOutcome(summary, completed) {
   var cor = summary.cor;
   var acc = summary.acc;
 
+  if (sessMode === 'mugen' && !completed) {
+    sndTryAgain();
+    document.getElementById('rbi').textContent='💥';
+    document.getElementById('rt2').textContent='ゲームオーバー';
+    document.getElementById('rs2').textContent='きろく ' + tot + 'もん';
+    show('result');
+    return;
+  }
+
   if (acc===100 && completed) {
     document.getElementById('rbi').textContent='🎉';
-    document.getElementById('rt2').textContent='かんぺき！すごい！';
-    document.getElementById('rs2').textContent=tot+'もんちゅう '+cor+'もん せいかい';
+    document.getElementById('rt2').textContent = sessMode === 'mugen' ? '1000もん ぜんぶ せいかい！' : 'かんぺき！すごい！';
+    document.getElementById('rs2').textContent = sessMode === 'mugen'
+      ? '1000もん ぜんぶ せいかい！'
+      : (tot+'もんちゅう '+cor+'もん せいかい');
     show('result');
 
     var unlocks = { gems: [], badge: null };
     try {
-      unlocks = collectFinishUnlockRewards() || unlocks;
+      unlocks = collectFinishUnlockRewards(completed) || unlocks;
     } catch (e) {
       console.error('[finish] collectFinishUnlockRewards failed', e);
     }
@@ -38,7 +49,9 @@ function renderFinishOutcome(summary, completed) {
     document.getElementById('rbi').textContent='💪';
     document.getElementById('rt2').textContent='もう少し！がんばれ！';
   }
-  document.getElementById('rs2').textContent=tot+'もんちゅう '+cor+'もん せいかい';
+  document.getElementById('rs2').textContent = sessMode === 'mugen'
+    ? 'きろく ' + tot + 'もん'
+    : (tot+'もんちゅう '+cor+'もん せいかい');
   show('result');
 }
 

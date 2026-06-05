@@ -17,10 +17,20 @@ function startCourse(course) {
 
   var queue = built;
   if (!queue || !queue.length) { alert('もんだいがありません'); return; }
-  launchSession(queue);
+  launchSession(queue, 'normal');
 }
 
-function launchSession(queue) {
+function startEndMode(mode) {
+  if (!hasUnlockedCoreBadges()) {
+    showEndContentLock();
+    return;
+  }
+  var queue = buildEndModeQueue(curLevel, mode);
+  if (!queue || !queue.length) { alert('もんだいがありません'); return; }
+  launchSession(queue, mode);
+}
+
+function launchSession(queue, mode) {
   try { var ac = getAC(); if (ac && ac.state === 'suspended') ac.resume(); } catch(e) {}
 
   var levelColors = {
@@ -31,12 +41,19 @@ function launchSession(queue) {
   var c = levelColors[curLevel] || levelColors.easy;
   var levelLabels = { easy:'かんたん', hard:'むずかしい', mix:'ばらばら' };
   var courseLabels = { '20':'20もん', all:'ぜんぶ', weak:'にがて' };
+  var specialLabels = { shinsoku:'神速（しんそく）', mugen:'無限（むげん）' };
 
-  setSessionFields({ sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now(), _answerLocked: false }, sessMode: 'normal' });
+  setSessionFields({ sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now(), _specialOver: false, specialMode: mode || 'normal' }, sessMode: mode || 'normal' });
+
+  if (mode && mode !== 'normal') {
+    setSessionField('curCourse', 'all');
+  }
 
   var bdg = document.getElementById('pbdg');
   if (bdg) {
-    bdg.textContent = levelLabels[curLevel] + ' ' + courseLabels[curCourse];
+    var label = levelLabels[curLevel] + ' ' + courseLabels[curCourse];
+    if (mode && specialLabels[mode]) label += ' / ' + specialLabels[mode];
+    bdg.textContent = label;
     bdg.className = 'pbdg ' + c.bdg;
   }
 
@@ -51,8 +68,15 @@ function launchSession(queue) {
   var ra = document.getElementById('res-again');
   if (rb) rb.setAttribute('data-action', 'show');
   if (rb) rb.setAttribute('data-value', 'course-select');
-  if (ra) ra && ra.setAttribute('data-action', 'startCourse');
-  if (ra) ra.setAttribute('data-value', curCourse);
+  if (ra) {
+    if (mode && mode !== 'normal') {
+      ra.setAttribute('data-action', 'startEndMode');
+      ra.setAttribute('data-value', mode);
+    } else {
+      ra.setAttribute('data-action', 'startCourse');
+      ra.setAttribute('data-value', curCourse);
+    }
+  }
 
   show('practice');
   beginCountdown(showP);

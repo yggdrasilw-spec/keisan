@@ -3,7 +3,7 @@
 // 結果画面の解放・報酬処理
 // ======================================================
 
-function collectFinishUnlockRewards() {
+function collectFinishUnlockRewards(completed) {
   var newGems = [];
   if (sessMode === 'kotsu') {
     var nn = kSt.num;
@@ -24,6 +24,9 @@ function collectFinishUnlockRewards() {
   var newBadge = null;
   if (sessMode === 'normal' && (curCourse === '20' || curCourse === 'all')) {
     newBadge = checkAndAwardBadge(curLevel, curCourse, sess.results);
+  }
+  if (sessMode === 'shinsoku' && completed !== false) {
+    newBadge = awardBadgeById(curLevel + '_shinsoku');
   }
 
   return { gems: newGems, badge: newBadge };

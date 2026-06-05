@@ -77,8 +77,8 @@ function makeGemCard(gem, on) {
 
   var meta = document.createElement('div');
   meta.className = 'ach-gem-card-meta';
-  if (gem.id === 'tourmaline') {
-    meta.textContent = '18こ ぜんぶの ほうせきを てにいれた！';
+  if (gem.id === 'all_master') {
+    meta.textContent = '6つの せいはバッジを てにいれた！';
   } else if (/（くりあがり）/.test(gem.label)) {
     meta.textContent = gem.label.replace(/\n/g, ' ').replace('マスター（くりあがり）', '').trim() + ' をぜんぶマスター（くりあがり）';
   } else {

@@ -24,3 +24,9 @@ function fmtTime(ms) {
   var s = (ms / 1000).toFixed(2);
   return s + '秒';
 }
+
+function rkBestTimeLabel(level, course) {
+  var entries = rkGet(level, course);
+  if (!entries.length) return 'きろくなし';
+  return '1位 ' + fmtTime(entries[0].t);
+}

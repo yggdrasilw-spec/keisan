@@ -7,7 +7,8 @@ function goLevel(level) {
   var titles = { easy:'🌱 かんたん', hard:'⭐ むずかしい', mix:'🎲 ばらばら' };
   document.getElementById('cs-title').textContent = titles[level] + ' — コース を えらぼう';
   var allPs = buildPLevel(level);
-  document.getElementById('cs-sub-all').textContent = allPs.length + 'もん ぜんぶ チャレンジ';
+  document.getElementById('cs-sub-20').textContent = '20もん チャレンジ / ' + rkBestTimeLabel(level, '20');
+  document.getElementById('cs-sub-all').textContent = allPs.length + 'もん ぜんぶ チャレンジ / ' + rkBestTimeLabel(level, 'all');
   var weakPs = getWeakPs(level);
   document.getElementById('cs-sub-weak').textContent = weakPs.length + 'もん（にがて）';
   var kb = document.getElementById('cs-kotsu-btn');

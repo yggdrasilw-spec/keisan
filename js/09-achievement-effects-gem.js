@@ -32,13 +32,13 @@ function toFullWidthDigits(n) {
 
 function getGemUnlockNameByIndex(idx) {
   if (idx === 9) return '金緑石（アレキサンドライト）';
-  if (idx === 18) return '電気石（トルマリン）';
+  if (idx === 18) return 'すべてをマスター';
   return ACH_GEM_NAMES[idx] || ('宝石' + idx);
 }
 
 function getGemUnlockHeadlineByIndex(idx) {
   if (idx === 9) return '9をたすマスター！';
-  if (idx === 18) return 'ぜんぶマスター！';
+  if (idx === 18) return '9をたすマスター（くりあがり）！';
   var carry = idx > 9;
   var base = carry ? idx - 9 : idx;
   return toFullWidthDigits(base) + 'をたすマスター' + (carry ? '（くりあがり）' : '') + '！';
