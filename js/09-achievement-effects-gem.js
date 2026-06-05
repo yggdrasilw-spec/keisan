@@ -30,22 +30,27 @@ function toFullWidthDigits(n) {
   });
 }
 
-function getGemUnlockNameByIndex(idx) {
+function getGemUnlockNameByIndex(idx, variant) {
+  if (variant === 'carry9') return '金緑石（アレキサンドライト）';
+  if (variant === 'tourmaline') return '電気石（トルマリン）';
   if (idx === 9) return '金緑石（アレキサンドライト）';
-  if (idx === 18) return 'すべてをマスター';
+  if (idx === 18) return '電気石（トルマリン）';
   return ACH_GEM_NAMES[idx] || ('宝石' + idx);
 }
 
-function getGemUnlockHeadlineByIndex(idx) {
+function getGemUnlockHeadlineByIndex(idx, variant) {
+  if (variant === 'carry9') return '9をたすマスター（くりあがり）！';
+  if (variant === 'tourmaline') return 'すべてをマスター！';
   if (idx === 9) return '9をたすマスター！';
-  if (idx === 18) return '9をたすマスター（くりあがり）！';
+  if (idx === 18) return 'すべてをマスター！';
   var carry = idx > 9;
   var base = carry ? idx - 9 : idx;
   return toFullWidthDigits(base) + 'をたすマスター' + (carry ? '（くりあがり）' : '') + '！';
 }
 
-function getGemUnlockTextByIndex(idx) {
-  return getGemUnlockHeadlineByIndex(idx) + '\n' + getGemUnlockNameByIndex(idx) + 'ゲット！';
+function getGemUnlockTextByIndex(idx, variant) {
+  return getGemUnlockHeadlineByIndex(idx, variant) + '
+' + getGemUnlockNameByIndex(idx, variant) + 'ゲット！';
 }
 
 function showGemUnlockEffect(gemImg, gemName, onDone) {

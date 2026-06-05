@@ -17,7 +17,12 @@ function collectFinishUnlockRewards(completed) {
     if (allMaster && !badgeData['gem_' + mode + '_' + nn]) {
       badgeData['gem_' + mode + '_' + nn] = 1;
       saveBadgeData();
-      newGems.push({ img: './img/gem_' + gemIdx + '.png', name: getGemUnlockTextByIndex(gemIdx) });
+      newGems.push({
+        img: './img/gem_' + gemIdx + '.png',
+        name: (gemIdx === 18)
+          ? getGemUnlockTextByIndex(gemIdx, 'carry9')
+          : getGemUnlockTextByIndex(gemIdx)
+      });
     }
   }
 
