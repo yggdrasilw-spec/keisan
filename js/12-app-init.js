@@ -126,6 +126,19 @@ var __startupOverlayBound = false;
 var __startupOverlayStarting = false;
 var __startupOverlayCleanup = null;
 
+
+function primeStartupMedia() {
+  try {
+    var audio = document.getElementById('startup-kiru-audio');
+    if (audio && typeof audio.load === 'function') {
+      audio.load();
+    }
+  } catch (e) {}
+  if (typeof window !== 'undefined' && window.speechSynthesis) {
+    try { window.speechSynthesis.getVoices(); } catch (e) {}
+  }
+}
+
 function __hideStartupOverlayNow(overlay) {
   if (!overlay) return;
   overlay.classList.add('hidden');
@@ -141,6 +154,7 @@ function __playStartupSound() {
     if (audio) {
       try { audio.pause(); } catch (e) {}
       try { audio.currentTime = 0; } catch (e) {}
+      try { audio.load(); } catch (e) {}
       var p = audio.play();
       if (p && typeof p.catch === 'function') p.catch(function(){});
       return;
@@ -175,6 +189,11 @@ function initStartupOverlay() {
 
     cleanup();
     __playStartupSound();
+    if (typeof primeVoiceEngine === 'function') {
+      setTimeout(function() {
+        try { primeVoiceEngine(); } catch (e) {}
+      }, 0);
+    }
     __hideStartupOverlayNow(overlay);
 
     setTimeout(function() {
@@ -230,6 +249,8 @@ function initStartupOverlay() {
 }
 
 function initApp() {
+
+  primeStartupMedia();
 
   // 画像カスタムを先に読み込む
   imgCustomLoad();

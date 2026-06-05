@@ -3,6 +3,25 @@
 // 音声再生エンジン（読み上げ / 称賛音声連携）
 // ======================================================
 
+var __voiceEnginePrimed = false;
+
+function primeVoiceEngine() {
+  if (__voiceEnginePrimed || !window.speechSynthesis) return;
+  __voiceEnginePrimed = true;
+  try {
+    window.speechSynthesis.getVoices();
+    var u = new SpeechSynthesisUtterance('あ');
+    u.lang = 'ja-JP';
+    u.pitch = 1;
+    u.rate = 1;
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+    setTimeout(function() {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }, 50);
+  } catch (e) {}
+}
+
 function setVoiceEnabled(nextOn) {
   if (typeof setVoiceOnState === 'function') setVoiceOnState(nextOn);
   else {
