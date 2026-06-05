@@ -109,6 +109,87 @@ body.booting #app {
 <link rel="stylesheet" href="./css/05-achievement.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+
+<style>
+/* 実績画面の文字視認性を改善 */
+#achievement,
+#achievement .ach-shell {
+  color: #FFE7A0;
+}
+
+#achievement .ach-eyebrow,
+#achievement .ach-count,
+#achievement .ach-rank-name,
+#achievement .ach-rank-desc,
+#achievement .ach-progress-label,
+#achievement .ach-progress-label *,
+#achievement .ach-gem-title,
+#achievement .ach-footer-text,
+#achievement .ach-back,
+#achievement .ach-tab {
+  color: #FFE7A0 !important;
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.88),
+    0 0 10px rgba(245, 166, 35, 0.20);
+  -webkit-text-stroke: 0.35px rgba(0, 0, 0, 0.45);
+}
+
+#achievement .ach-count,
+#achievement .ach-footer-text,
+#achievement .ach-rank-desc {
+  color: #FFD78A !important;
+}
+
+#achievement .ach-rank-badge {
+  color: #2B1600 !important;
+  background: linear-gradient(135deg, #FFE07A 0%, #F5A623 100%);
+  text-shadow: none;
+  box-shadow:
+    0 4px 0 #9B5F00,
+    0 10px 22px rgba(0, 0, 0, 0.35);
+}
+
+#achievement .ach-rank-name {
+  color: #FFF4C7 !important;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.90),
+    0 0 12px rgba(245, 166, 35, 0.22);
+}
+
+#achievement .ach-tab.active {
+  color: #2B1600 !important;
+  text-shadow: none;
+}
+
+#achievement .ach-tab:not(.active) {
+  color: #FFF0BF !important;
+}
+
+#achievement .ach-back {
+  color: #FFE7A0 !important;
+}
+</style>
+
+
+<style>
+/* 全問正解・実績解除系の演出テキスト */
+#perfect-overlay .pf-chars,
+#perfect-overlay .pf-chars *,
+#perfect-overlay .pf-flash {
+  color: #FFF2BF !important;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.92),
+    0 0 16px rgba(245, 166, 35, 0.28);
+  -webkit-text-stroke: 0.45px rgba(0, 0, 0, 0.55);
+}
+
+#all-master-popup,
+#all-master-popup * {
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.30);
+}
+</style>
+
 </head>
 <body class="booting">
 
