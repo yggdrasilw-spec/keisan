@@ -6,15 +6,106 @@
   'use strict';
 
   var ORIGINAL_SEIHA_BADGE_IDS = ['easy_20', 'easy_all', 'hard_20', 'hard_all', 'mix_20', 'mix_all'];
-  var END_MODE_LABELS = { shinsoku: '神速', mugen: '無限' };
+  var END_MODE_LABELS = { shinsoku: '神速（しんそく）', mugen: '無限（むげん）' };
   var END_MODE_BUTTONS = ['cs-end-shinsoku', 'cs-end-mugen'];
   var TOURMALINE_GEM_INDEX = 18;
   var SHINSOKU_BADGE_ID = 'shinsoku_clear';
   var SHINSOKU_BADGE_LABEL = '神速\nクリア！';
   var SHINSOKU_BADGE_IMG = './img/badge_easy_all.png';
+  var MUGEN_RANK_KEY_SUFFIX = '_mugen_best';
+  var MUGEN_QUEUE_TOTAL = 1000;
+  var MUGEN_MIN_LIMIT_MS = 2500;
 
   function hasOwn(obj, key) {
     return !!obj && Object.prototype.hasOwnProperty.call(obj, key);
+  }
+
+  function fmtMsToSec(ms) {
+    return (Math.max(0, ms) / 1000).toFixed(2) + '秒';
+  }
+
+  function fmtCount(count) {
+    return Math.max(0, count | 0) + 'もん';
+  }
+
+  function getRank1TimeText(level, course) {
+    var entries = [];
+    try { entries = rkGet(level, course) || []; } catch (e) { entries = []; }
+    if (!entries.length) return '1位 まだなし';
+    return '1位 ' + fmtMsToSec(entries[0].t);
+  }
+
+  function getMugenRankKey(level) {
+    return level + MUGEN_RANK_KEY_SUFFIX;
+  }
+
+  function getMugenBestCount(level) {
+    var list = rkD && rkD[getMugenRankKey(level)];
+    if (!list || !list.length) return 0;
+    return Math.max(0, list[0] && list[0].t ? list[0].t : 0);
+  }
+
+  function addMugenBestCount(level, count) {
+    if (!rkD) rkD = {};
+    var key = getMugenRankKey(level);
+    if (!rkD[key]) rkD[key] = [];
+    var entry = { t: Math.max(0, count | 0), d: new Date().toLocaleDateString('ja-JP') };
+    rkD[key].push(entry);
+    rkD[key].sort(function (a, b) { return b.t - a.t; });
+    rkD[key] = rkD[key].slice(0, 3);
+    if (typeof lsSave === 'function' && typeof LS_RK !== 'undefined') {
+      lsSave(LS_RK, rkD);
+    }
+    return rkD[key][0] ? rkD[key][0].t : 0;
+  }
+
+  function buildMugenQueue(level, totalCount) {
+    var base = buildPLevel(level);
+    if (!base || !base.length) return [];
+    var out = [];
+    for (var i = 0; i < totalCount; i++) {
+      var src = base[Math.floor(Math.random() * base.length)];
+      out.push({ a: src.a, b: src.b, ans: src.ans });
+    }
+    return out;
+  }
+
+  function getCourseSubtitleBase(level, course) {
+    if (course === '20') return '20もん チャレンジ';
+    if (course === 'all') {
+      var allPs = buildPLevel(level);
+      return allPs.length + 'もん ぜんぶ チャレンジ';
+    }
+    if (course === 'weak') return 'にがてな もんだいを れんしゅう';
+    return '';
+  }
+
+  function setSubtitleHtml(id, mainText, subText) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var html = '<div>' + mainText + '</div>';
+    if (subText) html += '<div style="font-size:10px;font-weight:700;line-height:1.2;margin-top:2px;opacity:0.92;">' + subText + '</div>';
+    el.innerHTML = html;
+  }
+
+  function updateCourseButtonSubtitles(level) {
+    var lv = level || curLevel || 'easy';
+
+    setSubtitleHtml('cs-sub-20', getCourseSubtitleBase(lv, '20'), getRank1TimeText(lv, '20'));
+    setSubtitleHtml('cs-sub-all', getCourseSubtitleBase(lv, 'all'), getRank1TimeText(lv, 'all'));
+
+    var mugenSub = document.getElementById('cs-sub-mugen');
+    if (mugenSub) {
+      var best = getMugenBestCount(lv);
+      mugenSub.innerHTML = '<div>れんぞく こたえて きろくを のばす</div>'
+        + '<div style="font-size:10px;font-weight:700;line-height:1.2;margin-top:2px;opacity:0.92;">さいこうきろく ' + fmtCount(best) + '</div>';
+    }
+
+    var shinsokuSub = document.getElementById('cs-sub-shinsoku');
+    if (shinsokuSub) {
+      shinsokuSub.innerHTML = '<div>1問 2びょう いないで こたえる ちょうせん</div>'
+        + '<div style="font-size:10px;font-weight:700;line-height:1.2;margin-top:2px;opacity:0.92;">ぜんぶ モード ベース</div>';
+    }
   }
 
   function ensureSpecialCollections() {
@@ -94,6 +185,7 @@
   function refreshEndContentUi() {
     ensureSpecialCollections();
     syncEndContentButtonState();
+    updateCourseButtonSubtitles(curLevel);
   }
 
   function getEndModeLabel(mode) {
@@ -140,10 +232,9 @@
     if (sessMode === 'mugen') {
       var base = 4000;
       var step = 120;
-      var min = 2500;
       var cleared = sess && sess.results ? sess.results.length : 0;
       var next = base - (cleared * step);
-      return next < min ? min : next;
+      return next < MUGEN_MIN_LIMIT_MS ? MUGEN_MIN_LIMIT_MS : next;
     }
     return 0;
   }
@@ -190,7 +281,10 @@
 
     try { var ac = getAC(); if (ac && ac.state === 'suspended') ac.resume(); } catch (e) {}
 
-    var queue = buildCourseQueue(curLevel, 'all');
+    var queue = (mode === 'mugen')
+      ? buildMugenQueue(curLevel, MUGEN_QUEUE_TOTAL)
+      : buildCourseQueue(curLevel, 'all');
+
     if (!queue || !queue.length) {
       alert('もんだいがありません');
       return;
@@ -201,7 +295,17 @@
     var modeLabel = getEndModeLabel(mode);
 
     setSessionFields({
-      sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now(), specialMode: mode, specialGameOverReason: '', specialQuestionLimitMs: 0 },
+      sess: {
+        queue: queue,
+        idx: 0,
+        results: [],
+        streak: 0,
+        startTime: 0,
+        sessStartTime: Date.now(),
+        specialMode: mode,
+        specialGameOverReason: '',
+        specialQuestionLimitMs: 0
+      },
       sessMode: mode,
       curCourse: 'all'
     });
@@ -238,6 +342,16 @@
       badgeData['tourmaline'] = { date: new Date().toLocaleDateString('ja-JP') };
       saveBadgeData();
       gems.push({ img: './img/gem_10.png', name: getGemUnlockTextByIndex(TOURMALINE_GEM_INDEX) });
+      if (typeof showGemUnlockEffect === 'function') {
+        setTimeout(function () {
+          showGemUnlockEffect('./img/gem_10.png', getGemUnlockTextByIndex(TOURMALINE_GEM_INDEX));
+        }, 120);
+      }
+    }
+
+    if (sessMode === 'normal' && curCourse === 'weak' && isTourmalineUnlocked()) {
+      badgeData['tourmaline'] = badgeData['tourmaline'] || { date: new Date().toLocaleDateString('ja-JP') };
+      saveBadgeData();
     }
 
     if (sessMode === 'shinsoku' && !badgeData[SHINSOKU_BADGE_ID]) {
@@ -338,7 +452,27 @@
 
     show('result');
 
-    if (completed) {
+    if (sessMode === 'mugen') {
+      addMugenBestCount(curLevel, summary.tot);
+      if (rbi) rbi.textContent = completed ? '🎉' : '⚔';
+      if (rt2) rt2.textContent = completed ? ('1000問 ぜんぶ せいかい！') : ('記録 ' + summary.tot + '問');
+      if (rs2) rs2.textContent = completed ? '全問正解エフェクト！' : 'ここまでの きろく';
+
+      if (completed) {
+        try {
+          sndPerfect();
+        } catch (e) {}
+        if (typeof showPerfectEffect === 'function') {
+          setTimeout(function () {
+            showPerfectEffect(function () {});
+          }, 140);
+        }
+      } else {
+        try {
+          sndTryAgain();
+        } catch (e) {}
+      }
+    } else if (completed) {
       sndGoodFinish();
       if (rbi) rbi.textContent = '⚡';
       if (rt2) rt2.textContent = (sessMode === 'shinsoku') ? 'しんそく クリア！' : 'むげん クリア！';
@@ -377,8 +511,19 @@
   };
 
   if (typeof SCREEN_ENTER_HANDLERS !== 'undefined' && SCREEN_ENTER_HANDLERS) {
+    var _courseSelectEnter = SCREEN_ENTER_HANDLERS['course-select'];
     SCREEN_ENTER_HANDLERS['course-select'] = function () {
+      if (typeof _courseSelectEnter === 'function') _courseSelectEnter();
       refreshEndContentUi();
+    };
+  }
+
+  if (typeof goLevel === 'function') {
+    var _goLevel = goLevel;
+    goLevel = function (level) {
+      var ret = _goLevel(level);
+      updateCourseButtonSubtitles(level);
+      return ret;
     };
   }
 
@@ -396,4 +541,5 @@
   // 初期反映
   ensureSpecialCollections();
   hideSpecialTimerUi();
+  updateCourseButtonSubtitles(curLevel);
 })();
