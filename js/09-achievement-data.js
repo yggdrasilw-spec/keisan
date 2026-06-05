@@ -26,7 +26,7 @@ var ACH_GEMS = [];
       idx: n,
       id: 'no_' + n,
       label: n + 'をたすマスター',
-      img: './img/gem_' + n + '.png',
+      img: (n === 9 ? './img/gem_18.png' : './img/gem_' + n + '.png'),
       check: function(nn) {
         return function() {
           return isAllMasterForProblemSet(buildKP_for_no(nn), 'n' + nn + ':');
@@ -39,7 +39,7 @@ var ACH_GEMS = [];
       idx: n2 + 9,
       id: 'carry_' + n2,
       label: n2 + 'をたすマスター（くりあがり）',
-      img: './img/gem_' + (n2 + 9) + '.png',
+      img: (n2 === 2 ? './img/gem_9.png' : './img/gem_' + (n2 + 9) + '.png'),
       check: function(nn) {
         return function() {
           return isAllMasterForProblemSet(buildKP_for_carry(nn), 'k' + nn + ':');
@@ -51,7 +51,7 @@ var ACH_GEMS = [];
     idx: 18,
     id: 'all_master',
     label: 'ぜんぶマスター',
-    img: './img/gem_18.png',
+    img: './img/gem_10.png',
     check: function() {
       return isAllMasterForLevel('mix');
     }
