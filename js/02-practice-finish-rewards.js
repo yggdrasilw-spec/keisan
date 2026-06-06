@@ -52,7 +52,12 @@ function playFinishUnlockSequence(gems, badge, beforeTotal, onDone) {
 
   function finishMaybeLevelUp() {
     if (typeof showNinjaLevelUpEffect === 'function' && beforeTotal !== null && beforeTotal !== undefined) {
-      showNinjaLevelUpEffect(beforeTotal, onDone);
+      setTimeout(function() {
+        if (typeof renderAchievementOverview === 'function') {
+          try { renderAchievementOverview(); } catch (e) {}
+        }
+        showNinjaLevelUpEffect(beforeTotal, onDone);
+      }, 80);
     } else if (typeof onDone === 'function') {
       onDone();
     }
