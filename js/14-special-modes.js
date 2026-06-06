@@ -108,33 +108,6 @@
     }
   }
 
-  function ensureSpecialCollections() {
-    if (typeof ACH_GEMS !== 'undefined' && ACH_GEMS && ACH_GEMS.length >= 18) {
-      var gem = ACH_GEMS[17];
-      if (gem) {
-        gem.id = 'tourmaline';
-        gem.label = 'トルマリン';
-        gem.img = './img/gem_10.png';
-        gem.check = function () {
-          return !!badgeData['tourmaline'] || isAllMasterForLevel('mix');
-        };
-      }
-    }
-
-    if (typeof BADGES !== 'undefined' && BADGES && !BADGES.some(function (b) { return b && b.id === SHINSOKU_BADGE_ID; })) {
-      BADGES.push({
-        id: SHINSOKU_BADGE_ID,
-        ico: '⚡',
-        name: SHINSOKU_BADGE_LABEL,
-        unlockTitle: 'しんそく クリア せいはバッジ',
-        cond: '神速モードを クリア',
-        img: SHINSOKU_BADGE_IMG,
-        level: 'special',
-        course: 'shinsoku'
-      });
-    }
-  }
-
   function isTourmalineUnlocked() {
     return !!badgeData['tourmaline'];
   }
@@ -183,7 +156,6 @@
   }
 
   function refreshEndContentUi() {
-    ensureSpecialCollections();
     syncEndContentButtonState();
     updateCourseButtonSubtitles(curLevel);
   }
@@ -330,38 +302,6 @@
   function startEndMode(mode) {
     launchEndMode(mode);
   }
-
-  // ── reward / unlock hooks ───────────────────────────
-  var _collectFinishUnlockRewards = typeof collectFinishUnlockRewards === 'function' ? collectFinishUnlockRewards : null;
-  collectFinishUnlockRewards = function () {
-    var result = _collectFinishUnlockRewards ? (_collectFinishUnlockRewards() || { gems: [], badge: null }) : { gems: [], badge: null };
-    var gems = result.gems || [];
-    var badge = result.badge || null;
-
-    if (sessMode === 'normal' && curCourse === 'weak' && !isTourmalineUnlocked() && isAllMasterForLevel(curLevel)) {
-      badgeData['tourmaline'] = { date: new Date().toLocaleDateString('ja-JP') };
-      saveBadgeData();
-      gems.push({ img: './img/gem_10.png', name: getGemUnlockTextByIndex(TOURMALINE_GEM_INDEX) });
-      if (typeof showGemUnlockEffect === 'function') {
-        setTimeout(function () {
-          showGemUnlockEffect('./img/gem_10.png', getGemUnlockTextByIndex(TOURMALINE_GEM_INDEX));
-        }, 120);
-      }
-    }
-
-    if (sessMode === 'normal' && curCourse === 'weak' && isTourmalineUnlocked()) {
-      badgeData['tourmaline'] = badgeData['tourmaline'] || { date: new Date().toLocaleDateString('ja-JP') };
-      saveBadgeData();
-    }
-
-    if (sessMode === 'shinsoku' && !badgeData[SHINSOKU_BADGE_ID]) {
-      badgeData[SHINSOKU_BADGE_ID] = { date: new Date().toLocaleDateString('ja-JP') };
-      saveBadgeData();
-      badge = BADGES.find(function (b) { return b.id === SHINSOKU_BADGE_ID; }) || badge;
-    }
-
-    return { gems: gems, badge: badge };
-  };
 
   // ── timer / answer hooks ────────────────────────────
   var _startPracticeTimer = typeof startPracticeTimer === 'function' ? startPracticeTimer : null;
@@ -539,7 +479,6 @@
   }
 
   // 初期反映
-  ensureSpecialCollections();
   hideSpecialTimerUi();
   updateCourseButtonSubtitles(curLevel);
 })();

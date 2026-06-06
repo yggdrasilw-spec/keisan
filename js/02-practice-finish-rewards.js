@@ -19,9 +19,7 @@ function collectFinishUnlockRewards(completed) {
       saveBadgeData();
       newGems.push({
         img: './img/gem_' + gemIdx + '.png',
-        name: (gemIdx === 18)
-          ? getGemUnlockTextByIndex(gemIdx, 'carry9')
-          : getGemUnlockTextByIndex(gemIdx)
+        name: getGemUnlockTextByIndex(gemIdx)
       });
     }
   }

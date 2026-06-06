@@ -3,54 +3,29 @@
 // 宝石ゲット演出 / 宝石名
 // ======================================================
 
-var ACH_GEM_NAMES = {
-  1: '金剛石（ダイヤモンド）',
-  2: '紅玉（ルビー）',
-  3: '青玉（サファイア）',
-  4: '翠玉（エメラルド）',
-  5: '紫水晶（アメジスト）',
-  6: '黄玉（トパーズ）',
-  7: '柘榴石（ガーネット）',
-  8: '橄欖石（ペリドット）',
-  9: '蛋白石（オパール）',
-  10: '電気石（トルマリン）',
-  11: '翡翠（ヒスイ）',
-  12: '瑠璃（ラピスラズリ）',
-  13: '真珠（パール）',
-  14: '琥珀（コハク）',
-  15: '風信子石（ジルコン）',
-  16: '尖晶石（スピネル）',
-  17: '月長石（ムーンストーン）',
-  18: '金緑石（アレキサンドライト）'
+var GEM_UNLOCK_TEXTS = {
+  1: '１をたすマスター！\n金剛石（ダイヤモンド）ゲット！',
+  2: '２をたすマスター！\n紅玉（ルビー）ゲット！',
+  3: '３をたすマスター！\n青玉（サファイア）ゲット！',
+  4: '４をたすマスター！\n翠玉（エメラルド）ゲット！',
+  5: '５をたすマスター！\n紫水晶（アメジスト）ゲット！',
+  6: '６をたすマスター！\n黄玉（トパーズ）ゲット！',
+  7: '７をたすマスター！\n柘榴石（ガーネット）ゲット！',
+  8: '８をたすマスター！\n橄欖石（ペリドット）ゲット！',
+  9: '9をたすマスター！\n蛋白石（オパール）ゲット！',
+  10: '２をたすマスター（くりあがり）！\n電気石（トルマリン）ゲット！',
+  11: '３をたすマスター（くりあがり）！\n翡翠（ヒスイ）ゲット！',
+  12: '４をたすマスター（くりあがり）！\n瑠璃（ラピスラズリ）ゲット！',
+  13: '５をたすマスター（くりあがり）！\n真珠（パール）ゲット！',
+  14: '６をたすマスター（くりあがり）！\n琥珀（コハク）ゲット！',
+  15: '７をたすマスター（くりあがり）！\n風信子石（ジルコン）ゲット！',
+  16: '８をたすマスター（くりあがり）！\n尖晶石（スピネル）ゲット！',
+  17: '9をたすマスター（くりあがり）！\n月長石（ムーンストーン）ゲット！',
+  18: 'すべてをマスター！\n6つの せいはバッジを てにいれた！'
 };
 
-function toFullWidthDigits(n) {
-  return String(n).replace(/[0-9]/g, function(ch) {
-    return '０１２３４５６７８９'.charAt(parseInt(ch, 10));
-  });
-}
-
-function getGemUnlockNameByIndex(idx, variant) {
-  if (variant === 'carry9') return '金緑石（アレキサンドライト）';
-  if (variant === 'tourmaline') return '電気石（トルマリン）';
-  if (idx === 9) return '金緑石（アレキサンドライト）';
-  if (idx === 18) return '電気石（トルマリン）';
-  return ACH_GEM_NAMES[idx] || ('宝石' + idx);
-}
-
-function getGemUnlockHeadlineByIndex(idx, variant) {
-  if (variant === 'carry9') return '9をたすマスター（くりあがり）！';
-  if (variant === 'tourmaline') return 'すべてをマスター！';
-  if (idx === 9) return '9をたすマスター！';
-  if (idx === 18) return 'すべてをマスター！';
-  var carry = idx > 9;
-  var base = carry ? idx - 9 : idx;
-  return toFullWidthDigits(base) + 'をたすマスター' + (carry ? '（くりあがり）' : '') + '！';
-}
-
-function getGemUnlockTextByIndex(idx, variant) {
-  return getGemUnlockHeadlineByIndex(idx, variant) + '
-' + getGemUnlockNameByIndex(idx, variant) + 'ゲット！';
+function getGemUnlockTextByIndex(idx) {
+  return GEM_UNLOCK_TEXTS[idx] || ('宝石' + idx + '\nゲット！');
 }
 
 function showGemUnlockEffect(gemImg, gemName, onDone) {
@@ -89,21 +64,4 @@ function showGemUnlockEffect(gemImg, gemName, onDone) {
   title.appendChild(line2);
 
   parts.card.appendChild(title);
-  document.body.appendChild(parts.overlay);
-
-  requestAnimationFrame(function() {
-    try {
-      if (line2 && line2.scrollWidth > line2.clientWidth) {
-        var size = parseFloat(getComputedStyle(line2).fontSize) || 18;
-        while (size > 12 && line2.scrollWidth > line2.clientWidth) {
-          size -= 1;
-          line2.style.fontSize = size + 'px';
-        }
-      }
-    } catch (e) {}
-  });
-
-  try {
-    playAchievementTone([[0,880],[0.12,1100],[0.24,1320],[0.36,1760]],0.18,0.18);
-  } catch (e) {}
 }

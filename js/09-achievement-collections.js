@@ -86,17 +86,21 @@ function makeGemCard(gem, on) {
   }
   item.appendChild(meta);
 
+  var unlockText = typeof getGemUnlockTextByIndex === 'function'
+    ? getGemUnlockTextByIndex(gem.idx || 0)
+    : (gem.label || '') + '\nゲット！';
+  item.dataset.gemUnlockText = unlockText;
+  item.dataset.gemImg = gem.img || '';
+  item.dataset.gemUnlocked = on ? '1' : '0';
+
   var pill = document.createElement('div');
   pill.className = 'ach-gem-card-pill ' + (on ? 'unlocked' : 'locked');
   pill.textContent = on ? '解除済み' : '未解除';
   item.appendChild(pill);
 
-  if (on && typeof showGemUnlockEffect === 'function' && typeof getGemUnlockTextByIndex === 'function') {
+  if (on) {
     item.style.cursor = 'pointer';
     item.title = 'タップで ひょうじ';
-    item.addEventListener('click', function() {
-      showGemUnlockEffect(gem.img, getGemUnlockTextByIndex(gem.idx || 0), null);
-    });
   }
   return item;
 }
@@ -113,6 +117,14 @@ function renderAchList() {
       try { on = gem.check(); } catch (e) {}
       grid.appendChild(makeGemCard(gem, on));
     }
+    grid.addEventListener('click', function(evt) {
+      var card = evt.target && evt.target.closest ? evt.target.closest('.ach-gem-card') : null;
+      if (!card || card.dataset.gemUnlocked !== '1') return;
+      if (typeof showGemUnlockEffect !== 'function') return;
+      var img = card.dataset.gemImg || '';
+      var text = card.dataset.gemUnlockText || '';
+      showGemUnlockEffect(img, text, null);
+    });
     gemEl.appendChild(grid);
   }
 
