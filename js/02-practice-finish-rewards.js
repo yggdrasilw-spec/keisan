@@ -29,7 +29,10 @@ function collectFinishUnlockRewards(completed) {
     newBadge = checkAndAwardBadge(curLevel, curCourse, sess.results);
   }
   if (sessMode === 'shinsoku' && completed !== false) {
-    newBadge = awardBadgeById(curLevel + '_shinsoku');
+    var shinsokuBadgeId = (typeof isShinsokuEvolved === 'function' && isShinsokuEvolved())
+      ? (curLevel + '_cho_shinsoku')
+      : (curLevel + '_shinsoku');
+    newBadge = awardBadgeById(shinsokuBadgeId);
   }
 
   return { gems: newGems, badge: newBadge };

@@ -81,7 +81,7 @@ function getAchievements() {
 // ======================================================
 var badgeData = storageLoadJSON(LS_BADGE, {});
 
-// 制覇バッジ定義（9個）
+// 制覇バッジ定義（12個）
 // 条件: 全問正解 + 全問平均3秒以内（=合計ms / 問題数 <= 3000）
 var BADGES = [
   { id:'easy_20',  ico:'🟢', name:'かんたん\n20もん 制覇！', unlockTitle:'かんたん２０もん　せいはバッジ',
@@ -121,6 +121,18 @@ var BADGES = [
     cond:'ばらばら 神速（しんそく）\n2びょう以内で クリア',
     img:'./img/shinsoku_barabara.png',
     level:'mix', course:'shinsoku' },
+  { id:'easy_cho_shinsoku', ico:'⚡', name:'かんたん\n超神速（ちょうしんそく） クリア！', unlockTitle:'かんたん超神速（ちょうしんそく）　せいはバッジ',
+    cond:'かんたん 超神速（ちょうしんそく）\n1.5びょう以内で クリア',
+    img:'./img/cho_shinsoku_easy.png',
+    level:'easy', course:'cho_shinsoku' },
+  { id:'hard_cho_shinsoku', ico:'⚡', name:'むずかしい\n超神速（ちょうしんそく） クリア！', unlockTitle:'むずかしい超神速（ちょうしんそく）　せいはバッジ',
+    cond:'むずかしい 超神速（ちょうしんそく）\n1.5びょう以内で クリア',
+    img:'./img/cho_shinsoku_hard.png',
+    level:'hard', course:'cho_shinsoku' },
+  { id:'mix_cho_shinsoku', ico:'⚡', name:'ばらばら\n超神速（ちょうしんそく） クリア！', unlockTitle:'ばらばら超神速（ちょうしんそく）　せいはバッジ',
+    cond:'ばらばら 超神速（ちょうしんそく）\n1.5びょう以内で クリア',
+    img:'./img/cho_shinsoku_barabara.png',
+    level:'mix', course:'cho_shinsoku' },
 ];
 
 function saveBadgeData() {
