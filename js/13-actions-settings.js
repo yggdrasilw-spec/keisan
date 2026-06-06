@@ -15,6 +15,12 @@
     resetData: function () {
       return typeof resetData === 'function' && resetData();
     },
+    downloadAppDataFile: function () {
+      return typeof downloadAppDataFile === 'function' && downloadAppDataFile();
+    },
+    openAppDataImportPicker: function () {
+      return typeof openAppDataImportPicker === 'function' && openAppDataImportPicker();
+    },
     previewVoice: function () {
       return typeof previewVoice === 'function' && previewVoice();
     },
