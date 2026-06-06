@@ -42,22 +42,6 @@
     return level + MUGEN_RANK_KEY_SUFFIX;
   }
 
-  function clearSpecialFinishTimer() {
-    if (typeof window !== 'undefined' && window.specialModeFinishTimerIv) {
-      clearTimeout(window.specialModeFinishTimerIv);
-      window.specialModeFinishTimerIv = null;
-    }
-  }
-
-  function scheduleSpecialFinish(reason, delayMs) {
-    clearSpecialFinishTimer();
-    window.specialModeFinishTimerIv = setTimeout(function () {
-      window.specialModeFinishTimerIv = null;
-      if (sess && (sess._specialOver || sess._specialAnswerLocked)) return;
-      finishSpecialGameOver(reason || 'timeout');
-    }, Math.max(0, delayMs || 0));
-  }
-
   function getMugenBestCount(level) {
     var list = rkD && rkD[getMugenRankKey(level)];
     if (!list || !list.length) return 0;
@@ -288,14 +272,8 @@
   }
 
   function finishSpecialGameOver(reason) {
-    if (sess && sess._specialOver) return;
-    clearSpecialFinishTimer();
-    if (tIv) { clearInterval(tIv); tIv = null; }
-    if (sess) {
-      sess._specialOver = true;
-      sess.specialGameOverReason = reason || 'timeout';
-      sess.specialGameOverElapsed = Date.now() - (sess.sessStartTime || Date.now());
-    }
+    sess.specialGameOverReason = reason || 'timeout';
+    sess.specialGameOverElapsed = Date.now() - (sess.sessStartTime || Date.now());
     if (typeof finish === 'function') finish(false);
   }
 
@@ -368,13 +346,9 @@
     }
 
     if (tIv) { clearInterval(tIv); tIv = null; }
-    clearSpecialFinishTimer();
     sess.startTime = Date.now();
     var limitMs = getSpecialLimitMs();
     sess.specialQuestionLimitMs = limitMs;
-    sess.specialQuestionDeadlineMs = sess.startTime + limitMs;
-    sess._specialOver = false;
-    sess._specialAnswerLocked = false;
     setSpecialTimerUi(limitMs, limitMs);
 
     tIv = setInterval(function () {
@@ -383,11 +357,11 @@
       if (remain <= 0) {
         if (tIv) { clearInterval(tIv); tIv = null; }
         setSpecialTimerUi(0, limitMs);
-        scheduleSpecialFinish('timeout', 120);
+        finishSpecialGameOver('timeout');
         return;
       }
       setSpecialTimerUi(remain, limitMs);
-    }, 40);
+    }, 50);
   };
 
   var _submitPracticeAnswer = typeof submitPracticeAnswer === 'function' ? submitPracticeAnswer : null;
@@ -398,19 +372,9 @@
     }
 
     if (tIv) { clearInterval(tIv); tIv = null; }
-    var now = Date.now();
-    var el = now - sess.startTime;
-    var deadline = sess.specialQuestionDeadlineMs || (sess.startTime + getSpecialLimitMs());
-
-    if (now >= deadline) {
-      finishSpecialGameOver('timeout');
-      return { ok: false, elapsed: el, gameOver: true };
-    }
-
-    clearSpecialFinishTimer();
-    sess._specialAnswerLocked = true;
-
+    var el = Date.now() - sess.startTime;
     if (v !== p.ans) {
+      sess.specialGameOverReason = 'miss';
       finishSpecialGameOver('miss');
       return { ok: false, elapsed: el, gameOver: true };
     }
@@ -434,6 +398,11 @@
   // ── finish screen hooks ─────────────────────────────
   var _renderFinishSummaryToResultPage = typeof renderFinishSummaryToResultPage === 'function' ? renderFinishSummaryToResultPage : null;
   renderFinishSummaryToResultPage = function (summary, completed) {
+    var rankBox = document.getElementById('rv-rank-box');
+    var rankMsg = document.getElementById('rv-rank-msg');
+    if (rankBox) rankBox.style.display = 'none';
+    if (rankMsg) rankMsg.textContent = '';
+
     if (!isCurrentEndMode()) {
       if (_renderFinishSummaryToResultPage) return _renderFinishSummaryToResultPage(summary, completed);
       return;
@@ -516,7 +485,6 @@
   var _resetRuntimeVisualState = typeof resetRuntimeVisualState === 'function' ? resetRuntimeVisualState : null;
   resetRuntimeVisualState = function () {
     if (_resetRuntimeVisualState) _resetRuntimeVisualState();
-    clearSpecialFinishTimer();
     hideSpecialTimerUi();
   };
 
@@ -549,7 +517,6 @@
   }
 
   // 初期反映
-  clearSpecialFinishTimer();
   hideSpecialTimerUi();
   updateCourseButtonSubtitles(curLevel);
 })();
