@@ -3,42 +3,16 @@
 // じっせき（実績）データ
 // ======================================================
 
-// ── アバター段階定義 ──
-// 判定は「宝石 + 実績」の合計数で行う。
-// 18個の宝石だけでは Lv.4 に届かないため、実績バッジも成長に含める。
+// ── アバター段階定義（PNG: img/ninja_1.png〜img/ninja_4.png）──
 var ACH_STAGES = [
-  {
-    min: 0,
-    img: './img/ninja_1.png',
-    lv: 'Lv.1',
-    name: 'みならい忍者',
-    desc: 'まずは宝石と実績をあつめて、忍術の基本を身につけよう。',
-    halo: 'rgba(103,183,255,.20)'
-  },
-  {
-    min: 8,
-    img: './img/ninja_2.png',
-    lv: 'Lv.2',
-    name: 'しゅぎょう忍者',
-    desc: '手の動きが安定して、実力の土台ができてきた。',
-    halo: 'rgba(93,211,140,.22)'
-  },
-  {
-    min: 18,
-    img: './img/ninja_3.png',
-    lv: 'Lv.3',
-    name: 'かげわざ忍者',
-    desc: '宝石も実績も十分。高度な修行に入る段階。',
-    halo: 'rgba(245,200,76,.25)'
-  },
-  {
-    min: 24,
-    img: './img/ninja_4.png',
-    lv: 'Lv.4',
-    name: 'でんせつの忍者',
-    desc: '宝石と実績を極めた、最上位の忍者。',
-    halo: 'rgba(255,120,200,.22)'
-  },
+  { min:0,  img:'./img/ninja_1.png', lv:'Lv.1', name:'みならい忍者',
+    desc:'まずは「1をたす」をきわめるところから。',   halo:'rgba(103,183,255,.20)' },
+  { min:5,  img:'./img/ninja_2.png', lv:'Lv.2', name:'てがた忍者',
+    desc:'手裏剣がさえてきた。修行の成果が出ている。', halo:'rgba(93,211,140,.22)' },
+  { min:12, img:'./img/ninja_3.png', lv:'Lv.3', name:'かみなり忍者',
+    desc:'雷のオーラで、かなりの達人感。',            halo:'rgba(245,200,76,.25)' },
+  { min:20, img:'./img/ninja_4.png', lv:'Lv.4', name:'でんせつの忍者',
+    desc:'すべてを極めた、最終形態。',                halo:'rgba(255,120,200,.22)' },
 ];
 
 // ── 宝石定義（18個: くりあがりなし 1〜9, くりあがりあり 2〜9 + ぜんぶマスター）──
@@ -291,52 +265,52 @@ var BADGES = [
   { id:'easy_20',  ico:'🟢', name:'かんたん\n20もん 制覇！', unlockTitle:'かんたん２０もん　せいはバッジ',
     cond:'かんたん 20もん\nぜんもん3びょう以内',
     img:'./img/badge_easy20.png',
-    level:'easy', course:'20' },
+    level:'easy', course:'20', group:'seiha' },
   { id:'easy_all', ico:'🌿', name:'かんたん\nぜんぶ 制覇！', unlockTitle:'かんたんぜんぶ　せいはバッジ',
     cond:'かんたん ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_easy_all.png',
-    level:'easy', course:'all' },
+    level:'easy', course:'all', group:'seiha' },
   { id:'hard_20',  ico:'💜', name:'むずかしい\n20もん 制覇！', unlockTitle:'むずかしい２０もん　せいはバッジ',
     cond:'むずかしい 20もん\nぜんもん3びょう以内',
     img:'./img/badge_hard20.png',
-    level:'hard', course:'20' },
+    level:'hard', course:'20', group:'seiha' },
   { id:'hard_all', ico:'⭐', name:'むずかしい\nぜんぶ 制覇！', unlockTitle:'むずかしいぜんぶ　せいはバッジ',
     cond:'むずかしい ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_hard_all.png',
-    level:'hard', course:'all' },
+    level:'hard', course:'all', group:'seiha' },
   { id:'mix_20',   ico:'🎲', name:'ばらばら\n20もん 制覇！', unlockTitle:'ばらばら２０もん　せいはバッジ',
     cond:'ばらばら 20もん\nぜんもん3びょう以内',
     img:'./img/badge_mix20.png',
-    level:'mix', course:'20' },
+    level:'mix', course:'20', group:'seiha' },
   { id:'mix_all',  ico:'👑', name:'ばらばら\nぜんぶ 制覇！', unlockTitle:'ばらばらぜんぶ　せいはバッジ',
     cond:'ばらばら ぜんもん\nぜんもん3びょう以内',
     img:'./img/badge_mix_all.png',
-    level:'mix', course:'all' },
+    level:'mix', course:'all', group:'seiha' },
 
   { id:'easy_shinsoku', ico:'⚡', name:'かんたん\n神速（しんそく） クリア！', unlockTitle:'かんたん神速（しんそく）　せいはバッジ',
     cond:'かんたん 神速（しんそく）\n2びょう以内で クリア',
     img:'./img/shinsoku_easy.png',
-    level:'easy', course:'shinsoku' },
+    level:'easy', course:'shinsoku', group:'ougi' },
   { id:'hard_shinsoku', ico:'⚡', name:'むずかしい\n神速（しんそく） クリア！', unlockTitle:'むずかしい神速（しんそく）　せいはバッジ',
     cond:'むずかしい 神速（しんそく）\n2びょう以内で クリア',
     img:'./img/shinsoku_hard.png',
-    level:'hard', course:'shinsoku' },
+    level:'hard', course:'shinsoku', group:'ougi' },
   { id:'mix_shinsoku', ico:'⚡', name:'ばらばら\n神速（しんそく） クリア！', unlockTitle:'ばらばら神速（しんそく）　せいはバッジ',
     cond:'ばらばら 神速（しんそく）\n2びょう以内で クリア',
     img:'./img/shinsoku_barabara.png',
-    level:'mix', course:'shinsoku' },
+    level:'mix', course:'shinsoku', group:'ougi' },
   { id:'easy_cho_shinsoku', ico:'⚡', name:'かんたん\n超神速（ちょうしんそく） クリア！', unlockTitle:'かんたん超神速（ちょうしんそく）　せいはバッジ',
     cond:'かんたん 超神速（ちょうしんそく）\n1.5びょう以内で クリア',
     img:'./img/cho_shinsoku_easy.png',
-    level:'easy', course:'cho_shinsoku' },
+    level:'easy', course:'cho_shinsoku', group:'ougi' },
   { id:'hard_cho_shinsoku', ico:'⚡', name:'むずかしい\n超神速（ちょうしんそく） クリア！', unlockTitle:'むずかしい超神速（ちょうしんそく）　せいはバッジ',
     cond:'むずかしい 超神速（ちょうしんそく）\n1.5びょう以内で クリア',
     img:'./img/cho_shinsoku_hard.png',
-    level:'hard', course:'cho_shinsoku' },
+    level:'hard', course:'cho_shinsoku', group:'ougi' },
   { id:'mix_cho_shinsoku', ico:'⚡', name:'ばらばら\n超神速（ちょうしんそく） クリア！', unlockTitle:'ばらばら超神速（ちょうしんそく）　せいはバッジ',
     cond:'ばらばら 超神速（ちょうしんそく）\n1.5びょう以内で クリア',
     img:'./img/cho_shinsoku_barabara.png',
-    level:'mix', course:'cho_shinsoku' },
+    level:'mix', course:'cho_shinsoku', group:'ougi' },
 ];
 
 function saveBadgeData() {

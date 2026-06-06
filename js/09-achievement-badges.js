@@ -47,16 +47,25 @@ function buildAchBadgeItemEl(badge) {
 }
 
 function renderAchBadges() {
-  var el = document.getElementById('ach-group-badge');
-  if (!el) return;
-  el.innerHTML = '';
+  var groups = [
+    { tab: 'badge', id: 'ach-group-badge' },
+    { tab: 'ougi', id: 'ach-group-ougi' }
+  ];
 
-  var grid = document.createElement('div');
-  grid.className = 'ach-badge-grid';
+  groups.forEach(function(cfg) {
+    var el = document.getElementById(cfg.id);
+    if (!el) return;
+    el.innerHTML = '';
 
-  BADGES.forEach(function(badge) {
-    grid.appendChild(buildAchBadgeItemEl(badge));
+    var grid = document.createElement('div');
+    grid.className = 'ach-badge-grid';
+
+    BADGES.filter(function(badge) {
+      return (badge.group || 'seiha') === cfg.tab;
+    }).forEach(function(badge) {
+      grid.appendChild(buildAchBadgeItemEl(badge));
+    });
+
+    el.appendChild(grid);
   });
-
-  el.appendChild(grid);
 }
