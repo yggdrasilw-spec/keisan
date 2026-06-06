@@ -8,7 +8,8 @@ function collectFinishUnlockRewards(completed) {
   if (sessMode === 'kotsu') {
     var nn = kSt.num;
     var mode = kSt.mode === 'no' ? 'no' : 'carry';
-    var gemIdx = mode === 'no' ? nn : nn + 9;
+    var gemImgIdx = mode === 'no' ? nn : nn + 9;
+    var gemTextIdx = mode === 'no' ? nn : nn + 8;
     var ps = mode === 'no' ? buildKP_for_no(nn) : buildKP_for_carry(nn);
     var allMaster = ps.length > 0 && ps.every(function(p){
       var key = (mode === 'no' ? 'n' : 'k') + nn + ':' + p.a + '+' + p.b;
@@ -18,8 +19,8 @@ function collectFinishUnlockRewards(completed) {
       badgeData['gem_' + mode + '_' + nn] = 1;
       saveBadgeData();
       newGems.push({
-        img: './img/gem_' + gemIdx + '.png',
-        name: getGemUnlockTextByIndex(gemIdx)
+        img: './img/gem_' + gemImgIdx + '.png',
+        name: getGemUnlockTextByIndex(gemTextIdx)
       });
     }
   }

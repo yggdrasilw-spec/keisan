@@ -16,9 +16,9 @@ var ACH_STAGES = [
 ];
 
 // ── 宝石定義（18個: くりあがりなし 1〜9, くりあがりあり 2〜9 + ぜんぶマスター）──
-// img/gem_1.png〜img/gem_18.png, または img/gem_no1.png / img/gem_carry2.png 等
-// ファイル名規則: gem_no1〜gem_no9（なし1〜9）, gem_c2〜gem_c9（くりあがり2〜9）
-// ここでは img/gem_1.png〜img/gem_18.png のシンプルな連番で対応
+// 表示用の idx は GEM_UNLOCK_TEXTS の番号に合わせる。
+// なし: 1〜9, くりあがり: 10〜17, ぜんぶマスター: 18
+// 画像は くりあがり 2〜9 が gem_11.png〜gem_18.png。
 var ACH_GEMS = [];
 (function() {
   for (var n = 1; n <= 9; n++) {
@@ -36,10 +36,10 @@ var ACH_GEMS = [];
   }
   for (var n2 = 2; n2 <= 9; n2++) {
     ACH_GEMS.push({
-      idx: n2 + 9,
+      idx: n2 + 8,
       id: 'carry_' + n2,
       label: n2 + 'をたすマスター（くりあがり）',
-      img: (n2 === 2 ? './img/gem_9.png' : './img/gem_' + (n2 + 9) + '.png'),
+      img: './img/gem_' + (n2 + 9) + '.png',
       check: function(nn) {
         return function() {
           return isAllMasterForProblemSet(buildKP_for_carry(nn), 'k' + nn + ':');
