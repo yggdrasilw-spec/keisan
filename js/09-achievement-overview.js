@@ -22,20 +22,22 @@ function renderAchGems() {
   return unlockedCount;
 }
 
-function getAchStageByGemCount(gemUnlocked) {
+function getAchStageByCount(totalUnlocked) {
   var stage = ACH_STAGES[0];
-  for (var i = ACH_STAGES.length-1; i >= 0; i--) {
-    if (gemUnlocked >= ACH_STAGES[i].min) { stage = ACH_STAGES[i]; break; }
+  for (var i = ACH_STAGES.length - 1; i >= 0; i--) {
+    if (totalUnlocked >= ACH_STAGES[i].min) { stage = ACH_STAGES[i]; break; }
   }
   return stage;
 }
 
-function getAchNextStageByGemCount(gemUnlocked) {
+function getAchNextStageByCount(totalUnlocked) {
   for (var i = 0; i < ACH_STAGES.length; i++) {
-    if (ACH_STAGES[i].min > gemUnlocked) return ACH_STAGES[i];
+    if (ACH_STAGES[i].min > totalUnlocked) return ACH_STAGES[i];
   }
   return null;
 }
+
+
 
 function getAchUnlockedCountSummary(gemUnlocked) {
   var badgeOn = getUnlockedBadgeCount();
@@ -66,8 +68,8 @@ function updateAchAvatarFrame(stage) {
   if (desc) desc.textContent = stage.desc;
 }
 
-function updateAchProgressFrame(gemUnlocked) {
-  var nextStage = getAchNextStageByGemCount(gemUnlocked);
+function updateAchProgressFrame(totalUnlocked) {
+  var nextStage = getAchNextStageByCount(totalUnlocked);
   var pctEl  = document.getElementById('ach-progress-pct');
   var barEl  = document.getElementById('ach-progress-bar');
   var txtEl  = document.getElementById('ach-progress-text');
@@ -77,15 +79,15 @@ function updateAchProgressFrame(gemUnlocked) {
     if (pctEl) pctEl.textContent = '100%';
     if (barEl) barEl.style.width = '100%';
     if (txtEl) txtEl.textContent = '🎉 さいこうランク！';
-    if (footer) footer.textContent = '🏆 すべての ほうせきを てにいれた！';
+    if (footer) footer.textContent = '🏆 すべての 宝石と実績 を てにいれた！';
     return;
   }
 
-  var pct = Math.round(gemUnlocked / nextStage.min * 100);
+  var pct = Math.round(totalUnlocked / nextStage.min * 100);
   if (pctEl) pctEl.textContent = pct + '%';
   if (barEl) barEl.style.width = pct + '%';
   if (txtEl) txtEl.textContent = 'つぎのランクまで';
-  if (footer) footer.textContent = 'あと ' + (nextStage.min - gemUnlocked) + ' こ ほうせきを あつめると「' + nextStage.name + '」に しんか！';
+  if (footer) footer.textContent = 'あと ' + (nextStage.min - totalUnlocked) + ' こ じっせきを あつめると「' + nextStage.name + '」に しんか！';
 }
 
 function updateAchCountFrame(gemUnlocked) {
@@ -95,9 +97,10 @@ function updateAchCountFrame(gemUnlocked) {
 }
 
 function renderAchAvatar(gemUnlocked) {
-  var stage = getAchStageByGemCount(gemUnlocked);
+  var cnt = getAchUnlockedCountSummary(gemUnlocked);
+  var stage = getAchStageByCount(cnt.totalOn);
   updateAchAvatarFrame(stage);
-  updateAchProgressFrame(gemUnlocked);
+  updateAchProgressFrame(cnt.totalOn);
   updateAchCountFrame(gemUnlocked);
 }
 
