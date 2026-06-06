@@ -9,7 +9,7 @@ function collectFinishUnlockRewards(completed) {
     var nn = kSt.num;
     var mode = kSt.mode === 'no' ? 'no' : 'carry';
     var gemImgIdx = mode === 'no' ? nn : nn + 9;
-    var gemTextIdx = mode === 'no' ? nn : nn + 8;
+    var gemTextIdx = mode === 'no' ? nn : nn + 9;
     var ps = mode === 'no' ? buildKP_for_no(nn) : buildKP_for_carry(nn);
     var allMaster = ps.length > 0 && ps.every(function(p){
       var key = (mode === 'no' ? 'n' : 'k') + nn + ':' + p.a + '+' + p.b;
