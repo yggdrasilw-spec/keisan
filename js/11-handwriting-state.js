@@ -63,4 +63,5 @@ function hwDrawBoxes(octx) {
 function hwBeginQuestion() {
   hwQuestionSerial++;
   hwAnswerLocked = false;
+  if (typeof sess !== "undefined" && sess) sess._hwAnswerLocked = false;
 }
