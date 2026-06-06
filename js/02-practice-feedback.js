@@ -92,6 +92,7 @@ function queueNextQuestion(delay) {
     resultsLen: sess && sess.results ? sess.results.length : '(none)'
   });
   setTimeout(function(){
+    if (sess && sess._specialOver) return;
     console.log('[DBG] queueNextQuestion->showP(before)', {
       idx: sess && sess.idx,
       queueLen: sess && sess.queue ? sess.queue.length : '(none)'

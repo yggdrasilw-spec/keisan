@@ -27,6 +27,7 @@ function clearRuntimeTimers() {
   try { if (typeof clearScreenTransitionTimer === 'function') clearScreenTransitionTimer(); } catch (e) {}
   try { if (typeof tIv !== 'undefined' && tIv) { clearInterval(tIv); tIv = null; } } catch (e) {}
   try { if (typeof specialModeTimerIv !== 'undefined' && specialModeTimerIv) { clearInterval(specialModeTimerIv); specialModeTimerIv = null; } } catch (e) {}
+  try { if (typeof window !== 'undefined' && window.specialModeFinishTimerIv) { clearTimeout(window.specialModeFinishTimerIv); window.specialModeFinishTimerIv = null; } } catch (e) {}
 }
 
 function show(n) {

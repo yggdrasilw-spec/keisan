@@ -43,7 +43,7 @@ function launchSession(queue, mode) {
   var courseLabels = { '20':'20もん', all:'ぜんぶ', weak:'にがて' };
   var specialLabels = { shinsoku:'神速（しんそく）', mugen:'無限（むげん）' };
 
-  setSessionFields({ sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now(), _specialOver: false, specialMode: mode || 'normal' }, sessMode: mode || 'normal' });
+  setSessionFields({ sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now(), _specialOver: false, _specialAnswerLocked: false, specialQuestionDeadlineMs: 0, specialMode: mode || 'normal' }, sessMode: mode || 'normal' });
 
   if (mode && mode !== 'normal') {
     setSessionField('curCourse', 'all');
