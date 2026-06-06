@@ -4,9 +4,12 @@
 // ======================================================
 
 function endSess() {
+  if (sess) sess._sessionEnding = true;
+  if (typeof clearNextQuestionTimer === 'function') clearNextQuestionTimer();
+  if (typeof clearSpecialFinishTimer === 'function') clearSpecialFinishTimer();
   if (tIv){clearInterval(tIv);tIv=null;}
   if (!sess.results||!sess.results.length){show(sessMode==='kotsu'?'kotsu-sub':'course-select');return;}
-  finish();
+  finish(false);
 }
 
 function renderFinishOutcome(summary, completed) {
@@ -56,6 +59,9 @@ function renderFinishOutcome(summary, completed) {
 }
 
 function finish(completed) {
+  if (sess) sess._sessionEnding = true;
+  if (typeof clearNextQuestionTimer === 'function') clearNextQuestionTimer();
+  if (typeof clearSpecialFinishTimer === 'function') clearSpecialFinishTimer();
   if (tIv){clearInterval(tIv);tIv=null;}
   var summary = computeSessionSummary();
   renderFinishSummaryToResultPage(summary, completed);

@@ -42,6 +42,22 @@
     return level + MUGEN_RANK_KEY_SUFFIX;
   }
 
+  function clearSpecialFinishTimer() {
+    if (typeof window !== 'undefined' && window.specialModeFinishTimerIv) {
+      clearTimeout(window.specialModeFinishTimerIv);
+      window.specialModeFinishTimerIv = null;
+    }
+  }
+
+  function scheduleSpecialFinish(reason, delayMs) {
+    clearSpecialFinishTimer();
+    window.specialModeFinishTimerIv = setTimeout(function () {
+      window.specialModeFinishTimerIv = null;
+      if (sess && (sess._specialOver || sess._specialAnswerLocked)) return;
+      finishSpecialGameOver(reason || 'timeout');
+    }, Math.max(0, delayMs || 0));
+  }
+
   function getMugenBestCount(level) {
     var list = rkD && rkD[getMugenRankKey(level)];
     if (!list || !list.length) return 0;
@@ -271,9 +287,24 @@
     if (label) label.textContent = '2.0びょう';
   }
 
+  function hideNormalRankBox() {
+    var rankBox = document.getElementById('rv-rank-box');
+    var rankMsg = document.getElementById('rv-rank-msg');
+    if (rankBox) rankBox.style.display = 'none';
+    if (rankMsg) rankMsg.textContent = '';
+  }
+
   function finishSpecialGameOver(reason) {
-    sess.specialGameOverReason = reason || 'timeout';
-    sess.specialGameOverElapsed = Date.now() - (sess.sessStartTime || Date.now());
+    if (sess && (sess._sessionEnding || sess._specialOver)) return;
+    clearSpecialFinishTimer();
+    if (typeof clearNextQuestionTimer === 'function') clearNextQuestionTimer();
+    if (tIv) { clearInterval(tIv); tIv = null; }
+    if (sess) {
+      sess._sessionEnding = true;
+      sess._specialOver = true;
+      sess.specialGameOverReason = reason || 'timeout';
+      sess.specialGameOverElapsed = Date.now() - (sess.sessStartTime || Date.now());
+    }
     if (typeof finish === 'function') finish(false);
   }
 
@@ -309,7 +340,10 @@
         sessStartTime: Date.now(),
         specialMode: mode,
         specialGameOverReason: '',
-        specialQuestionLimitMs: 0
+        specialQuestionLimitMs: 0,
+        _sessionEnding: false,
+        _specialOver: false,
+        _specialAnswerLocked: false
       },
       sessMode: mode,
       curCourse: 'all'
@@ -346,9 +380,14 @@
     }
 
     if (tIv) { clearInterval(tIv); tIv = null; }
+    clearSpecialFinishTimer();
+    if (typeof clearNextQuestionTimer === 'function') clearNextQuestionTimer();
     sess.startTime = Date.now();
     var limitMs = getSpecialLimitMs();
     sess.specialQuestionLimitMs = limitMs;
+    sess.specialQuestionDeadlineMs = sess.startTime + limitMs;
+    sess._specialOver = false;
+    sess._specialAnswerLocked = false;
     setSpecialTimerUi(limitMs, limitMs);
 
     tIv = setInterval(function () {
@@ -357,11 +396,11 @@
       if (remain <= 0) {
         if (tIv) { clearInterval(tIv); tIv = null; }
         setSpecialTimerUi(0, limitMs);
-        finishSpecialGameOver('timeout');
+        scheduleSpecialFinish('timeout', 120);
         return;
       }
       setSpecialTimerUi(remain, limitMs);
-    }, 50);
+    }, 40);
   };
 
   var _submitPracticeAnswer = typeof submitPracticeAnswer === 'function' ? submitPracticeAnswer : null;
@@ -372,9 +411,20 @@
     }
 
     if (tIv) { clearInterval(tIv); tIv = null; }
-    var el = Date.now() - sess.startTime;
+    if (typeof clearNextQuestionTimer === 'function') clearNextQuestionTimer();
+    var now = Date.now();
+    var el = now - sess.startTime;
+    var deadline = sess.specialQuestionDeadlineMs || (sess.startTime + getSpecialLimitMs());
+
+    if (now >= deadline) {
+      finishSpecialGameOver('timeout');
+      return { ok: false, elapsed: el, gameOver: true };
+    }
+
+    clearSpecialFinishTimer();
+    sess._specialAnswerLocked = true;
+
     if (v !== p.ans) {
-      sess.specialGameOverReason = 'miss';
       finishSpecialGameOver('miss');
       return { ok: false, elapsed: el, gameOver: true };
     }
@@ -398,11 +448,6 @@
   // ── finish screen hooks ─────────────────────────────
   var _renderFinishSummaryToResultPage = typeof renderFinishSummaryToResultPage === 'function' ? renderFinishSummaryToResultPage : null;
   renderFinishSummaryToResultPage = function (summary, completed) {
-    var rankBox = document.getElementById('rv-rank-box');
-    var rankMsg = document.getElementById('rv-rank-msg');
-    if (rankBox) rankBox.style.display = 'none';
-    if (rankMsg) rankMsg.textContent = '';
-
     if (!isCurrentEndMode()) {
       if (_renderFinishSummaryToResultPage) return _renderFinishSummaryToResultPage(summary, completed);
       return;
@@ -413,6 +458,7 @@
     document.getElementById('rv-a').textContent = completed ? summary.acc + '%' : '—';
     document.getElementById('rv-avg').textContent = completed ? (summary.avgT + '秒') : '—';
     document.getElementById('rv-total').textContent = completed ? ((summary.totalMs / 1000).toFixed(2) + '秒') : (((sess.specialGameOverElapsed || 0) / 1000).toFixed(2) + '秒');
+    hideNormalRankBox();
   };
 
   var _renderFinishOutcome = typeof renderFinishOutcome === 'function' ? renderFinishOutcome : null;
@@ -428,6 +474,7 @@
     var rcard = document.getElementById('rcard');
     if (rcard) rcard.className = (curLevel === 'hard') ? 'rcard rcard-p' : 'rcard';
 
+    hideNormalRankBox();
     show('result');
 
     if (sessMode === 'mugen') {
@@ -485,6 +532,8 @@
   var _resetRuntimeVisualState = typeof resetRuntimeVisualState === 'function' ? resetRuntimeVisualState : null;
   resetRuntimeVisualState = function () {
     if (_resetRuntimeVisualState) _resetRuntimeVisualState();
+    clearSpecialFinishTimer();
+    if (typeof clearNextQuestionTimer === 'function') clearNextQuestionTimer();
     hideSpecialTimerUi();
   };
 
@@ -517,6 +566,7 @@
   }
 
   // 初期反映
+  clearSpecialFinishTimer();
   hideSpecialTimerUi();
   updateCourseButtonSubtitles(curLevel);
 })();

@@ -84,6 +84,15 @@ function renderAnswerFeedbackToUI(fx) {
   fbl.className = fx.cls;
 }
 
+var nextQuestionTimer = null;
+
+function clearNextQuestionTimer() {
+  if (nextQuestionTimer) {
+    clearTimeout(nextQuestionTimer);
+    nextQuestionTimer = null;
+  }
+}
+
 function queueNextQuestion(delay) {
   console.log('[DBG] queueNextQuestion', {
     delay: delay || 0,
@@ -91,8 +100,10 @@ function queueNextQuestion(delay) {
     queueLen: sess && sess.queue ? sess.queue.length : '(none)',
     resultsLen: sess && sess.results ? sess.results.length : '(none)'
   });
-  setTimeout(function(){
-    if (sess && sess._specialOver) return;
+  clearNextQuestionTimer();
+  nextQuestionTimer = setTimeout(function(){
+    nextQuestionTimer = null;
+    if (sess && (sess._sessionEnding || sess._specialOver)) return;
     console.log('[DBG] queueNextQuestion->showP(before)', {
       idx: sess && sess.idx,
       queueLen: sess && sess.queue ? sess.queue.length : '(none)'
