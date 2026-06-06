@@ -4,6 +4,20 @@
 // ======================================================
 var _showTimer = null;
 
+function setQuitBarVisible(visible) {
+  var qb = document.getElementById('quit-bar');
+  if (!qb) return;
+  if (visible) {
+    qb.classList.add('show');
+    qb.style.pointerEvents = '';
+  } else {
+    qb.classList.remove('show');
+    qb.style.pointerEvents = 'none';
+  }
+  var btn = qb.querySelector ? qb.querySelector('.quit-btn') : null;
+  if (btn) btn.disabled = !visible;
+}
+
 function clearScreenTransitionTimer() {
   if (_showTimer) {
     clearTimeout(_showTimer);
@@ -33,11 +47,7 @@ function applyScreenTransition(n, next, body) {
     setCurrentScreen(n);
     syncFullBleedScreenClass(n);
   }
-  var qb = document.getElementById('quit-bar');
-  if (qb) {
-    if (n === 'practice') qb.classList.add('show');
-    else qb.classList.remove('show');
-  }
+  setQuitBarVisible(n === 'practice');
   renderScreenEnterHooks(n);
 }
 

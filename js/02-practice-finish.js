@@ -5,6 +5,7 @@
 
 function endSess() {
   if (sess) sess._sessionEnding = true;
+  if (typeof setQuitBarVisible === 'function') setQuitBarVisible(false);
   if (typeof clearNextQuestionTimer === 'function') clearNextQuestionTimer();
   if (typeof clearSpecialFinishTimer === 'function') clearSpecialFinishTimer();
   if (tIv){clearInterval(tIv);tIv=null;}

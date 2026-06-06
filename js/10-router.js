@@ -45,6 +45,7 @@ function show(n) {
     for (var i = 0; i < ss.length; i++) ss[i].classList.remove('on');
     var same = document.getElementById(n);
     if (same) same.classList.add('on');
+    if (typeof setQuitBarVisible === 'function') setQuitBarVisible(n === 'practice');
     syncFullBleedScreenClass(n);
     renderScreenEnterHooks(n);
     return;
