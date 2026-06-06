@@ -157,7 +157,7 @@ function showNinjaLevelUpEffect(beforeTotal, onDone) {
   copy.appendChild(desc);
   card.appendChild(copy);
 
-  var footer = _ninjaCreateEl('div', 'ninja-levelup-footer', 'つぎの しゅぎょうも がんばろう！');
+  var footer = _ninjaCreateEl('div', 'ninja-levelup-footer', 'タップで とじる');
   card.appendChild(footer);
 
   overlay.appendChild(backdrop);
@@ -205,7 +205,8 @@ function showNinjaLevelUpEffect(beforeTotal, onDone) {
       overlay.classList.add('is-restored');
     }, 1450);
     schedule(function(){ overlay.classList.remove('is-flash'); }, 1820);
-    schedule(function(){ finish(); }, 2750);
+    overlay.classList.add('is-waiting-close');
+    console.log('[DBG] showNinjaLevelUpEffect waiting for tap close');
   });
 
   try {
