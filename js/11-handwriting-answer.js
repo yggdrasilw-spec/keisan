@@ -10,11 +10,14 @@ function hwCheckAnswer(recognized) {
     return;
   }
 
+  if (sess && sess._hwAnswerLocked) return;
+
   var p = sess.queue && sess.queue[sess.idx];
   if (!p) return;
   var correct = p.ans;
 
   if (recognized === correct) {
+    if (sess) sess._hwAnswerLocked = true;
     if(hintEl) { hintEl.textContent='✅ せいかい！'; hintEl.className='hw-hint ok'; }
     var pcardEl = document.getElementById('pcard');
     setTimeout(function() {

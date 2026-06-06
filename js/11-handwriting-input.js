@@ -37,11 +37,15 @@ function hwInitCanvas() {
     if(!hwDrawing) return;
     hwDrawing=false; ctx.beginPath();
     hwStrokeCount++;
+    var questionSerial = sess && typeof sess._hwQuestionSerial === 'number' ? sess._hwQuestionSerial : 0;
     var box=hwExpandBox(hwGetRawBox());
+
+    if (sess && sess._hwAnswerLocked) return;
 
     if(hwStrokeCount===1) {
       hwStroke1Box=box; hwDrawBoxes(octx);
       hwTensDigit = await hwPredict(hwStroke1Box, canvas);
+      if ((sess && sess._hwAnswerLocked) || (sess && typeof sess._hwQuestionSerial === 'number' && sess._hwQuestionSerial !== questionSerial)) return;
       var hintEl=document.getElementById('hw-hint');
       if(hintEl) hintEl.textContent='2本目 または はんていちゅう…';
       var p=sess.queue&&sess.queue[sess.idx];
@@ -57,11 +61,13 @@ function hwInitCanvas() {
       if(touching) {
         hwStroke1Box=hwMergeBox(hwStroke1Box,box); hwDrawBoxes(octx);
         hwTensDigit=await hwPredict(hwStroke1Box,canvas);
+        if ((sess && sess._hwAnswerLocked) || (sess && typeof sess._hwQuestionSerial === 'number' && sess._hwQuestionSerial !== questionSerial)) return;
         var p=sess.queue&&sess.queue[sess.idx];
         if(p && p.ans<=9) { hwCheckAnswer(hwTensDigit); return; }
       } else {
         hwStroke2Box=box; hwDrawBoxes(octx);
         hwOnesDigit=await hwPredict(hwStroke2Box,canvas);
+        if ((sess && sess._hwAnswerLocked) || (sess && typeof sess._hwQuestionSerial === 'number' && sess._hwQuestionSerial !== questionSerial)) return;
         var recognized=(hwTensDigit*10)+hwOnesDigit;
         hwCheckAnswer(recognized);
       }
@@ -72,6 +78,7 @@ function hwInitCanvas() {
     else hwStroke2Box=hwMergeBox(hwStroke2Box,box);
     hwDrawBoxes(octx);
     hwOnesDigit=await hwPredict(hwStroke2Box,canvas);
+    if ((sess && sess._hwAnswerLocked) || (sess && typeof sess._hwQuestionSerial === 'number' && sess._hwQuestionSerial !== questionSerial)) return;
     var recognized=(hwTensDigit*10)+hwOnesDigit;
     hwCheckAnswer(recognized);
   }

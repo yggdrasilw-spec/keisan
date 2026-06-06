@@ -11,6 +11,8 @@ var hwStroke2Box  = null;
 var hwStroke1Pts  = [];
 var hwStroke2Pts  = [];
 var hwMinX, hwMaxX, hwMinY, hwMaxY;
+var hwAnswerLocked = false;
+var hwQuestionSerial = 0;
 var HW_TOUCH_THRESHOLD = 20;
 
 function hwResetBox() { hwMinX=9999; hwMinY=9999; hwMaxX=-1; hwMaxY=-1; }
@@ -56,4 +58,9 @@ function hwDrawBoxes(octx) {
   }
   if(hwStroke1Box) rect(hwStroke1Box,'#5AAA30');
   if(hwStroke2Box) rect(hwStroke2Box,'#F5A623');
+}
+
+function hwBeginQuestion() {
+  hwQuestionSerial++;
+  hwAnswerLocked = false;
 }
