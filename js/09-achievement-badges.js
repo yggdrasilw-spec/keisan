@@ -47,25 +47,25 @@ function buildAchBadgeItemEl(badge) {
 }
 
 function renderAchBadges() {
-  var groups = [
-    { tab: 'badge', id: 'ach-group-badge' },
-    { tab: 'ougi', id: 'ach-group-ougi' }
-  ];
+  var badgeEl = document.getElementById('ach-group-badge');
+  var ougiEl = document.getElementById('ach-group-ougi');
+  if (badgeEl) badgeEl.innerHTML = '';
+  if (ougiEl) ougiEl.innerHTML = '';
 
-  groups.forEach(function(cfg) {
-    var el = document.getElementById(cfg.id);
-    if (!el) return;
-    el.innerHTML = '';
+  var badgeGrid = document.createElement('div');
+  badgeGrid.className = 'ach-badge-grid';
+  var ougiGrid = document.createElement('div');
+  ougiGrid.className = 'ach-badge-grid';
 
-    var grid = document.createElement('div');
-    grid.className = 'ach-badge-grid';
-
-    BADGES.filter(function(badge) {
-      return (badge.group || 'seiha') === cfg.tab;
-    }).forEach(function(badge) {
-      grid.appendChild(buildAchBadgeItemEl(badge));
-    });
-
-    el.appendChild(grid);
+  BADGES.forEach(function(badge) {
+    var item = buildAchBadgeItemEl(badge);
+    if (badge.group === 'ougi') {
+      if (ougiEl) ougiGrid.appendChild(item);
+    } else {
+      if (badgeEl) badgeGrid.appendChild(item);
+    }
   });
+
+  if (badgeEl) badgeEl.appendChild(badgeGrid);
+  if (ougiEl) ougiEl.appendChild(ougiGrid);
 }

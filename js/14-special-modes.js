@@ -123,7 +123,7 @@
     var shinsokuSub = document.getElementById('cs-sub-shinsoku');
     if (shinsokuSub) {
       shinsokuSub.innerHTML = '<div>' + getShinsokuButtonSub() + '</div>'
-        + '<div style="font-size:10px;font-weight:700;line-height:1.2;margin-top:2px;opacity:0.92;">' + (hasAllShinsokuBadges() ? '3つそろって ちょうしんそく' : '3つの せいはバッジで ちょうしんそく') + '</div>';
+        + '<div style="font-size:10px;font-weight:700;line-height:1.2;margin-top:2px;opacity:0.92;">' + (hasAllShinsokuBadges() ? '3つそろって ちょうしんそく' : '3つの おうぎバッジで ちょうしんそく') + '</div>';
     }
   }
 
