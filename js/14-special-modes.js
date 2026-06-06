@@ -6,13 +6,15 @@
   'use strict';
 
   var ORIGINAL_SEIHA_BADGE_IDS = ['easy_20', 'easy_all', 'hard_20', 'hard_all', 'mix_20', 'mix_all'];
-  var END_MODE_LABELS = { shinsoku: '神速（しんそく）', mugen: '無限（むげん）' };
   var END_MODE_BUTTONS = ['cs-end-shinsoku', 'cs-end-mugen'];
   var TOURMALINE_GEM_INDEX = 18;
-  var SHINSOKU_BADGE_ID = 'shinsoku_clear';
-  var SHINSOKU_BADGE_LABEL = '神速\nクリア！';
-  var SHINSOKU_BADGE_IMG = './img/badge_easy_all.png';
-  var SUPER_SHINSOKU_LIMIT_MS = 1500;
+  var SHINSOKU_BADGE_IDS = ['easy_shinsoku', 'hard_shinsoku', 'mix_shinsoku'];
+  var SHINSOKU_NORMAL_LABEL = '神速（しんそく）';
+  var SHINSOKU_SUPER_LABEL = '超神速（ちょうしんそく）';
+  var SHINSOKU_NORMAL_SUB = '1問 2びょう いないで こたえる ちょうせん';
+  var SHINSOKU_SUPER_SUB = '1問 1.5びょう いないで こたえる ちょうせん';
+  var SHINSOKU_NORMAL_LIMIT_MS = 2000;
+  var SHINSOKU_SUPER_LIMIT_MS = 1500;
   var MUGEN_RANK_KEY_SUFFIX = '_mugen_best';
   var MUGEN_QUEUE_TOTAL = 1000;
   var MUGEN_MIN_LIMIT_MS = 2500;
@@ -27,41 +29,6 @@
 
   function fmtCount(count) {
     return Math.max(0, count | 0) + 'もん';
-  }
-
-  function isShinsokuEvolved() {
-    return !!(badgeData && badgeData[SHINSOKU_BADGE_ID]);
-  }
-
-  function getShinsokuModeTitle() {
-    return isShinsokuEvolved() ? '超神速（ちょうしんそく）' : '神速（しんそく）';
-  }
-
-  function getShinsokuModeSubtitle() {
-    return isShinsokuEvolved()
-      ? '1問 1.5びょう いないで こたえる ちょうせん'
-      : '1問 2びょう いないで こたえる ちょうせん';
-  }
-
-  function getShinsokuModeSubNote() {
-    return isShinsokuEvolved()
-      ? '神速クリアで ちょうしんそくへ'
-      : 'ぜんぶ モード ベース';
-  }
-
-  function updateShinsokuButtonUi() {
-    var btn = document.getElementById('cs-end-shinsoku');
-    var title = btn ? btn.querySelector('.course-btn-title') : null;
-    if (title) title.textContent = getShinsokuModeTitle();
-    var sub = document.getElementById('cs-sub-shinsoku');
-    if (sub) {
-      sub.innerHTML = '<div>' + getShinsokuModeSubtitle() + '</div>'
-        + '<div style="font-size:10px;font-weight:700;line-height:1.2;margin-top:2px;opacity:0.92;">' + getShinsokuModeSubNote() + '</div>';
-    }
-  }
-
-  function getShinsokuClearText() {
-    return isShinsokuEvolved() ? 'ちょうしんそく クリア！' : 'しんそく クリア！';
   }
 
   function getRank1TimeText(level, course) {
@@ -137,7 +104,11 @@
         + '<div style="font-size:10px;font-weight:700;line-height:1.2;margin-top:2px;opacity:0.92;">さいこうきろく ' + fmtCount(best) + '</div>';
     }
 
-    updateShinsokuButtonUi();
+    var shinsokuSub = document.getElementById('cs-sub-shinsoku');
+    if (shinsokuSub) {
+      shinsokuSub.innerHTML = '<div>' + getShinsokuButtonSub() + '</div>'
+        + '<div style="font-size:10px;font-weight:700;line-height:1.2;margin-top:2px;opacity:0.92;">' + (hasAllShinsokuBadges() ? '3つそろって ちょうしんそく' : '3つの せいはバッジで ちょうしんそく') + '</div>';
+    }
   }
 
   function isTourmalineUnlocked() {
@@ -174,6 +145,37 @@
     if (el) el.style.display = 'none';
   }
 
+  function hasAllShinsokuBadges() {
+    for (var i = 0; i < SHINSOKU_BADGE_IDS.length; i++) {
+      if (!badgeData[SHINSOKU_BADGE_IDS[i]]) return false;
+    }
+    return true;
+  }
+
+  function getEndModeLabel(mode) {
+    if (mode === 'shinsoku') {
+      return hasAllShinsokuBadges() ? SHINSOKU_SUPER_LABEL : SHINSOKU_NORMAL_LABEL;
+    }
+    return { mugen: '無限（むげん）' }[mode] || mode;
+  }
+
+  function getShinsokuButtonTitle() {
+    return hasAllShinsokuBadges() ? SHINSOKU_SUPER_LABEL : SHINSOKU_NORMAL_LABEL;
+  }
+
+  function getShinsokuButtonSub() {
+    return hasAllShinsokuBadges() ? SHINSOKU_SUPER_SUB : SHINSOKU_NORMAL_SUB;
+  }
+
+  function syncShinsokuButtonText() {
+    var btn = document.getElementById('cs-end-shinsoku');
+    if (!btn) return;
+    var title = btn.querySelector('.course-btn-title');
+    var sub = document.getElementById('cs-sub-shinsoku');
+    if (title) title.textContent = getShinsokuButtonTitle();
+    if (sub) sub.textContent = getShinsokuButtonSub();
+  }
+
   function syncEndContentButtonState() {
     var unlocked = hasAllSeihaBadges();
     for (var i = 0; i < END_MODE_BUTTONS.length; i++) {
@@ -185,16 +187,12 @@
       btn.dataset.locked = unlocked ? 'false' : 'true';
       btn.setAttribute('aria-disabled', unlocked ? 'false' : 'true');
     }
+    syncShinsokuButtonText();
   }
 
   function refreshEndContentUi() {
     syncEndContentButtonState();
     updateCourseButtonSubtitles(curLevel);
-  }
-
-  function getEndModeLabel(mode) {
-    if (mode === 'shinsoku') return getShinsokuModeTitle();
-    return END_MODE_LABELS[mode] || mode;
   }
 
   function getLevelLabel(level) {
@@ -233,7 +231,9 @@
   }
 
   function getSpecialLimitMs() {
-    if (sessMode === 'shinsoku') return isShinsokuEvolved() ? SUPER_SHINSOKU_LIMIT_MS : 2000;
+    if (sessMode === 'shinsoku') {
+      return hasAllShinsokuBadges() ? SHINSOKU_SUPER_LIMIT_MS : SHINSOKU_NORMAL_LIMIT_MS;
+    }
     if (sessMode === 'mugen') {
       var base = 4000;
       var step = 120;
@@ -448,7 +448,7 @@
     } else if (completed) {
       sndGoodFinish();
       if (rbi) rbi.textContent = '⚡';
-      if (rt2) rt2.textContent = (sessMode === 'shinsoku') ? getShinsokuClearText() : 'むげん クリア！';
+      if (rt2) rt2.textContent = (sessMode === 'shinsoku') ? (hasAllShinsokuBadges() ? 'ちょうしんそく クリア！' : 'しんそく クリア！') : 'むげん クリア！';
       if (rs2) rs2.textContent = summary.tot + 'もん ぜんぶ せいかい';
 
       var unlocks = { gems: [], badge: null };
@@ -495,7 +495,7 @@
     var _goLevel = goLevel;
     goLevel = function (level) {
       var ret = _goLevel(level);
-      refreshEndContentUi();
+      updateCourseButtonSubtitles(level);
       return ret;
     };
   }
@@ -513,5 +513,5 @@
 
   // 初期反映
   hideSpecialTimerUi();
-  refreshEndContentUi();
+  updateCourseButtonSubtitles(curLevel);
 })();
