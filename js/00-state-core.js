@@ -132,13 +132,17 @@ function getSessionSnapshot() {
     kSt: kSt,
     answerMode: answerMode,
     calcInput: calcInput,
-    voiceOn: voiceOn
+    voiceOn: voiceOn,
+    startAchievementCount: (sess && typeof sess.startAchievementCount === 'number') ? sess.startAchievementCount : null
   };
 }
 
 function applySessionSnapshot(snapshot) {
   var src = snapshot || {};
   sess = src.sess || {};
+  if (typeof src.startAchievementCount === 'number') {
+    sess.startAchievementCount = src.startAchievementCount;
+  }
   tIv = (src.tIv === undefined) ? null : src.tIv;
   sessMode = src.sessMode || 'normal';
   curLevel = src.curLevel || 'easy';

@@ -4,9 +4,11 @@
 // ======================================================
 
 function collectFinishUnlockRewards(completed) {
-  var beforeTotal = (typeof getUnlockedAchievementCount === 'function')
-    ? getUnlockedAchievementCount().totalOn
-    : 0;
+  var beforeTotal = (typeof sess !== 'undefined' && sess && typeof sess.startAchievementCount === 'number')
+    ? sess.startAchievementCount
+    : ((typeof getUnlockedAchievementCount === 'function')
+      ? getUnlockedAchievementCount().totalOn
+      : 0);
   var newGems = [];
   if (sessMode === 'kotsu') {
     var nn = kSt.num;

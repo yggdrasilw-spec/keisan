@@ -11,7 +11,8 @@ function kStart() {
     if (st === 'weak') weak.push(ps[i]);
     else rest.push(ps[i]);
   }
-  setSessionFields({ sess:{queue:sh(weak).concat(sh(rest)).slice(0,Math.min(ps.length,20)),idx:0,results:[],streak:0,startTime:0,sessStartTime:Date.now(), _sessionEnding:false, _specialOver:false, _specialAnswerLocked:false}, sessMode:'kotsu' });
+  var startAchievementCount = (typeof getUnlockedAchievementCount === 'function') ? getUnlockedAchievementCount().totalOn : 0;
+  setSessionFields({ sess:{queue:sh(weak).concat(sh(rest)).slice(0,Math.min(ps.length,20)),idx:0,results:[],streak:0,startTime:0,sessStartTime:Date.now(), startAchievementCount:startAchievementCount, _sessionEnding:false, _specialOver:false, _specialAnswerLocked:false}, sessMode:'kotsu' });
   var bdg = document.getElementById('pbdg');
   bdg.textContent = kModeLabel(kSt.mode) + ' ' + kSt.num + 'をたすもんだい';
   bdg.className = 'pbdg bkotsu';
