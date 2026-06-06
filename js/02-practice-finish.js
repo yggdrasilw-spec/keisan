@@ -41,7 +41,7 @@ function renderFinishOutcome(summary, completed) {
       console.error('[finish] collectFinishUnlockRewards failed', e);
     }
     if (typeof updateCourseSelectSubtitles === 'function') updateCourseSelectSubtitles(curLevel);
-    playFinishUnlockSequence(unlocks.gems || [], unlocks.badge || null);
+    playFinishUnlockSequence(unlocks.gems || [], unlocks.badge || null, unlocks.beforeTotal);
     return;
   } else if (acc===100 || acc>=70) {
     sndGoodFinish();

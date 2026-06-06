@@ -509,7 +509,7 @@
       } catch (e) {
         console.error('[finish] collectFinishUnlockRewards failed', e);
       }
-      playFinishUnlockSequence(unlocks.gems || [], unlocks.badge || null);
+      playFinishUnlockSequence(unlocks.gems || [], unlocks.badge || null, unlocks.beforeTotal);
     } else {
       sndTryAgain();
       if (rbi) rbi.textContent = '⚔';
