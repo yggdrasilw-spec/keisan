@@ -574,6 +574,18 @@ body.booting #app {
       ▶ このこえで ためしよみ
     </button>
   </div>
+  <div style="font-size:13px;font-weight:800;color:#3A2A00;margin-bottom:8px;">💾 セーブデータ</div>
+  <div style="font-size:11px;color:#8A7050;margin-bottom:10px;font-weight:600;">.sav のテキストとして書き出し、あとから読み込めるようにします。画像や音声の本体データは省略されます。</div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+    <button data-action="downloadAppDataFile"
+      style="border-radius:14px;padding:11px;font-size:13px;font-weight:800;background:#EEF0FF;color:#3A3A9A;border:2.5px solid #AAAAE8;cursor:pointer;font-family:inherit;">
+      💾 セーブを書き出す
+    </button>
+    <button data-action="openAppDataImportPicker"
+      style="border-radius:14px;padding:11px;font-size:13px;font-weight:800;background:#FFF7E8;color:#8A5A00;border:2.5px solid #E8C88A;cursor:pointer;font-family:inherit;">
+      📥 セーブを読み込む
+    </button>
+  </div>
   <div style="font-size:13px;font-weight:800;color:#3A2A00;margin-bottom:8px;">🖼 ひょうじする がぞう</div>
   <div style="font-size:11px;color:#8A7050;margin-bottom:10px;font-weight:600;">「せいかい」「ふせいかい」「マスター」の がぞうを かえられるよ</div>
   <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
@@ -583,6 +595,7 @@ body.booting #app {
   </div>
   <input type="file" id="img-file-input" accept="image/*" style="display:none;">
   <input type="file" id="praise-audio-input" accept="audio/*" style="display:none;">
+  <input type="file" id="app-data-import-input" accept=".sav,.txt,application/json,text/plain" style="display:none;">
   <div style="font-size:13px;font-weight:800;color:#3A2A00;margin-bottom:8px;">🗣 せいかい した ときの こえ</div>
   <div style="font-size:11px;color:#8A7050;margin-bottom:10px;font-weight:600;">こたえる はやさに あわせて、よむ ことばや おんせいファイルを えらべるよ</div>
   <div id="praise-edit-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;"></div>
