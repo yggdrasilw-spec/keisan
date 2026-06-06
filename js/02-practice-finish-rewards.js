@@ -9,7 +9,9 @@ function collectFinishUnlockRewards(completed) {
     var nn = kSt.num;
     var mode = kSt.mode === 'no' ? 'no' : 'carry';
     var gemImgIdx = mode === 'no' ? nn : nn + 9;
-    var gemTextIdx = mode === 'no' ? nn : nn + 9;
+    // くりあがり系の文言は画像番号より1つ小さい idx を使う
+    // carry_2 -> GEM_UNLOCK_TEXTS[10], carry_3 -> [11] ... carry_9 -> [17]
+    var gemTextIdx = mode === 'no' ? nn : nn + 8;
     var ps = mode === 'no' ? buildKP_for_no(nn) : buildKP_for_carry(nn);
     var allMaster = ps.length > 0 && ps.every(function(p){
       var key = (mode === 'no' ? 'n' : 'k') + nn + ':' + p.a + '+' + p.b;
