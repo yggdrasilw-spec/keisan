@@ -29,11 +29,6 @@ function getGemUnlockTextByIndex(idx) {
 }
 
 function showGemUnlockEffect(gemImg, gemName, onDone) {
-  if (typeof getFx === 'function' && !getFx('fx_perfect')) {
-    if (onDone) onDone();
-    return;
-  }
-
   var parts = buildAchievementOverlay();
   bindAchievementOverlayClose(parts, onDone);
 
@@ -64,4 +59,9 @@ function showGemUnlockEffect(gemImg, gemName, onDone) {
   title.appendChild(line2);
 
   parts.card.appendChild(title);
+
+  document.body.appendChild(parts.overlay);
+  try {
+    playAchievementTone([[0,523],[0.1,659],[0.2,784],[0.3,1047]],0.22,0.22);
+  } catch (e) {}
 }

@@ -4,10 +4,6 @@
 // ======================================================
 
 function showBadgeUnlockEffect(badge, onDone) {
-  if (typeof getFx === 'function' && !getFx('fx_perfect')) {
-    if (onDone) onDone();
-    return;
-  }
   if (!badge) {
     if (onDone) onDone();
     return;

@@ -26,7 +26,7 @@ var ACH_GEMS = [];
       idx: n,
       id: 'no_' + n,
       label: n + 'をたすマスター',
-      img: (n === 9 ? './img/gem_18.png' : './img/gem_' + n + '.png'),
+      img: (n === 9 ? './img/gem_9.png' : './img/gem_' + n + '.png'),
       check: function(nn) {
         return function() {
           return isAllMasterForProblemSet(buildKP_for_no(nn), 'n' + nn + ':');
