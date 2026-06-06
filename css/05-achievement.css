@@ -33,7 +33,7 @@
   }
   .ach-tabs {
     display: flex;
-    gap: 4px;
+    gap: 3px;
     flex-wrap: wrap;
   }
   .ach-tab {
@@ -159,7 +159,7 @@
     background: rgba(255,255,255,.03);
     text-align: center;
     transition: transform .12s, background .12s, border-color .12s;
-    min-height: 82px;
+    min-height: 68px;
   }
   .ach-gem-card.unlocked {
     background: linear-gradient(135deg, rgba(245,200,76,.10), rgba(93,211,140,.08));
@@ -184,17 +184,9 @@
     line-height: 1.15;
     font-weight: 800;
     color: #e2e8f0;
-    min-height: 2.3em;
+    min-height: 0;
   }
   .ach-gem-card.locked .ach-gem-card-name { color: #475569; }
-  .ach-gem-card-meta {
-    font-size: 10px;
-    line-height: 1.2;
-    color: #64748b;
-    font-weight: 600;
-    min-height: 2.4em;
-  }
-  .ach-gem-card.locked .ach-gem-card-meta { color: #475569; }
   .ach-gem-card-pill {
     border-radius: 999px;
     padding: 3px 8px;
