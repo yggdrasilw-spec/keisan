@@ -8,21 +8,21 @@ function collectFinishUnlockRewards(completed) {
   if (sessMode === 'kotsu') {
     var nn = kSt.num;
     var mode = kSt.mode === 'no' ? 'no' : 'carry';
-    var gemImgIdx = mode === 'no' ? nn : nn + 9;
-    // くりあがり系の文言は画像番号より1つ小さい idx を使う
-    // carry_2 -> GEM_UNLOCK_TEXTS[10], carry_3 -> [11] ... carry_9 -> [17]
-    var gemTextIdx = mode === 'no' ? nn : nn + 8;
+    var gemId = mode === 'no' ? ('no_' + nn) : ('carry_' + nn);
+    var gem = (typeof ACH_GEMS !== 'undefined' && ACH_GEMS && ACH_GEMS.find)
+      ? ACH_GEMS.find(function(g){ return g.id === gemId; })
+      : null;
     var ps = mode === 'no' ? buildKP_for_no(nn) : buildKP_for_carry(nn);
     var allMaster = ps.length > 0 && ps.every(function(p){
       var key = (mode === 'no' ? 'n' : 'k') + nn + ':' + p.a + '+' + p.b;
       return getSt(kD[key]) === 'master';
     });
-    if (allMaster && !badgeData['gem_' + mode + '_' + nn]) {
+    if (allMaster && !badgeData['gem_' + mode + '_' + nn] && gem) {
       badgeData['gem_' + mode + '_' + nn] = 1;
       saveBadgeData();
       newGems.push({
-        img: './img/gem_' + gemImgIdx + '.png',
-        name: getGemUnlockTextByIndex(gemTextIdx)
+        img: gem.img,
+        name: gem.unlockText || getGemUnlockTextByIndex(gem.idx || 0)
       });
     }
   }

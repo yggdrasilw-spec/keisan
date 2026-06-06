@@ -86,9 +86,10 @@ function makeGemCard(gem, on) {
   }
   item.appendChild(meta);
 
-  var unlockText = typeof getGemUnlockTextByIndex === 'function'
-    ? getGemUnlockTextByIndex(gem.idx || 0)
-    : (gem.label || '') + '\nゲット！';
+  var unlockText = gem.unlockText
+    || (typeof getGemUnlockTextByIndex === 'function'
+      ? getGemUnlockTextByIndex(gem.idx || 0)
+      : (gem.label || '') + '\nゲット！');
   item.dataset.gemUnlockText = unlockText;
   item.dataset.gemImg = gem.img || '';
   item.dataset.gemUnlocked = on ? '1' : '0';

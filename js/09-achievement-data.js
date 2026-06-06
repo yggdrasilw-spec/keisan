@@ -16,47 +16,225 @@ var ACH_STAGES = [
 ];
 
 // ── 宝石定義（18個: くりあがりなし 1〜9, くりあがりあり 2〜9 + ぜんぶマスター）──
-// 表示用の idx は GEM_UNLOCK_TEXTS の番号に合わせる。
-// なし: 1〜9, くりあがり: 10〜17, ぜんぶマスター: 18
-// 画像は くりあがり 2〜9 が gem_11.png〜gem_18.png。
-var ACH_GEMS = [];
-(function() {
-  for (var n = 1; n <= 9; n++) {
-    ACH_GEMS.push({
-      idx: n,
-      id: 'no_' + n,
-      label: n + 'をたすマスター',
-      img: (n === 9 ? './img/gem_9.png' : './img/gem_' + n + '.png'),
-      check: function(nn) {
-        return function() {
-          return isAllMasterForProblemSet(buildKP_for_no(nn), 'n' + nn + ':');
-        };
-      }(n)
-    });
-  }
-  for (var n2 = 2; n2 <= 9; n2++) {
-    ACH_GEMS.push({
-      idx: n2 + 8,
-      id: 'carry_' + n2,
-      label: n2 + 'をたすマスター（くりあがり）',
-      img: './img/gem_' + (n2 + 9) + '.png',
-      check: function(nn) {
-        return function() {
-          return isAllMasterForProblemSet(buildKP_for_carry(nn), 'k' + nn + ':');
-        };
-      }(n2)
-    });
-  }
-  ACH_GEMS.push({
-    idx: 18,
-    id: 'all_master',
-    label: 'すべてをマスター',
-    img: './img/gem_10.png',
+// img/gem_1.png〜img/gem_18.png, または img/gem_no1.png / img/gem_carry2.png 等
+// ファイル名規則: gem_no1〜gem_no9（なし1〜9）, gem_c2〜gem_c9（くりあがり2〜9）
+// ここでは img/gem_1.png〜img/gem_18.png のシンプルな連番で対応
+var ACH_GEMS = [
+  {
+    idx: 1,
+    id: "no_1",
+    label: "1をたすマスター",
+    unlockText: "１をたすマスター！\n金剛石（ダイヤモンド）ゲット！",
+    img: "./img/gem_1.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(1)
+  },
+  {
+    idx: 2,
+    id: "no_2",
+    label: "2をたすマスター",
+    unlockText: "２をたすマスター！\n紅玉（ルビー）ゲット！",
+    img: "./img/gem_2.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(2)
+  },
+  {
+    idx: 3,
+    id: "no_3",
+    label: "3をたすマスター",
+    unlockText: "３をたすマスター！\n青玉（サファイア）ゲット！",
+    img: "./img/gem_3.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(3)
+  },
+  {
+    idx: 4,
+    id: "no_4",
+    label: "4をたすマスター",
+    unlockText: "４をたすマスター！\n翠玉（エメラルド）ゲット！",
+    img: "./img/gem_4.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(4)
+  },
+  {
+    idx: 5,
+    id: "no_5",
+    label: "5をたすマスター",
+    unlockText: "５をたすマスター！\n紫水晶（アメジスト）ゲット！",
+    img: "./img/gem_5.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(5)
+  },
+  {
+    idx: 6,
+    id: "no_6",
+    label: "6をたすマスター",
+    unlockText: "６をたすマスター！\n黄玉（トパーズ）ゲット！",
+    img: "./img/gem_6.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(6)
+  },
+  {
+    idx: 7,
+    id: "no_7",
+    label: "7をたすマスター",
+    unlockText: "７をたすマスター！\n柘榴石（ガーネット）ゲット！",
+    img: "./img/gem_7.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(7)
+  },
+  {
+    idx: 8,
+    id: "no_8",
+    label: "8をたすマスター",
+    unlockText: "８をたすマスター！\n橄欖石（ペリドット）ゲット！",
+    img: "./img/gem_8.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(8)
+  },
+  {
+    idx: 9,
+    id: "no_9",
+    label: "9をたすマスター",
+    unlockText: "9をたすマスター！\n蛋白石（オパール）ゲット！",
+    img: "./img/gem_9.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_no(nn), "n" + nn + ":");
+      };
+    })(9)
+  },
+  {
+    idx: 10,
+    id: "all_master",
+    label: "すべてをマスター",
+    unlockText: "すべてをマスター！\n6つの せいはバッジを てにいれた！",
+    img: "./img/gem_10.png",
     check: function() {
       return isAllMasterForLevel('mix');
     }
-  });
-})();
+  },
+  {
+    idx: 11,
+    id: "carry_2",
+    label: "2をたすマスター（くりあがり）",
+    unlockText: "２をたすマスター（くりあがり）！\n翡翠（ヒスイ）ゲット！",
+    img: "./img/gem_11.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_carry(nn), "k" + nn + ":");
+      };
+    })(2)
+  },
+  {
+    idx: 12,
+    id: "carry_3",
+    label: "3をたすマスター（くりあがり）",
+    unlockText: "３をたすマスター（くりあがり）！\n瑠璃（ラピスラズリ）ゲット！",
+    img: "./img/gem_12.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_carry(nn), "k" + nn + ":");
+      };
+    })(3)
+  },
+  {
+    idx: 13,
+    id: "carry_4",
+    label: "4をたすマスター（くりあがり）",
+    unlockText: "４をたすマスター（くりあがり）！\n真珠（パール）ゲット！",
+    img: "./img/gem_13.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_carry(nn), "k" + nn + ":");
+      };
+    })(4)
+  },
+  {
+    idx: 14,
+    id: "carry_5",
+    label: "5をたすマスター（くりあがり）",
+    unlockText: "５をたすマスター（くりあがり）！\n琥珀（コハク）ゲット！",
+    img: "./img/gem_14.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_carry(nn), "k" + nn + ":");
+      };
+    })(5)
+  },
+  {
+    idx: 15,
+    id: "carry_6",
+    label: "6をたすマスター（くりあがり）",
+    unlockText: "６をたすマスター（くりあがり）！\n風信子石（ジルコン）ゲット！",
+    img: "./img/gem_15.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_carry(nn), "k" + nn + ":");
+      };
+    })(6)
+  },
+  {
+    idx: 16,
+    id: "carry_7",
+    label: "7をたすマスター（くりあがり）",
+    unlockText: "７をたすマスター（くりあがり）！\n尖晶石（スピネル）ゲット！",
+    img: "./img/gem_16.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_carry(nn), "k" + nn + ":");
+      };
+    })(7)
+  },
+  {
+    idx: 17,
+    id: "carry_8",
+    label: "8をたすマスター（くりあがり）",
+    unlockText: "８をたすマスター（くりあがり）！\n月長石（ムーンストーン）ゲット！",
+    img: "./img/gem_17.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_carry(nn), "k" + nn + ":");
+      };
+    })(8)
+  },
+  {
+    idx: 18,
+    id: "carry_9",
+    label: "9をたすマスター（くりあがり）",
+    unlockText: "9をたすマスター（くりあがり）！\n電気石（トルマリン）ゲット！",
+    img: "./img/gem_18.png",
+    check: (function(nn) {
+      return function() {
+        return isAllMasterForProblemSet(buildKP_for_carry(nn), "k" + nn + ":");
+      };
+    })(9)
+  }
+];
 
 // buildKP を mode 固定版として複製（kSt に依存しない）
 
