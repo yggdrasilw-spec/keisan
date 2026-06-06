@@ -23,8 +23,8 @@ function renderPracticeTop(p, tot) {
   var bar = document.getElementById('pgbar');
   if (ctr) ctr.textContent = (sess.idx + 1) + '/' + tot;
   if (bar) {
-    if (sessMode === 'shinsoku' || sessMode === 'mugen') bar.style.width = '100%';
-    else bar.style.width = Math.round(sess.idx / tot * 100) + '%';
+    var pct = tot > 0 ? Math.round(sess.idx / tot * 100) : 0;
+    bar.style.width = Math.max(0, Math.min(100, pct)) + '%';
   }
   fitEq(p.a + ' ＋ ' + p.b + ' ＝ ？');
 
