@@ -140,9 +140,6 @@ function getSessionSnapshot() {
 function applySessionSnapshot(snapshot) {
   var src = snapshot || {};
   sess = src.sess || {};
-  if (typeof src.startAchievementCount === 'number') {
-    sess.startAchievementCount = src.startAchievementCount;
-  }
   tIv = (src.tIv === undefined) ? null : src.tIv;
   sessMode = src.sessMode || 'normal';
   curLevel = src.curLevel || 'easy';
@@ -151,6 +148,11 @@ function applySessionSnapshot(snapshot) {
   answerMode = src.answerMode || 'random';
   calcInput = src.calcInput || '';
   voiceOn = (src.voiceOn === undefined) ? true : !!src.voiceOn;
+  if (src.sess && typeof src.sess.startAchievementCount === 'number') {
+    sess.startAchievementCount = src.sess.startAchievementCount;
+  } else if (typeof src.startAchievementCount === 'number') {
+    sess.startAchievementCount = src.startAchievementCount;
+  }
   syncLegacyStateAliases();
   return getSessionSnapshot();
 }

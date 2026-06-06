@@ -35,6 +35,16 @@ function launchSession(queue, mode) {
   if (typeof clearSpecialFinishTimer === 'function') clearSpecialFinishTimer();
   try { var ac = getAC(); if (ac && ac.state === 'suspended') ac.resume(); } catch(e) {}
 
+  var startAchievementCount = (typeof getUnlockedAchievementCount === 'function')
+    ? getUnlockedAchievementCount().totalOn
+    : null;
+  console.log('[DBG] launchSession', {
+    mode: mode || 'normal',
+    curLevel: curLevel,
+    curCourse: curCourse,
+    startAchievementCount: startAchievementCount
+  });
+
   var levelColors = {
     easy:  { bdg:'bno', pcardCls:'pcard', peqCls:'peq', pgCol:'#5AAA30', rcardCls:'rcard', rt2Cls:'rt2', ragCls:'rag' },
     hard:  { bdg:'bcy', pcardCls:'pcard pcard-p', peqCls:'peq peq-p', pgCol:'#7070D0', rcardCls:'rcard rcard-p', rt2Cls:'rt2 rt2-p', ragCls:'rag rag-p' },
@@ -45,7 +55,6 @@ function launchSession(queue, mode) {
   var courseLabels = { '20':'20もん', all:'ぜんぶ', weak:'にがて' };
   var specialLabels = { shinsoku:'神速（しんそく）', mugen:'無限（むげん）' };
 
-  var startAchievementCount = (typeof getUnlockedAchievementCount === 'function') ? getUnlockedAchievementCount().totalOn : 0;
   setSessionFields({ sess: { queue: queue, idx: 0, results: [], streak: 0, startTime: 0, sessStartTime: Date.now(), startAchievementCount: startAchievementCount, _sessionEnding: false, _specialOver: false, _specialAnswerLocked: false, specialQuestionDeadlineMs: 0, specialMode: mode || 'normal' }, sessMode: mode || 'normal' });
 
   if (mode && mode !== 'normal') {

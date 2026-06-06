@@ -4,11 +4,21 @@
 // ======================================================
 
 function collectFinishUnlockRewards(completed) {
-  var beforeTotal = (typeof sess !== 'undefined' && sess && typeof sess.startAchievementCount === 'number')
+  var liveTotal = (typeof getUnlockedAchievementCount === 'function')
+    ? getUnlockedAchievementCount().totalOn
+    : 0;
+  var beforeTotal = (sess && typeof sess.startAchievementCount === 'number')
     ? sess.startAchievementCount
-    : ((typeof getUnlockedAchievementCount === 'function')
-      ? getUnlockedAchievementCount().totalOn
-      : 0);
+    : liveTotal;
+  console.log('[DBG] collectFinishUnlockRewards', {
+    completed: completed,
+    sessMode: sessMode,
+    curLevel: curLevel,
+    curCourse: curCourse,
+    sessStartAchievementCount: sess && sess.startAchievementCount,
+    liveTotalOn: liveTotal,
+    beforeTotal: beforeTotal
+  });
   var newGems = [];
   if (sessMode === 'kotsu') {
     var nn = kSt.num;
@@ -53,6 +63,11 @@ function playFinishUnlockSequence(gems, badge, beforeTotal, onDone) {
   }
 
   function finishMaybeLevelUp() {
+    console.log('[DBG] playFinishUnlockSequence.finishMaybeLevelUp', {
+      gems: gems && gems.length ? gems.length : 0,
+      hasBadge: !!badge,
+      beforeTotal: beforeTotal
+    });
     if (typeof showNinjaLevelUpEffect === 'function' && beforeTotal !== null && beforeTotal !== undefined) {
       setTimeout(function() {
         if (typeof renderAchievementOverview === 'function') {

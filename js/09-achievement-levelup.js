@@ -99,6 +99,10 @@ function _ninjaGetStageIndexByTotal(totalUnlocked) {
 
 function showNinjaLevelUpEffect(beforeTotal, onDone) {
   if (typeof getUnlockedAchievementCount !== 'function' || typeof getAchStageByCount !== 'function') {
+    console.log('[DBG] showNinjaLevelUpEffect abort: missing helpers', {
+      hasGetUnlockedAchievementCount: typeof getUnlockedAchievementCount === 'function',
+      hasGetAchStageByCount: typeof getAchStageByCount === 'function'
+    });
     if (typeof onDone === 'function') onDone();
     return;
   }
@@ -107,7 +111,18 @@ function showNinjaLevelUpEffect(beforeTotal, onDone) {
   var beforeStage = getAchStageByCount(typeof beforeTotal === 'number' ? beforeTotal : afterTotal);
   var afterStage = getAchStageByCount(afterTotal);
 
+  console.log('[DBG] showNinjaLevelUpEffect compare', {
+    beforeTotal: beforeTotal,
+    afterTotal: afterTotal,
+    beforeStage: beforeStage ? { lv: beforeStage.lv, name: beforeStage.name, min: beforeStage.min } : null,
+    afterStage: afterStage ? { lv: afterStage.lv, name: afterStage.name, min: afterStage.min } : null
+  });
+
   if (!afterStage || !beforeStage || afterStage.lv === beforeStage.lv) {
+    console.log('[DBG] showNinjaLevelUpEffect abort: no level change', {
+      beforeLv: beforeStage && beforeStage.lv,
+      afterLv: afterStage && afterStage.lv
+    });
     if (typeof onDone === 'function') onDone();
     return;
   }
