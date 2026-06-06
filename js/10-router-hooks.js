@@ -8,6 +8,9 @@ var SCREEN_ENTER_HANDLERS = {
   'records-top': renderRecordsScreen,
   'stats-top': renderStatsScreen,
   'achievement': renderAchievementScreen,
+  'course-select': function() {
+    if (typeof updateCourseSelectSubtitles === 'function') updateCourseSelectSubtitles(curLevel);
+  },
 };
 
 function renderFxAndAudioSettings() {
@@ -37,6 +40,7 @@ function renderStatsScreen() {
 
 function renderAchievementScreen() {
   renderAchievement();
+  achInitTabs();
 }
 
 function renderScreenEnterHooks(n) {

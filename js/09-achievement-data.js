@@ -131,8 +131,8 @@ var ACH_GEMS = [
   {
     idx: 10,
     id: "all_master",
-    label: "すべてをマスター",
-    unlockText: "すべてをマスター！\n6つの せいはバッジを てにいれた！",
+    label: "かんたん、むずかしい、ばらばらマスター、にがて0",
+    unlockText: "すべてをマスター！\n電気石（トルマリン）ゲット！",
     img: "./img/gem_10.png",
     check: function() {
       return isAllMasterForLevel('mix');
@@ -226,7 +226,7 @@ var ACH_GEMS = [
     idx: 18,
     id: "carry_9",
     label: "9をたすマスター（くりあがり）",
-    unlockText: "9をたすマスター（くりあがり）！\n電気石（トルマリン）ゲット！",
+    unlockText: "9をたすマスター（くりあがり）！\n金緑石（アレキサンドライト）ゲット！",
     img: "./img/gem_18.png",
     check: (function(nn) {
       return function() {

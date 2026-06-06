@@ -72,19 +72,10 @@ function makeGemCard(gem, on) {
 
   var name = document.createElement('div');
   name.className = 'ach-gem-card-name';
-  name.textContent = gem.label.replace(/\n/g, ' ');
+  name.textContent = (gem.id === 'all_master')
+    ? 'かんたん、むずかしい、ばらばらマスター、にがて0'
+    : gem.label.replace(/\n/g, ' ');
   item.appendChild(name);
-
-  var meta = document.createElement('div');
-  meta.className = 'ach-gem-card-meta';
-  if (gem.id === 'all_master') {
-    meta.textContent = '6つの せいはバッジを てにいれた！';
-  } else if (/（くりあがり）/.test(gem.label)) {
-    meta.textContent = gem.label.replace(/\n/g, ' ').replace('マスター（くりあがり）', '').trim() + ' をぜんぶマスター（くりあがり）';
-  } else {
-    meta.textContent = gem.label.replace(/\n/g, ' ').replace('マスター', '').trim() + ' をぜんぶマスター';
-  }
-  item.appendChild(meta);
 
   var unlockText = gem.unlockText
     || (typeof getGemUnlockTextByIndex === 'function'

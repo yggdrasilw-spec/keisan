@@ -2,17 +2,30 @@
 // ======================================================
 // ホーム
 // ======================================================
+function updateCourseSelectSubtitles(level) {
+  var lv = level || curLevel || 'easy';
+  var titles = { easy:'🌱 かんたん', hard:'⭐ むずかしい', mix:'🎲 ばらばら' };
+  var titleEl = document.getElementById('cs-title');
+  if (titleEl) titleEl.textContent = titles[lv] + ' — コース を えらぼう';
+
+  var allPs = buildPLevel(lv);
+  var sub20 = document.getElementById('cs-sub-20');
+  if (sub20) sub20.textContent = '20もん チャレンジ / ' + rkBestTimeLabel(lv, '20');
+
+  var subAll = document.getElementById('cs-sub-all');
+  if (subAll) subAll.textContent = allPs.length + 'もん ぜんぶ チャレンジ / ' + rkBestTimeLabel(lv, 'all');
+
+  var weakPs = getWeakPs(lv);
+  var subWeak = document.getElementById('cs-sub-weak');
+  if (subWeak) subWeak.textContent = weakPs.length + 'もん（にがて）';
+
+  var kb = document.getElementById('cs-kotsu-btn');
+  if (kb) kb.style.display = lv === 'mix' ? 'none' : 'flex';
+}
+
 function goLevel(level) {
   setSessionField('curLevel', level);
-  var titles = { easy:'🌱 かんたん', hard:'⭐ むずかしい', mix:'🎲 ばらばら' };
-  document.getElementById('cs-title').textContent = titles[level] + ' — コース を えらぼう';
-  var allPs = buildPLevel(level);
-  document.getElementById('cs-sub-20').textContent = '20もん チャレンジ / ' + rkBestTimeLabel(level, '20');
-  document.getElementById('cs-sub-all').textContent = allPs.length + 'もん ぜんぶ チャレンジ / ' + rkBestTimeLabel(level, 'all');
-  var weakPs = getWeakPs(level);
-  document.getElementById('cs-sub-weak').textContent = weakPs.length + 'もん（にがて）';
-  var kb = document.getElementById('cs-kotsu-btn');
-  if (kb) kb.style.display = level === 'mix' ? 'none' : 'flex';
+  updateCourseSelectSubtitles(level);
   show('course-select');
 }
 
