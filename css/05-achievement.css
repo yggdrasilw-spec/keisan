@@ -408,3 +408,187 @@
     text-align: center;
     text-shadow: 0 2px 0 rgba(0,0,0,.75);
   }
+
+
+  /* 忍者レベルアップ演出 */
+  @keyframes ninjaLevelIn {
+    0%   { transform: scale(.74); opacity: 0; }
+    60%  { transform: scale(1.03); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes ninjaLevelPulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+  @keyframes ninjaLevelFlash {
+    0% { opacity: 0; }
+    24% { opacity: .95; }
+    72% { opacity: .88; }
+    100% { opacity: 0; }
+  }
+  @keyframes ninjaOrbitSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes ninjaOrbPulse {
+    0%,100% { transform: scale(1); opacity: .85; }
+    50% { transform: scale(1.42); opacity: 1; }
+  }
+  .ninja-levelup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    background: rgba(0,0,0,0);
+    opacity: 0;
+    transition: opacity .22s ease;
+  }
+  .ninja-levelup-overlay.is-open {
+    opacity: 1;
+  }
+  .ninja-levelup-backdrop {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,.0) 0%, rgba(255,255,255,.12) 30%, rgba(0,0,0,.50) 72%, rgba(0,0,0,.68) 100%);
+    backdrop-filter: blur(4px);
+  }
+  .ninja-levelup-card {
+    position: relative;
+    width: min(92vw, 760px);
+    min-height: min(80vh, 680px);
+    padding: 24px 22px 18px;
+    border-radius: 28px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(17,24,39,.94), rgba(15,23,42,.98));
+    border: 2px solid rgba(255,255,255,.18);
+    box-shadow: 0 0 48px rgba(103,183,255,.22), 0 0 96px rgba(255,255,255,.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    transform: scale(.82);
+    opacity: 0;
+    animation: ninjaLevelIn .55s cubic-bezier(.2,.85,.18,1.2) .02s forwards;
+  }
+  .ninja-levelup-overlay.is-flash .ninja-levelup-card {
+    animation: ninjaLevelIn .55s cubic-bezier(.2,.85,.18,1.2) .02s forwards, ninjaLevelPulse 1.2s ease-in-out .45s infinite;
+  }
+  .ninja-levelup-flash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at center, rgba(255,255,255,.98) 0%, rgba(255,255,255,.75) 16%, rgba(255,255,255,.08) 45%, rgba(255,255,255,0) 72%);
+    mix-blend-mode: screen;
+    opacity: 0;
+  }
+  .ninja-levelup-overlay.is-flash .ninja-levelup-flash {
+    animation: ninjaLevelFlash 1.35s ease-in-out .02s both;
+  }
+  .ninja-levelup-toptext {
+    margin-top: 2px;
+    width: 100%;
+    text-align: center;
+    white-space: pre-line;
+    font-size: clamp(18px, 4.2vw, 30px);
+    font-weight: 900;
+    color: #fef3c7;
+    letter-spacing: .04em;
+    line-height: 1.2;
+    text-shadow: 0 2px 0 rgba(0,0,0,.72), 0 0 14px rgba(255,255,255,.22);
+  }
+  .ninja-levelup-visual {
+    position: relative;
+    width: min(88vw, 620px);
+    flex: 1;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ninja-levelup-imgwrap {
+    position: relative;
+    z-index: 2;
+    width: min(46vw, 280px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ninja-levelup-img {
+    width: 100%;
+    height: auto;
+    max-height: 42vh;
+    object-fit: contain;
+    transform-origin: center center;
+    filter: brightness(1.18) saturate(1.08) drop-shadow(0 0 18px rgba(255,255,255,.28));
+    transition: transform .45s ease, filter .45s ease, opacity .45s ease;
+  }
+  .ninja-levelup-overlay.is-flash .ninja-levelup-img {
+    filter: brightness(1.55) saturate(1.18) drop-shadow(0 0 28px rgba(255,255,255,.42));
+    transform: scale(.93);
+  }
+  .ninja-levelup-overlay.is-absorb .ninja-levelup-img {
+    transform: scale(.84);
+    filter: brightness(1.72) saturate(1.22) contrast(1.05) drop-shadow(0 0 34px rgba(255,255,255,.52));
+  }
+  .ninja-levelup-overlay.is-restored .ninja-levelup-img {
+    transform: scale(1);
+    filter: brightness(1.05) saturate(1.0) drop-shadow(0 0 16px rgba(255,255,255,.20));
+  }
+  .ninja-levelup-sparks {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform-origin: center;
+  }
+  .ninja-levelup-orbit {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ninjaOrbitSpin 1.8s linear infinite;
+  }
+  .ninja-levelup-orbit-b { animation-duration: 1.36s; animation-direction: reverse; }
+  .ninja-levelup-orbit-c { animation-duration: .98s; }
+  .ninja-levelup-orb {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ninjaOrbPulse .72s ease-in-out infinite;
+  }
+  .ninja-levelup-ring {
+    opacity: .55;
+    animation: ninjaLevelPulse 1.4s ease-in-out infinite;
+  }
+  .ninja-levelup-copy {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    margin-top: auto;
+  }
+  .ninja-levelup-level {
+    font-size: clamp(20px, 4.2vw, 34px);
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: .05em;
+    text-shadow: 0 2px 0 rgba(0,0,0,.85), 0 0 16px rgba(120,238,255,.18);
+  }
+  .ninja-levelup-desc {
+    font-size: clamp(14px, 3.2vw, 20px);
+    font-weight: 700;
+    color: #dbeafe;
+    line-height: 1.45;
+    max-width: 100%;
+    text-shadow: 0 1px 0 rgba(0,0,0,.65);
+  }
+  .ninja-levelup-footer {
+    font-size: 13px;
+    color: #f8fafc;
+    opacity: .8;
+    font-weight: 700;
+    letter-spacing: .04em;
+  }
