@@ -5,10 +5,10 @@
 (function () {
   'use strict';
 
-  var DEFAULT_MAIN_URL = './tashizan_ninja.html';
+  var DEFAULT_MAIN_URL = './tashizan_ninja.html#kiso-home';
   var FX_KEY = 'tashizan_v2_fx';
   var VOICE_KEY = 'tashizan_voice_on';
-  var STAR_KEYS = ['dot-stars', 'finger-stars', 'make-x-stars', 'suji-stars'];
+  var STAR_KEYS = ['ninja-stars'];
 
   var state = {
     inited: false,

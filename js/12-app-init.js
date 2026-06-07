@@ -197,11 +197,12 @@ function initStartupOverlay() {
     __hideStartupOverlayNow(overlay);
 
     setTimeout(function() {
+      var restoreScreen = (window.location && window.location.hash === '#kiso-home') ? 'kiso-home' : 'home';
       if (document.body) document.body.classList.remove('booting');
       if (typeof show === 'function') {
-        try { show('home'); } catch (e) {}
+        try { show(restoreScreen); } catch (e) {}
       } else if (typeof setCurrentScreen === 'function') {
-        setCurrentScreen('home');
+        setCurrentScreen(restoreScreen);
       }
       if (overlay && overlay.parentNode) {
         overlay.parentNode.removeChild(overlay);
