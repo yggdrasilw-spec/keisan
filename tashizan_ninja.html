@@ -214,11 +214,12 @@ body.booting #app {
     <div class="hdr-s">まいにち れんしゅうして にんじゃマスターに なろう！</div>
   </div>
 
-  <button class="top-btn top-btn-kiso" data-action="showKotsuHome">
-    <span class="top-btn-ico">💡</span>
+
+  <button class="top-btn top-btn-kiso" data-action="showKisoHome">
+    <span class="top-btn-ico">🧠</span>
     <span class="top-btn-main">
       <div class="top-btn-title">きそしゅぎょう</div>
-      <div class="top-btn-sub">ドット・ゆび・X・数字みつけ</div>
+      <div class="top-btn-sub">かずの かんかくや すうじを きたえる</div>
     </span>
     <span class="top-btn-arr">›</span>
   </button>
@@ -273,6 +274,59 @@ body.booting #app {
       <span class="bot-nav-ico">📝</span>りれき
     </button>
   </div>
+</div>
+
+
+
+<!-- ══════════════════════════════════════════
+     きそしゅぎょうページ
+══════════════════════════════════════════ -->
+<div id="kiso-home" class="sc">
+  <div class="page-head">
+    <button class="bkbtn" data-action="show" data-value="home">← もどる</button>
+    <span class="page-title">きそしゅぎょう</span>
+  </div>
+
+  <div class="hdr" style="margin-bottom:6px;">
+    <div class="hdr-t">かずの かんかくと すうじを きたえる</div>
+    <div class="hdr-s">すこしずつ れんしゅうして じっかんを つかもう</div>
+  </div>
+
+  <button class="course-btn cb-kotsu" data-action="launchKisoGame" data-value="./dot-kazoe-finger.html?mode=dot">
+    <span class="course-btn-ico">🔴</span>
+    <span class="course-btn-main">
+      <div class="course-btn-title">ドットをかぞえる</div>
+      <div class="course-btn-sub">1〜5の まとまりを かぞえる</div>
+    </span>
+    <span class="course-btn-arr">›</span>
+  </button>
+
+  <button class="course-btn cb-20" data-action="launchKisoGame" data-value="./dot-kazoe-finger.html?mode=finger">
+    <span class="course-btn-ico">✋</span>
+    <span class="course-btn-main">
+      <div class="course-btn-title">ゆびをかぞえる</div>
+      <div class="course-btn-sub">ひだりと みぎの ゆびの かず</div>
+    </span>
+    <span class="course-btn-arr">›</span>
+  </button>
+
+  <button class="course-btn cb-all" data-action="launchKisoGame" data-value="./make-x-2.html">
+    <span class="course-btn-ico">❎</span>
+    <span class="course-btn-main">
+      <div class="course-btn-title">Xをつくろう</div>
+      <div class="course-btn-sub">たして X になる くみあわせ</div>
+    </span>
+    <span class="course-btn-arr">›</span>
+  </button>
+
+  <button class="course-btn cb-wea" data-action="launchKisoGame" data-value="./周辺視野トレーニング、数字の順番.html">
+    <span class="course-btn-ico">🔎</span>
+    <span class="course-btn-main">
+      <div class="course-btn-title">数字みつけ</div>
+      <div class="course-btn-sub">すばやく じゅんばんに みつける</div>
+    </span>
+    <span class="course-btn-arr">›</span>
+  </button>
 </div>
 
 <!-- ══════════════════════════════════════════
