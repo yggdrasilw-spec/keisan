@@ -194,7 +194,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 420px;
+    max-width: min(100%, 560px);
     gap: 12px;
   }
 
@@ -236,7 +236,7 @@
     width: 100%;
     position: relative;
     overflow: hidden;
-    aspect-ratio: 1 / 0.85;
+    aspect-ratio: 1 / 0.88;
   }
 
   .dot-svg {
@@ -430,6 +430,21 @@
     background: var(--primary);
     border-radius: 99px;
     transition: width 0.3s ease;
+  }
+
+  @media (orientation: landscape) {
+    #screen-game {
+      max-width: min(96vw, 760px);
+    }
+    .dot-area {
+      aspect-ratio: 1.55 / 0.82;
+    }
+    .answer-display {
+      height: 52px;
+    }
+    .key-btn {
+      height: 54px;
+    }
   }
 </style>
 </head>
@@ -860,10 +875,13 @@ function clampGroup(pts, r, W, H, margin) {
 
 function renderDots(groupA, groupB, animate = false) {
   const svg = document.getElementById('dot-svg');
-  const W = 400, H = 340;
-  const MARGIN = 8; // SVG端からの最小余白
+  const isLandscape = window.matchMedia && window.matchMedia('(orientation: landscape)').matches;
+  const W = isLandscape ? 520 : 400;
+  const H = isLandscape ? 300 : 340;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const MARGIN = 10; // SVG端からの最小余白
   const totalDots = groupA + groupB;
-  const r = Math.max(13, Math.min(26, 85 / Math.sqrt(totalDots)));
+  const r = Math.max(11, Math.min(24, 78 / Math.sqrt(totalDots)));
 
   const patA = pickPattern();
   const patB = pickPattern();
@@ -879,7 +897,7 @@ function renderDots(groupA, groupB, animate = false) {
   const split = Math.random() < 0.6 ? 'lr' : 'tb'; // 左右の方が多め
 
   let cxA, cyA, cxB, cyB;
-  const GAP = r * 2.5; // グループ間の最小すきま
+  const GAP = r * 3.0; // グループ間の最小すきま
 
   if (split === 'lr') {
     // 左グループ：右端が W/2 - GAP/2 以内
@@ -910,7 +928,7 @@ function renderDots(groupA, groupB, animate = false) {
   let dotsB = clampGroup(translate(localB, cxB, cyB), r, W, H, MARGIN);
 
   // ===== 全ドット間の重なりチェック → グループBをずらして解消 =====
-  const MIN_DIST = r * 2.2;
+  const MIN_DIST = r * 2.55;
   for (let iter = 0; iter < 40; iter++) {
     let overlapFound = false;
     for (const pA of dotsA) {
@@ -971,14 +989,17 @@ function renderDots(groupA, groupB, animate = false) {
 function renderDotsAligned(total) {
   // 正解表示用：きれいに横並び or ダイス風
   const svg = document.getElementById('dot-svg');
-  const W = 400, H = 340;
-  const r = Math.max(14, Math.min(28, 90 / Math.sqrt(total)));
+  const isLandscape = window.matchMedia && window.matchMedia('(orientation: landscape)').matches;
+  const W = isLandscape ? 520 : 400;
+  const H = isLandscape ? 300 : 340;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const r = Math.max(12, Math.min(26, 86 / Math.sqrt(total)));
   const circles = Array.from(svg.querySelectorAll('circle'));
 
   const cols = total <= 5 ? total : Math.ceil(total / 2);
   const rows = total <= 5 ? 1 : 2;
-  const stepX = r * 2.6;
-  const stepY = r * 2.6;
+  const stepX = r * 2.8;
+  const stepY = r * 2.8;
   const startX = W / 2 - ((cols - 1) * stepX) / 2;
   const startY = H / 2 - ((rows - 1) * stepY) / 2;
 
@@ -1250,7 +1271,7 @@ window.addEventListener('DOMContentLoaded', function () {
       showSfx: true,
       showVoice: true,
       showStar: true,
-      mainUrl: './tashizan_ninja.html',
+      mainUrl: './tashizan_ninja.html?open=kiso-home',
       starKey: function () { return selectedMode === 'finger' ? STAR_KEYS.finger : STAR_KEYS.dot; },
       starLabelPrefix: '★×',
       starTitle: 'このゲームの★'

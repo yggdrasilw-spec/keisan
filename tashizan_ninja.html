@@ -1004,5 +1004,23 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var open = params.get('open');
+    if (open === 'kiso-home') {
+      var screens = Array.prototype.slice.call(document.querySelectorAll('.sc'));
+      screens.forEach(function (el) {
+        el.classList.toggle('on', el.id === 'kiso-home');
+      });
+      window.scrollTo(0, 0);
+      try { history.replaceState(null, '', window.location.pathname); } catch (e) {}
+    }
+  } catch (e) {}
+});
+</script>
+
 </body>
 </html>
