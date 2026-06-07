@@ -26,6 +26,15 @@
     goKotsuFromCourse: function () {
       return typeof goKotsuFromCourse === 'function' && goKotsuFromCourse();
     },
+    showKisoHome: function () {
+      if (typeof show === 'function') show('kiso-home');
+    },
+    launchKisoGame: function (value) {
+      if (!value) return;
+      if (typeof window !== 'undefined') {
+        window.location.href = value;
+      }
+    },
     startEndMode: function (value) {
       return typeof startEndMode === 'function' && startEndMode(value);
     },
