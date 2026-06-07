@@ -18,6 +18,7 @@
   .top-btn-easy   { background:#F0FFF4; border-color:#5AAA30; box-shadow-color:#3A8020; color:#2A5010; box-shadow:0 4px 0 #3A8020; }
   .top-btn-hard   { background:#EEF0FF; border-color:#5A5ADF; color:#2A2A80; box-shadow:0 4px 0 #3A3AB0; }
   .top-btn-random { background:#FFF8E8; border-color:#F5A623; color:#7A4000; box-shadow:0 4px 0 #C07800; }
+.top-btn-kiso    { background:#F4EEFF; border-color:#8B5CF6; color:#4C1D95; box-shadow:0 4px 0 #6D28D9; }
 
   /* 下部ナビ */
   .bot-nav { display: flex; gap: 8px; margin-top: 10px; }
