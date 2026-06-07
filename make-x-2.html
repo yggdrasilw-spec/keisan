@@ -971,9 +971,9 @@ function showFinalResult() {
 // ===== イベント =====
 document.getElementById('start-btn').onclick = startGame;
 document.getElementById('retry-btn').onclick = startGame;
-document.getElementById('home-btn').onclick = () => showScreen('screen-title');
+document.getElementById('home-btn').onclick = () => { window.location.href = './tashizan_ninja.html#kiso-home'; };
 document.getElementById('go-retry-btn').onclick = startGame;
-document.getElementById('go-home-btn').onclick = () => showScreen('screen-title');
+document.getElementById('go-home-btn').onclick = () => { window.location.href = './tashizan_ninja.html#kiso-home'; };
 
 for (let i = 0; i < 3; i++) {
   document.getElementById(`card-${i}`).onclick = () => onCardClick(i);
@@ -989,8 +989,8 @@ window.addEventListener('DOMContentLoaded', function () {
       showSfx: true,
       showVoice: true,
       showStar: true,
-      mainUrl: './tashizan_ninja.html?open=kiso-home',
-      starKey: 'make-x-stars',
+      mainUrl: './tashizan_ninja.html#kiso-home',
+      starKey: 'ninja-stars',
       starLabelPrefix: '★×',
       starTitle: 'このゲームの★'
     });

@@ -996,29 +996,16 @@ window.addEventListener('DOMContentLoaded', function () {
       showSfx: false,
       showVoice: false,
       showStar: true,
-      starKeys: ['dot-stars', 'finger-stars', 'make-x-stars', 'suji-stars'],
+      starKey: 'ninja-stars',
       starLabelPrefix: '★×',
       starTitle: 'みんなの★の合計'
     });
   }
-});
-</script>
-
-
-<script>
-window.addEventListener('DOMContentLoaded', function () {
-  try {
-    var params = new URLSearchParams(window.location.search);
-    var open = params.get('open');
-    if (open === 'kiso-home') {
-      var screens = Array.prototype.slice.call(document.querySelectorAll('.sc'));
-      screens.forEach(function (el) {
-        el.classList.toggle('on', el.id === 'kiso-home');
-      });
-      window.scrollTo(0, 0);
-      try { history.replaceState(null, '', window.location.pathname); } catch (e) {}
-    }
-  } catch (e) {}
+  if (window.location && window.location.hash === '#kiso-home') {
+    setTimeout(function () {
+      if (typeof show === 'function') show('kiso-home');
+    }, 220);
+  }
 });
 </script>
 

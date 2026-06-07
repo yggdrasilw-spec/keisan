@@ -194,7 +194,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: min(100%, 560px);
+    max-width: 420px;
     gap: 12px;
   }
 
@@ -236,7 +236,7 @@
     width: 100%;
     position: relative;
     overflow: hidden;
-    aspect-ratio: 1 / 0.88;
+    aspect-ratio: 1 / 0.85;
   }
 
   .dot-svg {
@@ -280,39 +280,117 @@
   .feedback-overlay.correct-flash { background: rgba(68,207,108,0.25); color: var(--correct); }
   .feedback-overlay.wrong-flash { background: rgba(255,71,87,0.12); }
 
-  /* キーパッド */
-  .keypad {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  /* 共通入力UI */
+  .ans-mode-tabs {
+    display: flex;
     gap: 8px;
     width: 100%;
   }
+  .ans-tab {
+    flex: 1;
+    background: var(--primary-light);
+    color: var(--primary);
+    border: none;
+    border-radius: 999px;
+    padding: 12px 8px;
+    font-size: 0.95rem;
+    font-weight: 900;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+  .ans-tab.on { background: var(--primary); color: #fff; }
 
-  .key-btn {
+  .ans-panel {
+    width: 100%;
+  }
+
+  .agrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .abtn {
+    background: var(--card-bg);
+    border: 2px solid #EEE;
+    border-radius: 16px;
+    min-height: 58px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    box-shadow: 0 3px 0 #DDD;
+    cursor: pointer;
+  }
+  .abtn:active { transform: translateY(2px); box-shadow: 0 1px 0 #DDD; }
+
+  .calcgrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .cbtn {
     background: var(--card-bg);
     border: 2px solid #EEE;
     border-radius: 14px;
-    padding: 0;
     height: 60px;
     font-size: 1.6rem;
     font-weight: 900;
     cursor: pointer;
     color: var(--text-dark);
     box-shadow: 0 3px 0 #DDD;
-    transition: transform 0.08s, box-shadow 0.08s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
-  .key-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 1px 0 #DDD;
-  }
+  .cbtn:active { transform: translateY(2px); box-shadow: 0 1px 0 #DDD; }
+  .cbtn.del { font-size: 1.2rem; color: var(--text-mid); }
+  .cbtn.zero-wide { grid-column: span 2; }
 
-  .key-btn.del { font-size: 1.2rem; color: var(--text-mid); }
-  .key-btn.zero-wide {
-    grid-column: span 2;
+  .hw-area {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 12px;
   }
+  .hw-model-status {
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    text-align: center;
+  }
+  .hw-hint {
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--primary);
+    text-align: center;
+  }
+  .hw-input {
+    width: 100%;
+    min-height: 70px;
+    border-radius: 16px;
+    border: 2px dashed #D9C7B7;
+    background: #FFFDF9;
+    font-size: 2rem;
+    font-weight: 900;
+    text-align: center;
+    color: var(--text-dark);
+    outline: none;
+  }
+  .hw-input::placeholder { color: #C8B8A8; }
+  .hw-btnrow {
+    display: flex;
+    gap: 8px;
+  }
+  .hw-submit-btn,
+  .hw-clear-btn {
+    flex: 1;
+    border: none;
+    border-radius: 999px;
+    min-height: 48px;
+    font-size: 1rem;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .hw-submit-btn { background: var(--primary); color: #fff; }
+  .hw-clear-btn { background: var(--primary-light); color: var(--primary); }
 
   .answer-display {
     background: var(--card-bg);
@@ -431,21 +509,6 @@
     border-radius: 99px;
     transition: width 0.3s ease;
   }
-
-  @media (orientation: landscape) {
-    #screen-game {
-      max-width: min(96vw, 760px);
-    }
-    .dot-area {
-      aspect-ratio: 1.55 / 0.82;
-    }
-    .answer-display {
-      height: 52px;
-    }
-    .key-btn {
-      height: 54px;
-    }
-  }
 </style>
 </head>
 <body>
@@ -517,18 +580,22 @@
     <span id="answer-text"></span>
   </div>
 
-  <div class="keypad" id="keypad">
-    <button class="key-btn" data-val="1">1</button>
-    <button class="key-btn" data-val="2">2</button>
-    <button class="key-btn" data-val="3">3</button>
-    <button class="key-btn" data-val="4">4</button>
-    <button class="key-btn" data-val="5">5</button>
-    <button class="key-btn" data-val="6">6</button>
-    <button class="key-btn" data-val="7">7</button>
-    <button class="key-btn" data-val="8">8</button>
-    <button class="key-btn" data-val="9">9</button>
-    <button class="key-btn zero-wide" data-val="0">0</button>
-    <button class="key-btn del" data-val="del">⌫</button>
+  <div class="ans-mode-tabs" id="ans-mode-tabs">
+    <button class="ans-tab on" type="button" id="atab-btn" data-mode="btn">えらぶ</button>
+    <button class="ans-tab" type="button" id="atab-calc" data-mode="calc">でんたく</button>
+    <button class="ans-tab" type="button" id="atab-hw" data-mode="hw">てがき</button>
+  </div>
+
+  <div class="ans-panel agrid" id="agrid"></div>
+  <div class="ans-panel calcgrid" id="calcgrid" style="display:none;"></div>
+  <div class="ans-panel hw-area" id="hw-area">
+    <div class="hw-model-status" id="hw-model-status">こたえを ていねいに いれてね</div>
+    <div class="hw-hint" id="hw-hint">すうじを かいてね ✏️</div>
+    <input class="hw-input" id="hw-input" type="number" inputmode="numeric" placeholder="こたえを入力">
+    <div class="hw-btnrow">
+      <button class="hw-submit-btn" id="hw-submit-btn" type="button">これでOK</button>
+      <button class="hw-clear-btn" id="hw-clear-btn" type="button">けす</button>
+    </div>
   </div>
 </div>
 
@@ -636,6 +703,7 @@ function playStar() {
 let maxNum = 5;
 let timeLimit = 0; // 0 = ∞
 let selectedMode = (new URLSearchParams(window.location.search).get('mode') === 'finger') ? 'finger' : 'dot';
+let answerMode = 'btn';
 let totalStars = 0;
 
 const TIME_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // 0=∞
@@ -643,10 +711,7 @@ const MAX_OPTIONS = [3, 4, 5, 6, 7, 8, 9, 10];
 let maxIdx = 2; // 5
 let timeIdx = 0; // ∞
 
-const STAR_KEYS = {
-  dot: 'dot-stars',
-  finger: 'finger-stars',
-};
+const STAR_KEY = 'ninja-stars';
 
 // 設定スピナー
 const maxDisplay = document.getElementById('max-display');
@@ -674,11 +739,11 @@ const titleLogo = document.getElementById('title-logo');
 const titleSub = document.getElementById('title-sub');
 
 function getStarKey() {
-  return STAR_KEYS[selectedMode] || STAR_KEYS.dot;
+  return STAR_KEY;
 }
 
 function loadStars() {
-  totalStars = parseInt(localStorage.getItem(getStarKey()) || '0');
+  totalStars = parseInt(localStorage.getItem(getStarKey()) || '0', 10) || 0;
   if (window.TashizanHud) TashizanHud.refresh();
 }
 
@@ -698,6 +763,90 @@ function updateModeUI() {
     titleLogo.innerHTML = '✋ ゆびを<br>かぞえる';
     titleSub.textContent = 'ゆびのかずをよもう！';
   }
+}
+
+function buildA(p) {
+  var g = document.getElementById('agrid');
+  if (!g) return;
+  var choices = [p.ans];
+  var tries = 0;
+  while (choices.length < 8 && tries < 200) {
+    tries++;
+    var v = p.ans + Math.round((Math.random() - 0.5) * 6);
+    if (v >= 0 && v <= 10 && choices.indexOf(v) === -1) choices.push(v);
+  }
+  choices.sort(function () { return Math.random() - 0.5; });
+  g.innerHTML = '';
+  choices.forEach(function (v) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'abtn';
+    btn.textContent = v;
+    btn.addEventListener('click', function () {
+      if (locked) return;
+      inputStr = String(v);
+      updateAnswerDisplay();
+      submitAnswer();
+    });
+    g.appendChild(btn);
+  });
+}
+
+function buildCalc(p) {
+  var g = document.getElementById('calcgrid');
+  if (!g) return;
+  g.innerHTML = '';
+  var keys = [7,8,9,4,5,6,1,2,3,'DEL',0,''];
+  keys.forEach(function (k) {
+    var btn = document.createElement('button');
+    if (k === '') {
+      btn.className = 'cbtn';
+      btn.style.visibility = 'hidden';
+      g.appendChild(btn);
+      return;
+    }
+    btn.type = 'button';
+    btn.className = k === 'DEL' ? 'cbtn del' : 'cbtn';
+    btn.textContent = k === 'DEL' ? '⌫' : String(k);
+    btn.addEventListener('click', function () {
+      onKeyPress(k === 'DEL' ? 'del' : String(k));
+    });
+    g.appendChild(btn);
+  });
+}
+
+function setAnsTab(mode) {
+  answerMode = mode;
+  ['btn', 'calc', 'hw'].forEach(function (m) {
+    var el = document.getElementById('atab-' + m);
+    if (el) el.classList.toggle('on', m === mode);
+  });
+  syncAnswerModeUI();
+}
+
+function syncAnswerModeUI() {
+  var agrid = document.getElementById('agrid');
+  var calcgrid = document.getElementById('calcgrid');
+  var hwArea = document.getElementById('hw-area');
+  if (agrid) agrid.style.display = answerMode === 'btn' ? 'grid' : 'none';
+  if (calcgrid) calcgrid.style.display = answerMode === 'calc' ? 'grid' : 'none';
+  if (hwArea) hwArea.style.display = answerMode === 'hw' ? 'flex' : 'none';
+  if (answerMode === 'btn' && currentAnswer) buildA({ ans: currentAnswer });
+  if (answerMode === 'calc' && currentAnswer) buildCalc({ ans: currentAnswer });
+  if (answerMode === 'hw') {
+    var hwInput = document.getElementById('hw-input');
+    if (hwInput) hwInput.value = inputStr;
+  }
+}
+
+function commitHwAnswer() {
+  var hwInput = document.getElementById('hw-input');
+  if (!hwInput) return;
+  var v = String(hwInput.value || '').trim();
+  if (v === '') return;
+  inputStr = v;
+  updateAnswerDisplay();
+  submitAnswer();
 }
 
 modeButtons.forEach(btn => {
@@ -720,6 +869,8 @@ let inputStr = '';
 let timerInterval = null;
 let timeLeft = 0;
 let locked = false;
+
+setAnsTab('btn');
 
 // ドット配置パターン（重み付き）
 // 整列系を多く、ランダムは少なめ
@@ -875,13 +1026,10 @@ function clampGroup(pts, r, W, H, margin) {
 
 function renderDots(groupA, groupB, animate = false) {
   const svg = document.getElementById('dot-svg');
-  const isLandscape = window.matchMedia && window.matchMedia('(orientation: landscape)').matches;
-  const W = isLandscape ? 520 : 400;
-  const H = isLandscape ? 300 : 340;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  const MARGIN = 10; // SVG端からの最小余白
+  const W = 400, H = 340;
+  const MARGIN = 8; // SVG端からの最小余白
   const totalDots = groupA + groupB;
-  const r = Math.max(11, Math.min(24, 78 / Math.sqrt(totalDots)));
+  const r = Math.max(13, Math.min(26, 85 / Math.sqrt(totalDots)));
 
   const patA = pickPattern();
   const patB = pickPattern();
@@ -897,7 +1045,7 @@ function renderDots(groupA, groupB, animate = false) {
   const split = Math.random() < 0.6 ? 'lr' : 'tb'; // 左右の方が多め
 
   let cxA, cyA, cxB, cyB;
-  const GAP = r * 3.0; // グループ間の最小すきま
+  const GAP = r * 2.5; // グループ間の最小すきま
 
   if (split === 'lr') {
     // 左グループ：右端が W/2 - GAP/2 以内
@@ -928,7 +1076,7 @@ function renderDots(groupA, groupB, animate = false) {
   let dotsB = clampGroup(translate(localB, cxB, cyB), r, W, H, MARGIN);
 
   // ===== 全ドット間の重なりチェック → グループBをずらして解消 =====
-  const MIN_DIST = r * 2.55;
+  const MIN_DIST = r * 2.2;
   for (let iter = 0; iter < 40; iter++) {
     let overlapFound = false;
     for (const pA of dotsA) {
@@ -989,17 +1137,14 @@ function renderDots(groupA, groupB, animate = false) {
 function renderDotsAligned(total) {
   // 正解表示用：きれいに横並び or ダイス風
   const svg = document.getElementById('dot-svg');
-  const isLandscape = window.matchMedia && window.matchMedia('(orientation: landscape)').matches;
-  const W = isLandscape ? 520 : 400;
-  const H = isLandscape ? 300 : 340;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  const r = Math.max(12, Math.min(26, 86 / Math.sqrt(total)));
+  const W = 400, H = 340;
+  const r = Math.max(14, Math.min(28, 90 / Math.sqrt(total)));
   const circles = Array.from(svg.querySelectorAll('circle'));
 
   const cols = total <= 5 ? total : Math.ceil(total / 2);
   const rows = total <= 5 ? 1 : 2;
-  const stepX = r * 2.8;
-  const stepY = r * 2.8;
+  const stepX = r * 2.6;
+  const stepY = r * 2.6;
   const startX = W / 2 - ((cols - 1) * stepX) / 2;
   const startY = H / 2 - ((rows - 1) * stepY) / 2;
 
@@ -1058,6 +1203,11 @@ function showQuestion() {
   } else {
     renderFingerQuestion(groups[0], groups[1]);
   }
+  syncAnswerModeUI();
+  if (answerMode === 'hw') {
+    var hwInput = document.getElementById('hw-input');
+    if (hwInput) hwInput.value = '';
+  }
 
   document.getElementById('q-counter').textContent = `${currentQ + 1} / ${TOTAL_Q}`;
   document.getElementById('score-disp').textContent = `⭕ ${correctCount}`;
@@ -1095,6 +1245,12 @@ function updateAnswerDisplay() {
     placeholder.style.display = 'none';
     ansText.textContent = inputStr;
   }
+}
+
+function commitBtnAnswer() {
+  if (locked) return;
+  updateAnswerDisplay();
+  submitAnswer();
 }
 
 function onKeyPress(val) {
@@ -1244,19 +1400,47 @@ function showGameOver() {
 // ===== イベントリスナー =====
 document.getElementById('start-btn').addEventListener('click', startGame);
 
-document.getElementById('keypad').addEventListener('click', e => {
-  const btn = e.target.closest('.key-btn');
-  if (btn) onKeyPress(btn.dataset.val);
-});
-
 document.getElementById('retry-btn').addEventListener('click', startGame);
-document.getElementById('home-btn').addEventListener('click', () => showScreen('screen-title'));
+document.getElementById('home-btn').addEventListener('click', () => { window.location.href = './tashizan_ninja.html#kiso-home'; });
 document.getElementById('go-retry-btn').addEventListener('click', startGame);
-document.getElementById('go-home-btn').addEventListener('click', () => showScreen('screen-title'));
+document.getElementById('go-home-btn').addEventListener('click', () => { window.location.href = './tashizan_ninja.html#kiso-home'; });
+
+var ansTabs = document.getElementById('ans-mode-tabs');
+if (ansTabs) {
+  ansTabs.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.ans-tab') : null;
+    if (!btn) return;
+    setAnsTab(btn.dataset.mode);
+  });
+}
+var hwInputEl = document.getElementById('hw-input');
+if (hwInputEl) {
+  hwInputEl.addEventListener('input', function () {
+    inputStr = String(this.value || '').replace(/[^0-9]/g, '').slice(0, 2);
+    if (String(this.value || '') !== inputStr) this.value = inputStr;
+    updateAnswerDisplay();
+  });
+  hwInputEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitHwAnswer();
+    }
+  });
+}
+var hwSubmitBtn = document.getElementById('hw-submit-btn');
+if (hwSubmitBtn) hwSubmitBtn.addEventListener('click', commitHwAnswer);
+var hwClearBtn = document.getElementById('hw-clear-btn');
+if (hwClearBtn) hwClearBtn.addEventListener('click', function () {
+  var hwInput = document.getElementById('hw-input');
+  if (hwInput) hwInput.value = '';
+  inputStr = '';
+  updateAnswerDisplay();
+});
 
 // キーボード対応
 document.addEventListener('keydown', e => {
   if (document.getElementById('screen-game').style.display === 'none') return;
+  if (answerMode === 'btn') return;
   if (e.key >= '0' && e.key <= '9') onKeyPress(e.key);
   else if (e.key === 'Backspace') onKeyPress('del');
 });
@@ -1271,8 +1455,8 @@ window.addEventListener('DOMContentLoaded', function () {
       showSfx: true,
       showVoice: true,
       showStar: true,
-      mainUrl: './tashizan_ninja.html?open=kiso-home',
-      starKey: function () { return selectedMode === 'finger' ? STAR_KEYS.finger : STAR_KEYS.dot; },
+      mainUrl: './tashizan_ninja.html#kiso-home',
+      starKey: STAR_KEY,
       starLabelPrefix: '★×',
       starTitle: 'このゲームの★'
     });
