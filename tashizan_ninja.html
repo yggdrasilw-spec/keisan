@@ -986,5 +986,23 @@ body.booting #app {
 <script src="./js/12-app-init.js"></script>
 <script src="./js/14-special-modes.js"></script>
 
+<script src="./js/15-global-hud.js"></script>
+
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  if (window.TashizanHud) {
+    TashizanHud.init({
+      showBack: false,
+      showSfx: false,
+      showVoice: false,
+      showStar: true,
+      starKeys: ['dot-stars', 'finger-stars', 'make-x-stars', 'suji-stars'],
+      starLabelPrefix: '★×',
+      starTitle: 'みんなの★の合計'
+    });
+  }
+});
+</script>
+
 </body>
 </html>

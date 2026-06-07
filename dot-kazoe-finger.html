@@ -554,6 +554,7 @@ function getAudioCtx() {
 }
 
 function playCorrect() {
+  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAudioCtx();
   const notes = [523.25, 659.25, 783.99]; // C5 E5 G5
   notes.forEach((freq, i) => {
@@ -570,6 +571,7 @@ function playCorrect() {
 }
 
 function playWrong() {
+  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAudioCtx();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -583,6 +585,7 @@ function playWrong() {
 }
 
 function playTimeout() {
+  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAudioCtx();
   [300, 250, 200].forEach((freq, i) => {
     const osc = ctx.createOscillator();
@@ -598,6 +601,7 @@ function playTimeout() {
 }
 
 function playStar() {
+  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAudioCtx();
   const notes = [523.25, 659.25, 783.99, 1046.50];
   notes.forEach((freq, i) => {
@@ -660,10 +664,12 @@ function getStarKey() {
 
 function loadStars() {
   totalStars = parseInt(localStorage.getItem(getStarKey()) || '0');
+  if (window.TashizanHud) TashizanHud.refresh();
 }
 
 function saveStars() {
   localStorage.setItem(getStarKey(), String(totalStars));
+  if (window.TashizanHud) TashizanHud.refresh();
 }
 
 function updateModeUI() {
@@ -684,8 +690,10 @@ modeButtons.forEach(btn => {
     selectedMode = btn.dataset.mode;
     loadStars();
     updateModeUI();
+    if (window.TashizanHud) TashizanHud.refresh();
   });
 });
+loadStars();
 updateModeUI();
 
 // ===== ゲームロジック =====
@@ -1232,5 +1240,24 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Backspace') onKeyPress('del');
 });
 </script>
+<script src="./js/15-global-hud.js"></script>
+
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  if (window.TashizanHud) {
+    TashizanHud.init({
+      showBack: true,
+      showSfx: true,
+      showVoice: true,
+      showStar: true,
+      mainUrl: './tashizan_ninja.html',
+      starKey: function () { return selectedMode === 'finger' ? STAR_KEYS.finger : STAR_KEYS.dot; },
+      starLabelPrefix: '★×',
+      starTitle: 'このゲームの★'
+    });
+  }
+});
+</script>
+
 </body>
 </html>

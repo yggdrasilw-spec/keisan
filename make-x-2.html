@@ -544,6 +544,7 @@ let audioCtx;
 function getAC() { if (!audioCtx) audioCtx = new AudioCtx(); return audioCtx; }
 
 function playCorrect() {
+  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAC();
   [523.25, 659.25, 783.99].forEach((f, i) => {
     const o = ctx.createOscillator(), g = ctx.createGain();
@@ -556,6 +557,7 @@ function playCorrect() {
   });
 }
 function playWrong() {
+  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAC();
   const o = ctx.createOscillator(), g = ctx.createGain();
   o.connect(g); g.connect(ctx.destination);
@@ -566,6 +568,7 @@ function playWrong() {
   o.start(); o.stop(ctx.currentTime + 0.3);
 }
 function playTimeout() {
+  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAC();
   [300, 240, 180].forEach((f, i) => {
     const o = ctx.createOscillator(), g = ctx.createGain();
@@ -578,6 +581,7 @@ function playTimeout() {
   });
 }
 function playStar() {
+  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAC();
   [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
     const o = ctx.createOscillator(), g = ctx.createGain();
@@ -640,6 +644,8 @@ const TIME_OPTIONS = [0,1,2,3,4,5,6,7,8,9,10];
 let xIdx   = 7; // 初期値10
 let tIdx   = 0; // 初期値∞
 let totalStars = parseInt(localStorage.getItem('make-x-stars') || '0');
+  function loadStars() { totalStars = parseInt(localStorage.getItem('make-x-stars') || '0'); if (window.TashizanHud) TashizanHud.refresh(); }
+  function saveStars() { localStorage.setItem('make-x-stars', String(totalStars)); if (window.TashizanHud) TashizanHud.refresh(); }
 
 const xDisp   = document.getElementById('x-display');
 const tDisp   = document.getElementById('time-display');
@@ -947,7 +953,7 @@ function showFinalResult() {
   const perfect = correctCount === TOTAL_Q;
   if (perfect) {
     totalStars++;
-    localStorage.setItem('make-x-stars', totalStars);
+    saveStars();
     playStar();
   }
 
@@ -973,5 +979,24 @@ for (let i = 0; i < 3; i++) {
   document.getElementById(`card-${i}`).onclick = () => onCardClick(i);
 }
 </script>
+<script src="./js/15-global-hud.js"></script>
+
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  if (window.TashizanHud) {
+    TashizanHud.init({
+      showBack: true,
+      showSfx: true,
+      showVoice: true,
+      showStar: true,
+      mainUrl: './tashizan_ninja.html',
+      starKey: 'make-x-stars',
+      starLabelPrefix: '★×',
+      starTitle: 'このゲームの★'
+    });
+  }
+});
+</script>
+
 </body>
 </html>
