@@ -537,6 +537,7 @@
   <button class="btn-secondary" id="go-home-btn">もどる</button>
 </div>
 
+<script src="./js/kiso-mini-common.js"></script>
 <script>
 // ===== 音声 =====
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -544,7 +545,6 @@ let audioCtx;
 function getAC() { if (!audioCtx) audioCtx = new AudioCtx(); return audioCtx; }
 
 function playCorrect() {
-  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAC();
   [523.25, 659.25, 783.99].forEach((f, i) => {
     const o = ctx.createOscillator(), g = ctx.createGain();
@@ -557,7 +557,6 @@ function playCorrect() {
   });
 }
 function playWrong() {
-  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAC();
   const o = ctx.createOscillator(), g = ctx.createGain();
   o.connect(g); g.connect(ctx.destination);
@@ -568,7 +567,6 @@ function playWrong() {
   o.start(); o.stop(ctx.currentTime + 0.3);
 }
 function playTimeout() {
-  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAC();
   [300, 240, 180].forEach((f, i) => {
     const o = ctx.createOscillator(), g = ctx.createGain();
@@ -581,7 +579,6 @@ function playTimeout() {
   });
 }
 function playStar() {
-  if (window.TashizanHud && !TashizanHud.getSfxOn()) return;
   const ctx = getAC();
   [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
     const o = ctx.createOscillator(), g = ctx.createGain();
@@ -643,9 +640,8 @@ const X_OPTIONS  = [3,4,5,6,7,8,9,10];
 const TIME_OPTIONS = [0,1,2,3,4,5,6,7,8,9,10];
 let xIdx   = 7; // 初期値10
 let tIdx   = 0; // 初期値∞
-let totalStars = parseInt(localStorage.getItem('make-x-stars') || '0');
-  function loadStars() { totalStars = parseInt(localStorage.getItem('make-x-stars') || '0'); if (window.TashizanHud) TashizanHud.refresh(); }
-  function saveStars() { localStorage.setItem('make-x-stars', String(totalStars)); if (window.TashizanHud) TashizanHud.refresh(); }
+let totalStars = getNinjaStars();
+syncNinjaStarsUI(totalStars);
 
 const xDisp   = document.getElementById('x-display');
 const tDisp   = document.getElementById('time-display');
@@ -943,7 +939,7 @@ function onTimeout() {
   locked = true;
   playTimeout();
   setTimeout(() => {
-    document.getElementById('go-stars-disp').textContent = `${'★'.repeat(totalStars)}（${totalStars}）`;
+    document.getElementById('go-stars-disp').textContent = formatStarCount(totalStars);
     showScreen('screen-gameover');
   }, 300);
 }
@@ -953,7 +949,7 @@ function showFinalResult() {
   const perfect = correctCount === TOTAL_Q;
   if (perfect) {
     totalStars++;
-    saveStars();
+    localStorage.setItem('make-x-stars', totalStars);
     playStar();
   }
 
@@ -963,7 +959,7 @@ function showFinalResult() {
   title.textContent = perfect ? 'ぜんもんせいかい！' : `${correctCount}もん せいかい！`;
   title.style.color = perfect ? 'var(--primary)' : 'var(--text-dark)';
   document.getElementById('result-score').textContent = `${correctCount} / ${TOTAL_Q} もん せいかい`;
-  document.getElementById('total-stars-disp').textContent = `${'★'.repeat(totalStars)}（${totalStars}）`;
+  document.getElementById('total-stars-disp').textContent = formatStarCount(totalStars);
 
   showScreen('screen-result');
 }
@@ -971,32 +967,12 @@ function showFinalResult() {
 // ===== イベント =====
 document.getElementById('start-btn').onclick = startGame;
 document.getElementById('retry-btn').onclick = startGame;
-document.getElementById('home-btn').onclick = () => { window.location.href = './tashizan_ninja.html#kiso-home'; };
+document.getElementById('home-btn').onclick = () => goToKisoHome();
 document.getElementById('go-retry-btn').onclick = startGame;
-document.getElementById('go-home-btn').onclick = () => { window.location.href = './tashizan_ninja.html#kiso-home'; };
+document.getElementById('go-home-btn').onclick = () => goToKisoHome();
 
 for (let i = 0; i < 3; i++) {
   document.getElementById(`card-${i}`).onclick = () => onCardClick(i);
 }
-</script>
-<script src="./js/15-global-hud.js"></script>
-
-<script>
-window.addEventListener('DOMContentLoaded', function () {
-  if (window.TashizanHud) {
-    TashizanHud.init({
-      showBack: true,
-      showSfx: true,
-      showVoice: true,
-      showStar: true,
-      mainUrl: './tashizan_ninja.html#kiso-home',
-      starKey: 'ninja-stars',
-      starLabelPrefix: '★×',
-      starTitle: 'このゲームの★'
-    });
-  }
-});
-</script>
-
 </body>
 </html>
