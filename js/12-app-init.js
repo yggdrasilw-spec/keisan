@@ -122,6 +122,18 @@ function scheduleInitialScreenNormalize() {
 }
 
 
+
+function getLaunchTargetFromUrl() {
+  try {
+    var params = new URLSearchParams(window.location.search || '');
+    var openTarget = params.get('open');
+    if (openTarget) return openTarget;
+    var hash = (window.location.hash || '').replace(/^#/, '');
+    if (hash) return hash;
+  } catch (e) {}
+  return '';
+}
+
 var __startupOverlayBound = false;
 var __startupOverlayStarting = false;
 var __startupOverlayCleanup = null;
@@ -197,12 +209,11 @@ function initStartupOverlay() {
     __hideStartupOverlayNow(overlay);
 
     setTimeout(function() {
-      var restoreScreen = (window.location && window.location.hash === '#kiso-home') ? 'kiso-home' : 'home';
       if (document.body) document.body.classList.remove('booting');
       if (typeof show === 'function') {
-        try { show(restoreScreen); } catch (e) {}
+        try { show('home'); } catch (e) {}
       } else if (typeof setCurrentScreen === 'function') {
-        setCurrentScreen(restoreScreen);
+        setCurrentScreen('home');
       }
       if (overlay && overlay.parentNode) {
         overlay.parentNode.removeChild(overlay);
@@ -286,6 +297,20 @@ function initApp() {
   if (typeof syncHistoryTabButtons === 'function') syncHistoryTabButtons();
   setAnswerMode(answerMode);
   resetTransientUi();
+
+  var launchTarget = getLaunchTargetFromUrl();
+  if (launchTarget && typeof show === 'function') {
+    if (document.body) document.body.classList.remove('booting');
+    var overlayNow = document.getElementById('startup-overlay');
+    if (overlayNow && overlayNow.parentNode) {
+      overlayNow.parentNode.removeChild(overlayNow);
+    }
+    try { show(launchTarget); } catch (e) {}
+    scheduleInitialScreenNormalize();
+    if (getFx('fx_button')) initButtonFX();
+    return;
+  }
+
   initStartupOverlay();
   scheduleInitialScreenNormalize();
 
