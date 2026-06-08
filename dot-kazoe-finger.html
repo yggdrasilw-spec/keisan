@@ -280,6 +280,28 @@
   .feedback-overlay.correct-flash { background: rgba(68,207,108,0.25); color: var(--correct); }
   .feedback-overlay.wrong-flash { background: rgba(255,71,87,0.12); }
 
+  .kiso-hud {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 50;
+  }
+  .kiso-hud-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    background: rgba(40,40,60,0.78);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+  .kiso-hud-btn:active { transform: scale(0.98); }
+
+
   /* キーパッド */
   .keypad {
     display: grid;
@@ -435,6 +457,11 @@
 </head>
 <body>
 
+
+<div class="kiso-hud">
+  <button class="kiso-hud-btn" id="kiso-home-btn" type="button">きそへ</button>
+</div>
+
 <!-- ===== タイトル画面 ===== -->
 <div id="screen-title">
   <div>
@@ -544,7 +571,6 @@
   <button class="home-btn" id="go-home-btn">もどる</button>
 </div>
 
-<script src="./js/kiso-mini-common.js"></script>
 <script>
 // ===== 音声生成 =====
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -625,9 +651,9 @@ const MAX_OPTIONS = [3, 4, 5, 6, 7, 8, 9, 10];
 let maxIdx = 2; // 5
 let timeIdx = 0; // ∞
 
-// ★は全ページ共通
 const STAR_KEYS = {
-  total: NINJA_STARS_KEY || 'ninja-stars-total',
+  dot: 'dot-stars',
+  finger: 'finger-stars',
 };
 
 // 設定スピナー
@@ -656,16 +682,15 @@ const titleLogo = document.getElementById('title-logo');
 const titleSub = document.getElementById('title-sub');
 
 function getStarKey() {
-  return STAR_KEYS.total;
+  return STAR_KEYS[selectedMode] || STAR_KEYS.dot;
 }
 
 function loadStars() {
-  totalStars = getNinjaStars();
-  syncNinjaStarsUI(totalStars);
+  totalStars = parseInt(localStorage.getItem(getStarKey()) || '0');
 }
 
 function saveStars() {
-  totalStars = setNinjaStars(totalStars);
+  localStorage.setItem(getStarKey(), String(totalStars));
 }
 
 function updateModeUI() {
@@ -1021,7 +1046,6 @@ function showQuestion() {
   inputStr = '';
   updateAnswerDisplay();
   document.getElementById('correct-label').style.display = 'none';
-  if (inputMode === 'hw') hwClear();
 
   maxNum = MAX_OPTIONS[maxIdx];
   groups = selectedMode === 'dot' ? generateGroups(maxNum) : generateFingerGroups(maxNum);
@@ -1205,13 +1229,13 @@ function showResult() {
 
   document.getElementById('result-stars').textContent = perfect ? '★' : '';
   document.getElementById('result-score').textContent = `${correctCount} / ${TOTAL_Q} もん せいかい`;
-  document.getElementById('total-stars-count').textContent = formatStarCount(totalStars);
+  document.getElementById('total-stars-count').textContent = '★'.repeat(totalStars) + `（${totalStars}）`;
 
   showScreen('screen-result');
 }
 
 function showGameOver() {
-  document.getElementById('go-stars-count').textContent = formatStarCount(totalStars);
+  document.getElementById('go-stars-count').textContent = '★'.repeat(totalStars) + `（${totalStars}）`;
   showScreen('screen-gameover');
 }
 
@@ -1224,9 +1248,18 @@ document.getElementById('keypad').addEventListener('click', e => {
 });
 
 document.getElementById('retry-btn').addEventListener('click', startGame);
-document.getElementById('home-btn').addEventListener('click', () => goToKisoHome());
+
+const KISO_HOME_URL = './tashizan_ninja.html?open=kiso-home';
+const kisoHomeBtn = document.getElementById('kiso-home-btn');
+if (kisoHomeBtn) {
+  kisoHomeBtn.addEventListener('click', () => {
+    window.location.href = KISO_HOME_URL;
+  });
+}
+
+document.getElementById('home-btn').addEventListener('click', () => showScreen('screen-title'));
 document.getElementById('go-retry-btn').addEventListener('click', startGame);
-document.getElementById('go-home-btn').addEventListener('click', () => goToKisoHome());
+document.getElementById('go-home-btn').addEventListener('click', () => showScreen('screen-title'));
 
 // キーボード対応
 document.addEventListener('keydown', e => {
@@ -1234,345 +1267,6 @@ document.addEventListener('keydown', e => {
   if (e.key >= '0' && e.key <= '9') onKeyPress(e.key);
   else if (e.key === 'Backspace') onKeyPress('del');
 });
-
-// ===== 共通 HUD / 入力モード / 手書き =====
-let inputMode = 'btn';
-let hwCanvas = null;
-let hwCtx = null;
-let hwOverlay = null;
-let hwOctx = null;
-let hwBound = false;
-let hwDrawing = false;
-let hwStrokePoints = [];
-let hwStrokeBox = null;
-let hwFirstDigit = null;
-let hwTemplates = null;
-
-function injectCommonHud() {
-  if (document.getElementById('ninja-hud')) return;
-  const hud = document.createElement('div');
-  hud.id = 'ninja-hud';
-  hud.style.cssText = [
-    'position:fixed',
-    'top:10px',
-    'right:10px',
-    'z-index:9999',
-    'display:flex',
-    'align-items:center',
-    'gap:8px',
-    'pointer-events:none'
-  ].join(';');
-  hud.innerHTML = `
-    <button id="hud-back-btn" style="pointer-events:auto;border:none;border-radius:999px;padding:10px 14px;background:rgba(255,255,255,.94);box-shadow:0 4px 14px rgba(0,0,0,.08);font-weight:900;color:var(--text-dark)">← きそへ</button>
-    <div id="ninja-stars-hud" data-ninja-stars style="pointer-events:auto;border-radius:999px;padding:10px 14px;background:rgba(255,255,255,.94);box-shadow:0 4px 14px rgba(0,0,0,.08);font-weight:900;color:var(--primary)">★×0</div>
-  `;
-  document.body.appendChild(hud);
-  const btn = document.getElementById('hud-back-btn');
-  if (btn) btn.addEventListener('click', goToKisoHome);
-  syncNinjaStarsUI(getNinjaStars());
-}
-
-function injectInputModeUI() {
-  const game = document.getElementById('screen-game');
-  if (!game || document.getElementById('input-mode-tabs')) return;
-
-  const tabs = document.createElement('div');
-  tabs.className = 'input-mode-tabs';
-  tabs.id = 'input-mode-tabs';
-  tabs.style.cssText = 'display:flex;gap:8px;width:100%;margin-top:2px;flex-wrap:wrap;justify-content:center;';
-  tabs.innerHTML = `
-    <button type="button" class="mode-btn active" data-input-mode="btn">🎲 えらぶ</button>
-    <button type="button" class="mode-btn" data-input-mode="calc">🔢 でんたく</button>
-    <button type="button" class="mode-btn" data-input-mode="hw">✏️ てがき</button>
-  `;
-
-  const hwPanel = document.createElement('div');
-  hwPanel.id = 'hw-panel';
-  hwPanel.style.cssText = 'display:none;flex-direction:column;gap:10px;width:100%;';
-  hwPanel.innerHTML = `
-    <div id="hw-status" style="font-size:0.95rem;font-weight:900;color:var(--primary);text-align:center;">てがきで こたえてね</div>
-    <div style="position:relative;width:100%;aspect-ratio:500/220;border-radius:14px;overflow:hidden;background:#fff;box-shadow:var(--shadow);border:2px solid #EEE;">
-      <canvas id="hw-canvas" width="500" height="220" style="width:100%;height:100%;touch-action:none;display:block;"></canvas>
-      <canvas id="hw-overlay" width="500" height="220" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
-    </div>
-    <button type="button" id="hw-clear-btn" class="retry-btn" style="width:100%;padding:12px 20px;font-size:1rem;">きれいにする</button>
-  `;
-
-  const answerDisplay = document.getElementById('answer-display');
-  const keypad = document.getElementById('keypad');
-  if (answerDisplay && keypad) {
-    game.insertBefore(tabs, answerDisplay);
-    game.insertBefore(hwPanel, keypad);
-  } else {
-    game.appendChild(tabs);
-    game.appendChild(hwPanel);
-  }
-
-  tabs.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-input-mode]');
-    if (!btn) return;
-    setInputMode(btn.dataset.inputMode);
-  });
-
-  document.getElementById('hw-clear-btn').addEventListener('click', hwClear);
-  setInputMode('btn');
-}
-
-function setInputMode(mode) {
-  inputMode = mode;
-  const tabs = Array.from(document.querySelectorAll('[data-input-mode]'));
-  tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.inputMode === mode));
-
-  const keypad = document.getElementById('keypad');
-  const answerDisplay = document.getElementById('answer-display');
-  const hwPanel = document.getElementById('hw-panel');
-
-  if (keypad) keypad.style.display = (mode === 'hw') ? 'none' : 'grid';
-  if (answerDisplay) answerDisplay.style.display = '';
-  if (hwPanel) hwPanel.style.display = (mode === 'hw') ? 'flex' : 'none';
-
-  if (mode === 'hw') {
-    hwEnsureReady();
-    hwClear();
-  }
-}
-
-function hwEnsureReady() {
-  if (hwBound) return;
-  hwBound = true;
-  hwCanvas = document.getElementById('hw-canvas');
-  hwOverlay = document.getElementById('hw-overlay');
-  if (!hwCanvas || !hwOverlay) return;
-  hwCtx = hwCanvas.getContext('2d');
-  hwOctx = hwOverlay.getContext('2d');
-  hwCtx.fillStyle = '#ffffff';
-  hwCtx.fillRect(0, 0, 500, 220);
-  hwBuildTemplates();
-
-  const getPos = (ev) => {
-    const rect = hwCanvas.getBoundingClientRect();
-    const x = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - rect.left) * (500 / rect.width);
-    const y = ((ev.touches ? ev.touches[0].clientY : ev.clientY) - rect.top) * (220 / rect.height);
-    return { x, y };
-  };
-
-  const start = (ev) => {
-    if (inputMode !== 'hw') return;
-    ev.preventDefault();
-    ev.stopPropagation();
-    hwDrawing = true;
-    hwStrokePoints = [];
-    hwStrokeBox = null;
-    const p = getPos(ev);
-    hwStrokePoints.push(p);
-    hwStrokeBox = { x: p.x, y: p.y, w: 1, h: 1 };
-    hwCtx.lineWidth = 22;
-    hwCtx.lineCap = 'round';
-    hwCtx.lineJoin = 'round';
-    hwCtx.strokeStyle = '#111';
-    hwCtx.fillStyle = '#111';
-    hwCtx.beginPath();
-    hwCtx.arc(p.x, p.y, 10, 0, Math.PI * 2);
-    hwCtx.fill();
-    hwCtx.beginPath();
-    hwCtx.moveTo(p.x, p.y);
-  };
-
-  const move = (ev) => {
-    if (!hwDrawing) return;
-    ev.preventDefault();
-    ev.stopPropagation();
-    const p = getPos(ev);
-    hwStrokePoints.push(p);
-    if (p.x < hwStrokeBox.x) hwStrokeBox.x = p.x;
-    if (p.y < hwStrokeBox.y) hwStrokeBox.y = p.y;
-    if (p.x > hwStrokeBox.x + hwStrokeBox.w) hwStrokeBox.w = p.x - hwStrokeBox.x;
-    if (p.y > hwStrokeBox.y + hwStrokeBox.h) hwStrokeBox.h = p.y - hwStrokeBox.y;
-    hwCtx.lineTo(p.x, p.y);
-    hwCtx.stroke();
-    hwCtx.beginPath();
-    hwCtx.moveTo(p.x, p.y);
-  };
-
-  const end = async (ev) => {
-    if (!hwDrawing) return;
-    ev.preventDefault();
-    ev.stopPropagation();
-    hwDrawing = false;
-    hwCtx.beginPath();
-    if (!hwStrokeBox) return;
-    const digit = await hwRecognizeStroke(hwStrokeBox);
-    if (digit === null || digit === undefined) {
-      document.getElementById('hw-status').textContent = 'よめなかった… もう1かい！';
-      setTimeout(hwClear, 700);
-      return;
-    }
-
-    if (currentAnswer === 10) {
-      if (hwFirstDigit === null) {
-        if (digit !== 1) {
-          document.getElementById('hw-status').textContent = '10 は まず 1 を かいてね';
-          setTimeout(hwClear, 700);
-          return;
-        }
-        hwFirstDigit = 1;
-        inputStr = '1';
-        updateAnswerDisplay();
-        document.getElementById('hw-status').textContent = 'つぎに 0 を かいてね';
-        return;
-      } else {
-        if (digit !== 0) {
-          document.getElementById('hw-status').textContent = 'つぎは 0 だよ';
-          setTimeout(hwClear, 700);
-          return;
-        }
-        inputStr = '10';
-        updateAnswerDisplay();
-        hwFirstDigit = null;
-        submitAnswer();
-        return;
-      }
-    }
-
-    inputStr = String(digit);
-    updateAnswerDisplay();
-    submitAnswer();
-  };
-
-  hwCanvas.addEventListener('pointerdown', start);
-  hwCanvas.addEventListener('pointermove', move);
-  window.addEventListener('pointerup', end);
-  hwCanvas.addEventListener('touchstart', start, { passive: false });
-  hwCanvas.addEventListener('touchmove', move, { passive: false });
-  window.addEventListener('touchend', end, { passive: false });
-}
-
-function hwClear() {
-  if (!hwCanvas || !hwCtx || !hwOctx) return;
-  hwCtx.fillStyle = '#ffffff';
-  hwCtx.fillRect(0, 0, 500, 220);
-  hwOctx.clearRect(0, 0, 500, 220);
-  hwFirstDigit = null;
-  hwStrokePoints = [];
-  hwStrokeBox = null;
-  const status = document.getElementById('hw-status');
-  if (status) status.textContent = 'てがきで こたえてね';
-}
-
-function hwBuildTemplates() {
-  if (hwTemplates) return;
-  const fonts = [
-    'bold 160px "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif',
-    'bold 160px "BIZ UDPGothic", sans-serif',
-    'bold 160px sans-serif'
-  ];
-  hwTemplates = {};
-  const tempCanvas = document.createElement('canvas');
-  tempCanvas.width = 28;
-  tempCanvas.height = 28;
-  const tctx = tempCanvas.getContext('2d');
-
-  function sample(imgData) {
-    const arr = imgData.data;
-    const out = new Float32Array(28 * 28);
-    for (let i = 0, j = 0; i < arr.length; i += 4, j++) {
-      const v = (arr[i] + arr[i + 1] + arr[i + 2]) / 3;
-      out[j] = 1 - (v / 255);
-    }
-    return out;
-  }
-
-  for (let d = 0; d <= 9; d++) {
-    let best = null;
-    let bestScore = Infinity;
-    for (const font of fonts) {
-      const c = document.createElement('canvas');
-      c.width = 200;
-      c.height = 200;
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, 200, 200);
-      ctx.fillStyle = '#111';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.font = font;
-      ctx.fillText(String(d), 100, 112);
-      // リサイズしてテンプレート化
-      tctx.clearRect(0, 0, 28, 28);
-      tctx.fillStyle = '#fff';
-      tctx.fillRect(0, 0, 28, 28);
-      tctx.drawImage(c, 0, 0, 200, 200, 0, 0, 28, 28);
-      const data = tctx.getImageData(0, 0, 28, 28);
-      const vec = sample(data);
-      if (!best) { best = vec; continue; }
-      // いったん最初のテンプレを採用。比較用に保持
-    }
-    // 上の単純化: 最初のフォントで作ったものを採用
-    const c0 = document.createElement('canvas');
-    c0.width = 200;
-    c0.height = 200;
-    const ctx0 = c0.getContext('2d');
-    ctx0.fillStyle = '#fff';
-    ctx0.fillRect(0, 0, 200, 200);
-    ctx0.fillStyle = '#111';
-    ctx0.textAlign = 'center';
-    ctx0.textBaseline = 'middle';
-    ctx0.font = fonts[0];
-    ctx0.fillText(String(d), 100, 112);
-    tctx.clearRect(0, 0, 28, 28);
-    tctx.fillStyle = '#fff';
-    tctx.fillRect(0, 0, 28, 28);
-    tctx.drawImage(c0, 0, 0, 200, 200, 0, 0, 28, 28);
-    hwTemplates[d] = sample(tctx.getImageData(0, 0, 28, 28));
-  }
-}
-
-async function hwRecognizeStroke(box) {
-  if (!hwTemplates) hwBuildTemplates();
-  if (!hwCanvas) return null;
-  const pad = 18;
-  const x = Math.max(0, Math.floor(box.x - pad));
-  const y = Math.max(0, Math.floor(box.y - pad));
-  const w = Math.min(500 - x, Math.ceil(box.w + pad * 2));
-  const h = Math.min(220 - y, Math.ceil(box.h + pad * 2));
-  const tmp = document.createElement('canvas');
-  tmp.width = 28;
-  tmp.height = 28;
-  const tctx = tmp.getContext('2d');
-  tctx.fillStyle = '#fff';
-  tctx.fillRect(0, 0, 28, 28);
-  tctx.drawImage(hwCanvas, x, y, w, h, 0, 0, 28, 28);
-  const arr = tctx.getImageData(0, 0, 28, 28).data;
-  const vec = new Float32Array(28 * 28);
-  for (let i = 0, j = 0; i < arr.length; i += 4, j++) {
-    const v = (arr[i] + arr[i + 1] + arr[i + 2]) / 3;
-    vec[j] = 1 - (v / 255);
-  }
-
-  let bestDigit = null;
-  let bestScore = Infinity;
-  for (let d = 0; d <= 9; d++) {
-    const tpl = hwTemplates[d];
-    if (!tpl) continue;
-    let diff = 0;
-    for (let i = 0; i < vec.length; i++) {
-      const dv = vec[i] - tpl[i];
-      diff += dv * dv;
-    }
-    if (diff < bestScore) {
-      bestScore = diff;
-      bestDigit = d;
-    }
-  }
-  return bestDigit;
-}
-
-// 初期化
-injectCommonHud();
-injectInputModeUI();
-loadStars();
-syncNinjaStarsUI(totalStars);
-
 </script>
 </body>
 </html>

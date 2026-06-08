@@ -408,9 +408,36 @@
     80% { transform: translateX(4px); }
   }
   .shake { animation: shake 0.4s ease; }
+
+  .kiso-hud {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 50;
+  }
+  .kiso-hud-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    background: rgba(40,40,60,0.78);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+  .kiso-hud-btn:active { transform: scale(0.98); }
+
 </style>
 </head>
 <body>
+
+<div class="kiso-hud">
+  <button class="kiso-hud-btn" id="kiso-home-btn" type="button">きそへ</button>
+</div>
+
 
 <!-- ===== タイトル画面 ===== -->
 <div id="screen-title" class="screen active">
@@ -537,7 +564,6 @@
   <button class="btn-secondary" id="go-home-btn">もどる</button>
 </div>
 
-<script src="./js/kiso-mini-common.js"></script>
 <script>
 // ===== 音声 =====
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -640,8 +666,7 @@ const X_OPTIONS  = [3,4,5,6,7,8,9,10];
 const TIME_OPTIONS = [0,1,2,3,4,5,6,7,8,9,10];
 let xIdx   = 7; // 初期値10
 let tIdx   = 0; // 初期値∞
-let totalStars = getNinjaStars();
-syncNinjaStarsUI(totalStars);
+let totalStars = parseInt(localStorage.getItem('make-x-stars') || '0');
 
 const xDisp   = document.getElementById('x-display');
 const tDisp   = document.getElementById('time-display');
@@ -677,14 +702,21 @@ function makeWrongOptions(correctVal, targetX) {
 }
 
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'flex';
+  }
 }
 
 function startGame() {
   currentQ = 0; correctCount = 0;
   showScreen('screen-game');
-  showQuestion();
+  requestAnimationFrame(showQuestion);
 }
 
 function showQuestion() {
@@ -939,7 +971,7 @@ function onTimeout() {
   locked = true;
   playTimeout();
   setTimeout(() => {
-    document.getElementById('go-stars-disp').textContent = formatStarCount(totalStars);
+    document.getElementById('go-stars-disp').textContent = `${'★'.repeat(totalStars)}（${totalStars}）`;
     showScreen('screen-gameover');
   }, 300);
 }
@@ -959,7 +991,7 @@ function showFinalResult() {
   title.textContent = perfect ? 'ぜんもんせいかい！' : `${correctCount}もん せいかい！`;
   title.style.color = perfect ? 'var(--primary)' : 'var(--text-dark)';
   document.getElementById('result-score').textContent = `${correctCount} / ${TOTAL_Q} もん せいかい`;
-  document.getElementById('total-stars-disp').textContent = formatStarCount(totalStars);
+  document.getElementById('total-stars-disp').textContent = `${'★'.repeat(totalStars)}（${totalStars}）`;
 
   showScreen('screen-result');
 }
@@ -967,12 +999,22 @@ function showFinalResult() {
 // ===== イベント =====
 document.getElementById('start-btn').onclick = startGame;
 document.getElementById('retry-btn').onclick = startGame;
-document.getElementById('home-btn').onclick = () => goToKisoHome();
+document.getElementById('home-btn').onclick = () => showScreen('screen-title');
 document.getElementById('go-retry-btn').onclick = startGame;
-document.getElementById('go-home-btn').onclick = () => goToKisoHome();
+document.getElementById('go-home-btn').onclick = () => showScreen('screen-title');
+
+const KISO_HOME_URL = './tashizan_ninja.html?open=kiso-home';
+const kisoHomeBtn = document.getElementById('kiso-home-btn');
+if (kisoHomeBtn) {
+  kisoHomeBtn.addEventListener('click', () => {
+    window.location.href = KISO_HOME_URL;
+  });
+}
+
 
 for (let i = 0; i < 3; i++) {
   document.getElementById(`card-${i}`).onclick = () => onCardClick(i);
 }
+</script>
 </body>
 </html>

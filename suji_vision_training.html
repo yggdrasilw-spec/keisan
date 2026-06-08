@@ -153,9 +153,10 @@
 </style>
 </head>
 <body>
-<div id="ninja-hud" style="position:fixed;top:10px;right:10px;z-index:9999;display:flex;align-items:center;gap:8px;pointer-events:none;">
-  <button id="hud-back-btn" style="pointer-events:auto;border:none;border-radius:999px;padding:10px 14px;background:rgba(255,255,255,.06);box-shadow:0 4px 14px rgba(0,0,0,.25);font-weight:900;color:var(--text)">← きそへ</button>
-  <div id="ninja-stars-hud" data-ninja-stars style="pointer-events:auto;border-radius:999px;padding:10px 14px;background:rgba(255,255,255,.06);box-shadow:0 4px 14px rgba(0,0,0,.25);font-weight:900;color:var(--accent)">★×0</div>
+
+
+<div class="kiso-hud">
+  <button class="kiso-hud-btn" id="kiso-home-btn" type="button">きそへ</button>
 </div>
 
 <div class="screen" id="title-screen">
@@ -232,7 +233,6 @@
   <button class="ranking-back" id="ranking-back-btn">← 戻る</button>
 </div>
 
-<script src="./js/kiso-mini-common.js"></script>
 <script>
 (() => {
   const HIT_MIN      = 60;
@@ -240,7 +240,6 @@
   const COMBO_WINDOW = 1500; // ms以内なら連続コンボ
 
   let cfg = { count: 10, order: 'asc', hint: true, voice: true };
-  syncNinjaStarsUI(getNinjaStars());
   let sequence = [], currentIdx = 0;
   let startTime = null, timerRaf = null, bests = {};
   let combo = 0, maxCombo = 0, lastHitTime = 0;
@@ -470,9 +469,18 @@
 
   $('start-btn').addEventListener('click', startGame);
   $('retry-btn').addEventListener('click', startGame);
-  $('back-btn').addEventListener('click', () => goToKisoHome());
+  $('back-btn').addEventListener('click', () => showScreen('title'));
   $('ranking-btn').addEventListener('click', () => showRankingScreen(cfg.count));
   $('ranking-back-btn').addEventListener('click', () => showScreen('result'));
+
+const KISO_HOME_URL = './tashizan_ninja.html?open=kiso-home';
+const kisoHomeBtn = document.getElementById('kiso-home-btn');
+if (kisoHomeBtn) {
+  kisoHomeBtn.addEventListener('click', () => {
+    window.location.href = KISO_HOME_URL;
+  });
+}
+
 
   function startGame() {
     if (!canvas) { canvas = $('particle-canvas'); ctx = canvas.getContext('2d'); }
@@ -636,8 +644,6 @@
 
     const elapsedSec = elapsed / 1000;
     const stars = getStarCount(elapsedSec, cfg.count);
-    totalStars = addNinjaStars(stars);
-    syncNinjaStarsUI(totalStars);
 
     $('res-time').textContent = elapsedSec.toFixed(2);
     $('res-meta').textContent = `${cfg.count}個 / ${orderLabel} / ヒント${cfg.hint?'ON':'OFF'}`;
