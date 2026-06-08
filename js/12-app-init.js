@@ -122,18 +122,6 @@ function scheduleInitialScreenNormalize() {
 }
 
 
-
-function getLaunchTargetFromUrl() {
-  try {
-    var params = new URLSearchParams(window.location.search || '');
-    var openTarget = params.get('open');
-    if (openTarget) return openTarget;
-    var hash = (window.location.hash || '').replace(/^#/, '');
-    if (hash) return hash;
-  } catch (e) {}
-  return '';
-}
-
 var __startupOverlayBound = false;
 var __startupOverlayStarting = false;
 var __startupOverlayCleanup = null;
@@ -177,11 +165,23 @@ function __playStartupSound() {
   }
 }
 
+
+function getStartupOpenScreen() {
+  try {
+    var params = new URLSearchParams(window.location.search || '');
+    var open = (params.get('open') || '').trim();
+    if (open === 'kiso' || open === 'kiso-home' || open === 'home') return open === 'kiso' ? 'kiso-home' : open;
+  } catch (e) {}
+  return 'home';
+}
+
 function initStartupOverlay() {
   var overlay = document.getElementById('startup-overlay');
   var stage = document.getElementById('startup-stage');
   if (!overlay || __startupOverlayBound) return;
   __startupOverlayBound = true;
+  var openScreen = getStartupOpenScreen();
+  if (openScreen && openScreen !== 'home') overlay.classList.add('returning');
 
   var cleanup = function() {
     if (__startupOverlayCleanup) {
@@ -211,9 +211,9 @@ function initStartupOverlay() {
     setTimeout(function() {
       if (document.body) document.body.classList.remove('booting');
       if (typeof show === 'function') {
-        try { show('home'); } catch (e) {}
+        try { show(openScreen || 'home'); } catch (e) {}
       } else if (typeof setCurrentScreen === 'function') {
-        setCurrentScreen('home');
+        setCurrentScreen(openScreen || 'home');
       }
       if (overlay && overlay.parentNode) {
         overlay.parentNode.removeChild(overlay);
@@ -297,20 +297,6 @@ function initApp() {
   if (typeof syncHistoryTabButtons === 'function') syncHistoryTabButtons();
   setAnswerMode(answerMode);
   resetTransientUi();
-
-  var launchTarget = getLaunchTargetFromUrl();
-  if (launchTarget && typeof show === 'function') {
-    if (document.body) document.body.classList.remove('booting');
-    var overlayNow = document.getElementById('startup-overlay');
-    if (overlayNow && overlayNow.parentNode) {
-      overlayNow.parentNode.removeChild(overlayNow);
-    }
-    try { show(launchTarget); } catch (e) {}
-    scheduleInitialScreenNormalize();
-    if (getFx('fx_button')) initButtonFX();
-    return;
-  }
-
   initStartupOverlay();
   scheduleInitialScreenNormalize();
 
