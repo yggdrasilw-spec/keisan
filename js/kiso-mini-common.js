@@ -9,7 +9,7 @@
   'use strict';
 
   var STAR_KEY = 'ninja-stars-total';
-  var KISO_RETURN_URL = './tashizan_ninja.html?open=kiso-home';
+  var KISO_RETURN_URL = './tashizan_ninja.html?open=kiso-home&skip-startup=1';
 
   function toInt(v) {
     var n = parseInt(v, 10);

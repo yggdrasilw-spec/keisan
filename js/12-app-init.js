@@ -175,12 +175,22 @@ function getStartupOpenScreen() {
   return 'home';
 }
 
+function getStartupSkipMode() {
+  try {
+    var params = new URLSearchParams(window.location.search || '');
+    var skip = (params.get('skip-startup') || params.get('skipStartup') || '').trim();
+    return skip === '1' || skip === 'true' || skip === 'yes' || skip === 'on';
+  } catch (e) {}
+  return false;
+}
+
 function initStartupOverlay() {
   var overlay = document.getElementById('startup-overlay');
   var stage = document.getElementById('startup-stage');
   if (!overlay || __startupOverlayBound) return;
   __startupOverlayBound = true;
   var openScreen = getStartupOpenScreen();
+  var skipStartup = getStartupSkipMode();
   if (openScreen && openScreen !== 'home') overlay.classList.add('returning');
 
   var cleanup = function() {
@@ -221,6 +231,25 @@ function initStartupOverlay() {
       __startupOverlayStarting = false;
     }, 160);
   };
+
+  if (skipStartup) {
+    __startupOverlayStarting = true;
+    cleanup();
+    __hideStartupOverlayNow(overlay);
+    setTimeout(function () {
+      if (document.body) document.body.classList.remove('booting');
+      if (typeof show === 'function') {
+        try { show(openScreen || 'home'); } catch (e) {}
+      } else if (typeof setCurrentScreen === 'function') {
+        setCurrentScreen(openScreen || 'home');
+      }
+      if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
+      __startupOverlayStarting = false;
+    }, 0);
+    return;
+  }
 
   var opts = { passive: false, capture: true };
   var events = ['pointerdown', 'touchstart', 'mousedown', 'click', 'keydown'];
