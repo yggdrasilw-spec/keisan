@@ -201,6 +201,8 @@
       + '}'
       + '.hud-btn.on { background: #FFF3D6; border-color: #F5A623; color:#7A5000; }'
       + '.hud-btn.off { background: #E8E8E8; border-color: #B0B0B0; color:#909090; opacity: .78; }'
+      + '.hud-inline-star { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; margin:10px 0 12px; border-radius:14px; background: rgba(255, 249, 240, 0.94); color:#6b4a18; border: 1.5px solid rgba(120, 90, 45, .12); box-shadow: 0 2px 8px rgba(0,0,0,.08); font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif; font-size: 12px; font-weight: 800; line-height: 1.2; white-space: nowrap; }'
+      + '.hud-inline-star strong { font-size: 18px; color:#8a5b14; }'
       + '.hud-back { background: rgba(255,238,244,.94); border-color:#F0A0BF; color:#8A2050; }'
       + '.hud-back:active, .hud-btn:active, .hud-pill:active { transform: scale(.98); }'
       + '@media (max-width: 420px) {'
@@ -398,12 +400,22 @@
   }
 
   function syncStarPill() {
-    if (!state.starPill) return;
     var opts = state.opts || {};
     var total = getTotalStarCount();
     var prefix = opts.starLabelPrefix || '★×';
-    state.starPill.innerHTML = '<strong>🥷</strong><span>' + prefix + total + '</span>';
-    state.starPill.title = opts.starTitle || 'ためた★の数';
+    var text = prefix + total;
+    var title = opts.starTitle || 'ためた★の数';
+
+    var nodes = document.querySelectorAll('[data-hud-star]');
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].textContent = text;
+      nodes[i].title = title;
+      nodes[i].setAttribute('aria-label', title + ': ' + text);
+    }
+
+    if (!state.starPill) return;
+    state.starPill.innerHTML = '<strong>🥷</strong><span>' + text + '</span>';
+    state.starPill.title = title;
   }
 
   function refreshButtons() {
