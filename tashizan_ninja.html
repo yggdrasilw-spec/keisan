@@ -292,6 +292,11 @@ body.booting #app {
     <div class="hdr-s">すこしずつ れんしゅうして じっかんを つかもう</div>
   </div>
 
+  <div class="hud-inline-star" style="margin:12px 0 14px;">
+    <span>ためた ★</span>
+    <strong data-hud-star>★×0</strong>
+  </div>
+
   <button class="course-btn cb-kotsu" data-action="launchKisoGame" data-value="./dot-kazoe-finger.html?mode=dot">
     <span class="course-btn-ico">🔴</span>
     <span class="course-btn-main">
@@ -995,7 +1000,7 @@ window.addEventListener('DOMContentLoaded', function () {
       showBack: false,
       showSfx: false,
       showVoice: false,
-      showStar: true,
+      showStar: false,
       starKeys: ['ninja-stars', 'ninja-stars-total', 'dot-stars', 'finger-stars', 'make-x-stars'],
       starLabelPrefix: '★×',
       starTitle: 'みんなの★の合計'

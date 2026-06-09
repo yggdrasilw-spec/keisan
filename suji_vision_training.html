@@ -189,6 +189,11 @@
         <button class="toggle-btn" data-voice="off">OFF</button>
       </div>
     </div>
+  <div class="hud-inline-star" style="margin-top:14px;">
+    <span>ためた ★</span>
+    <strong data-hud-star>★×0</strong>
+  </div>
+
     <button class="start-btn" id="start-btn">START</button>
   </div>
 </div>
@@ -218,6 +223,11 @@
   <div class="result-maxcombo" id="res-maxcombo"></div>
   <div class="result-best hidden" id="res-best">🏆 ベスト更新！</div>
   <div class="decorline"></div>
+  <div class="hud-inline-star" style="margin:12px auto 6px; width:min(320px, 92vw);">
+    <span>ためた ★</span>
+    <strong data-hud-star>★×0</strong>
+  </div>
+
   <button class="retry-btn" id="retry-btn">RETRY</button>
   <button class="back-btn" id="back-btn">設定に戻る</button>
   <button class="back-btn" id="ranking-btn" style="border-color:#555570">🏅 ランキング</button>
@@ -484,7 +494,7 @@ if (window.TashizanHud) {
     backLabel: 'きそへ',
     showSfx: true,
     showVoice: true,
-    showStar: true,
+    showStar: false,
     mainUrl: KISO_HOME_URL,
     starKeys: ['ninja-stars', 'ninja-stars-total', 'dot-stars', 'finger-stars', 'make-x-stars'],
     starLabelPrefix: '★×',
