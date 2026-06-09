@@ -155,9 +155,6 @@
 <body>
 
 
-<div class="kiso-hud">
-  <button class="kiso-hud-btn" id="kiso-home-btn" type="button">きそへ</button>
-</div>
 
 <div class="screen" id="title-screen">
   <div class="game-title">PERIPH<br>VISION</div>
@@ -232,6 +229,8 @@
   <div class="ranking-table" id="ranking-table"></div>
   <button class="ranking-back" id="ranking-back-btn">← 戻る</button>
 </div>
+
+<script src="./js/15-global-hud.js"></script>
 
 <script>
 (() => {
@@ -331,7 +330,7 @@
 
   // ── 読み上げ ──
   function speakNumber(num) {
-    if (!cfg.voice) return;
+    if (!cfg.voice || window.voiceOn === false) return;
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(String(num));
@@ -473,14 +472,36 @@
   $('ranking-btn').addEventListener('click', () => showRankingScreen(cfg.count));
   $('ranking-back-btn').addEventListener('click', () => showScreen('result'));
 
-const KISO_HOME_URL = './tashizan_ninja.html?open=kiso-home';
+const KISO_HOME_URL = './tashizan_ninja.html?open=kiso-home&skip-startup=1';
 const kisoHomeBtn = document.getElementById('kiso-home-btn');
 if (kisoHomeBtn) {
-  kisoHomeBtn.addEventListener('click', () => {
-    window.location.href = KISO_HOME_URL;
+  kisoHomeBtn.style.display = 'none';
+}
+
+if (window.TashizanHud) {
+  TashizanHud.init({
+    showBack: true,
+    backLabel: 'きそへ',
+    showSfx: true,
+    showVoice: true,
+    showStar: true,
+    mainUrl: KISO_HOME_URL,
+    starKeys: ['ninja-stars', 'ninja-stars-total', 'dot-stars', 'finger-stars', 'make-x-stars'],
+    starLabelPrefix: '★×',
+    starTitle: 'ためた★の数'
   });
 }
 
+window.__hudVoiceSync = function (on) {
+  cfg.voice = !!on;
+  document.querySelectorAll('[data-voice]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.voice === (cfg.voice ? 'on' : 'off'));
+  });
+};
+
+if (new URLSearchParams(window.location.search).get('open') === 'kiso-home') {
+  startGame();
+}
 
   function startGame() {
     if (!canvas) { canvas = $('particle-canvas'); ctx = canvas.getContext('2d'); }
@@ -649,6 +670,10 @@ if (kisoHomeBtn) {
     $('res-meta').textContent = `${cfg.count}個 / ${orderLabel} / ヒント${cfg.hint?'ON':'OFF'}`;
     $('res-maxcombo').textContent = maxCombo >= 2 ? `最大コンボ: ${maxCombo}` : '';
     $('res-best').classList.toggle('hidden', !isNewBest);
+
+    if (stars >= 1 && window.TashizanHud) {
+      TashizanHud.addStarCount(1, 'suji-vision-training');
+    }
 
     // 星アニメーション
     [1,2,3].forEach(i => $('star'+i).classList.remove('earned'));

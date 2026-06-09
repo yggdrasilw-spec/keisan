@@ -458,9 +458,6 @@
 <body>
 
 
-<div class="kiso-hud">
-  <button class="kiso-hud-btn" id="kiso-home-btn" type="button">きそへ</button>
-</div>
 
 <!-- ===== タイトル画面 ===== -->
 <div id="screen-title">
@@ -571,6 +568,8 @@
   <button class="home-btn" id="go-home-btn">もどる</button>
 </div>
 
+<script src="./js/15-global-hud.js"></script>
+
 <script>
 // ===== 音声生成 =====
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -581,6 +580,7 @@ function getAudioCtx() {
 }
 
 function playCorrect() {
+  if (window.sfxOn === false) return;
   const ctx = getAudioCtx();
   const notes = [523.25, 659.25, 783.99]; // C5 E5 G5
   notes.forEach((freq, i) => {
@@ -597,6 +597,7 @@ function playCorrect() {
 }
 
 function playWrong() {
+  if (window.sfxOn === false) return;
   const ctx = getAudioCtx();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -610,6 +611,7 @@ function playWrong() {
 }
 
 function playTimeout() {
+  if (window.sfxOn === false) return;
   const ctx = getAudioCtx();
   [300, 250, 200].forEach((freq, i) => {
     const osc = ctx.createOscillator();
@@ -625,6 +627,7 @@ function playTimeout() {
 }
 
 function playStar() {
+  if (window.sfxOn === false) return;
   const ctx = getAudioCtx();
   const notes = [523.25, 659.25, 783.99, 1046.50];
   notes.forEach((freq, i) => {
@@ -651,10 +654,23 @@ const MAX_OPTIONS = [3, 4, 5, 6, 7, 8, 9, 10];
 let maxIdx = 2; // 5
 let timeIdx = 0; // ∞
 
-const STAR_KEYS = {
-  dot: 'dot-stars',
-  finger: 'finger-stars',
-};
+const STAR_KEYS = ['ninja-stars', 'ninja-stars-total', 'dot-stars', 'finger-stars', 'make-x-stars'];
+const STAR_SOURCE = 'dot-kazoe-finger';
+
+function syncHudStars() {
+  if (window.TashizanHud) {
+    return TashizanHud.reconcileStarStore(STAR_KEYS);
+  }
+  return { count: parseInt(localStorage.getItem(STAR_KEYS[0]) || '0', 10) || 0 };
+}
+
+function loadStars() {
+  totalStars = syncHudStars().count;
+}
+
+function saveStars() {
+  totalStars = window.TashizanHud ? TashizanHud.setStarCount(totalStars, STAR_SOURCE) : totalStars;
+}
 
 // 設定スピナー
 const maxDisplay = document.getElementById('max-display');
@@ -680,18 +696,6 @@ document.getElementById('time-down').addEventListener('click', () => {
 const modeButtons = Array.from(document.querySelectorAll('.mode-btn'));
 const titleLogo = document.getElementById('title-logo');
 const titleSub = document.getElementById('title-sub');
-
-function getStarKey() {
-  return STAR_KEYS[selectedMode] || STAR_KEYS.dot;
-}
-
-function loadStars() {
-  totalStars = parseInt(localStorage.getItem(getStarKey()) || '0');
-}
-
-function saveStars() {
-  localStorage.setItem(getStarKey(), String(totalStars));
-}
 
 function updateModeUI() {
   modeButtons.forEach(btn => {
@@ -1249,17 +1253,29 @@ document.getElementById('keypad').addEventListener('click', e => {
 
 document.getElementById('retry-btn').addEventListener('click', startGame);
 
-const KISO_HOME_URL = './tashizan_ninja.html?open=kiso-home';
-const kisoHomeBtn = document.getElementById('kiso-home-btn');
-if (kisoHomeBtn) {
-  kisoHomeBtn.addEventListener('click', () => {
-    window.location.href = KISO_HOME_URL;
-  });
-}
 
 document.getElementById('home-btn').addEventListener('click', () => showScreen('screen-title'));
 document.getElementById('go-retry-btn').addEventListener('click', startGame);
 document.getElementById('go-home-btn').addEventListener('click', () => showScreen('screen-title'));
+
+if (window.TashizanHud) {
+  TashizanHud.init({
+    showBack: true,
+    backLabel: 'きそへ',
+    showSfx: true,
+    showVoice: true,
+    showStar: true,
+    mainUrl: './tashizan_ninja.html?open=kiso-home&skip-startup=1',
+    starKeys: STAR_KEYS,
+    starLabelPrefix: '★×',
+    starTitle: 'ためた★の数'
+  });
+}
+
+
+if (new URLSearchParams(window.location.search).get('open') === 'kiso-home') {
+  startGame();
+}
 
 // キーボード対応
 document.addEventListener('keydown', e => {
