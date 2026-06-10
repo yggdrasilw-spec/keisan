@@ -17,86 +17,36 @@
   var DEBUG_GEM_OVERRIDES_KEY = 'tashizan_v2_debug_gem_overrides';
 
   var SHOP_ITEMS = [
-    { id: 'shuriken_black', ico: '✸', name: '手裏剣', price: 5, desc: '基本の投げ道具。' },
-    { id: 'bo_shuriken', ico: '✹', name: '棒手裏剣', price: 8, desc: '刺す・投げるの両用。' },
-    { id: 'makibishi', ico: '✺', name: 'まきびし', price: 10, desc: '追手の足止め用。' },
-    { id: 'kunai', ico: '🗡', name: '苦無', price: 12, desc: '掘る・刺す・引っ掛ける。' },
-    { id: 'futokunai', ico: '🗡', name: '大苦無', price: 15, desc: '重めの万能道具。' },
-    { id: 'tekko_kagi', ico: '🪝', name: '手甲鉤', price: 18, desc: '登る・つかむ・奪う。' },
-    { id: 'tekagi', ico: '🪤', name: '鉄鉤', price: 21, desc: '壁や扉に掛けやすい。' },
-    { id: 'manriki_gusari', ico: '⛓', name: '万力鎖', price: 24, desc: '間合いを取る連結鎖。' },
-    { id: 'kusarigama', ico: '⛓', name: '鎖鎌', price: 28, desc: '鎌と鎖の複合装備。' },
-    { id: 'ninja_to', ico: '🗡', name: '忍び刀', price: 32, desc: '携帯しやすい直刀。' },
-    { id: 'kodachi', ico: '⚔', name: '小太刀', price: 36, desc: '軽くて取り回しやすい。' },
-    { id: 'shikomizue', ico: '🪄', name: '仕込み杖', price: 40, desc: '見た目を隠した武器。' },
-    { id: 'fukiya', ico: '🎯', name: '吹き矢', price: 45, desc: '静かな遠距離攻撃。' },
-    { id: 'fukidutsu', ico: '🪈', name: '吹筒', price: 50, desc: '矢を飛ばす筒。' },
-    { id: 'kagyoku', ico: '💥', name: '火薬筒', price: 55, desc: '撹乱に使う火薬入れ。' },
-    { id: 'kemuridama', ico: '💨', name: '煙玉', price: 60, desc: '視界を切って逃げる。' },
-    { id: 'metsubushi', ico: '🌫', name: '目潰し粉', price: 66, desc: '一瞬で相手の目を奪う。' },
-    { id: 'kaginawa', ico: '🪝', name: '鉤縄', price: 72, desc: '高所へ登るための定番。' },
-    { id: 'kagi_ladder', ico: '🪜', name: '鉤梯子', price: 78, desc: '素早く掛けられる梯子。' },
-    { id: 'musubi_ladder', ico: '🪢', name: '結び梯子', price: 84, desc: 'ロープで組む梯子。' },
-    { id: 'take_ladder', ico: '🎋', name: '竹梯子', price: 90, desc: '軽くて運びやすい。' },
-    { id: 'portable_ladder', ico: '🧱', name: '折り畳み梯子', price: 96, desc: '収納しやすい登攀具。' },
-    { id: 'extend_ladder', ico: '📏', name: '伸縮梯子', price: 102, desc: '伸ばして使う可搬梯子。' },
-    { id: 'take_hook', ico: '🪵', name: '竹鉤棒', price: 108, desc: '引っ掛けに便利な棒。' },
-    { id: 'climb_pole', ico: '🧗', name: '登り棒', price: 114, desc: '塀越えの補助に使う。' },
-    { id: 'mizugumo', ico: '🌊', name: '水蜘蛛', price: 120, desc: '水辺の移動を助ける道具。' },
-    { id: 'shinobibune', ico: '🛶', name: '忍び舟', price: 126, desc: '水路を静かに進む舟。' },
-    { id: 'ukihashi', ico: '🌉', name: '浮橋', price: 132, desc: '渡河用の簡易橋。' },
-    { id: 'watari_rope', ico: '🪢', name: '渡し綱', price: 138, desc: '対岸へ渡るための綱。' },
-    { id: 'ukiita', ico: '🪵', name: '浮き板', price: 144, desc: '湿地の移動を助ける。' },
-    { id: 'waraji', ico: '👣', name: '草鞋', price: 150, desc: '足さばき優先の履物。' },
-    { id: 'tabi', ico: '🧦', name: '足袋', price: 156, desc: '静音性を高める履物。' },
-    { id: 'amigasa', ico: '🎩', name: '編笠', price: 162, desc: '顔を隠して街に紛れる。' },
-    { id: 'hood', ico: '🧥', name: '頭巾', price: 168, desc: '正体を隠す布装備。' },
-    { id: 'shinobi_mask', ico: '🥷', name: '忍び面', price: 174, desc: '表情を隠して潜入する。' },
-    { id: 'kakuremino', ico: '🧥', name: '隠れ蓑', price: 180, desc: '体を目立たなくする外套。' },
-    { id: 'disguise_set', ico: '🎭', name: '変装一式', price: 186, desc: '別人になりきる道具。' },
-    { id: 'fake_beard', ico: '🧔', name: '偽髭', price: 192, desc: '年配の姿に変装できる。' },
-    { id: 'tenugui', ico: '🧣', name: '手ぬぐい', price: 198, desc: '隠す・縛る・拭くの三役。' },
-    { id: 'shinobi_pouch', ico: '🎒', name: '忍び袋', price: 204, desc: '小道具をまとめて持てる。' },
-    { id: 'mitsuduka', ico: '📜', name: '密書筒', price: 210, desc: '秘密文書を守って運ぶ。' },
-    { id: 'takezutsu', ico: '🎋', name: '竹筒', price: 216, desc: '小物や薬草の携帯用。' },
-    { id: 'suitou', ico: '🫗', name: '水筒', price: 222, desc: '長時間行動の必需品。' },
-    { id: 'kantan', ico: '🍙', name: '携帯食', price: 228, desc: '行動中にすばやく食べる。' },
-    { id: 'dry_ration', ico: '🥜', name: '乾粮', price: 234, desc: '保存性の高い携行食。' },
-    { id: 'hikigane', ico: '🔥', name: '火打石', price: 240, desc: '火起こしの基本。' },
-    { id: 'hikigama', ico: '⚙', name: '火打鎌', price: 246, desc: '火花を起こす道具。' },
-    { id: 'kemuridake', ico: '🏮', name: '狼煙筒', price: 252, desc: '合図と撹乱の両用。' },
-    { id: 'naruko', ico: '🔔', name: '鳴子', price: 258, desc: '侵入者の接近を知らせる。' },
-    { id: 'fue', ico: '🎶', name: '笛', price: 264, desc: '合図を送るための笛。' },
-    { id: 'signal_mirror', ico: '🪞', name: '合図鏡', price: 270, desc: '光で遠くへ知らせる。' },
-    { id: 'aburagami_bag', ico: '🧴', name: '油紙袋', price: 276, desc: '水気から中身を守る。' },
-    { id: 'kusuriire', ico: '💊', name: '薬入れ', price: 282, desc: '薬や粉薬を分けて入れる。' },
-    { id: 'hariire', ico: '🪡', name: '針箱', price: 288, desc: '細工や応急処置に使う。' },
-    { id: 'ito_maki', ico: '🧵', name: '糸巻き', price: 294, desc: '結束や修繕に便利。' },
-    { id: 'nokogiri', ico: '🪚', name: '細鋸', price: 300, desc: '細い木材や部材を切る。' },
-    { id: 'tataminomi', ico: '🗜', name: '畳ノミ', price: 306, desc: 'こじ開けや切断に使う。' },
-    { id: 'master_key', ico: '🗝', name: '万能鍵', price: 312, desc: '鍵開け用の基本装備。' },
-    { id: 'lock_pry', ico: '🪓', name: 'かんぬき抜き', price: 318, desc: '戸締まりを外すための具。' },
-    { id: 'lock_mirror', ico: '🪞', name: '鍵穴鏡', price: 324, desc: '中をのぞいて状態確認。' },
-    { id: 'pry_bar', ico: '🪛', name: 'こじ開け棒', price: 330, desc: '扉や箱を開ける補助具。' },
-    { id: 'hidden_pick', ico: '🧷', name: '仕掛け針', price: 336, desc: '細かな仕掛けを外す。' },
-    { id: 'hidden_short_blade', ico: '🔪', name: '隠し短刀', price: 342, desc: '携帯性重視の短刃。' },
-    { id: 'chain_mail', ico: '🛡', name: '鎖帷子', price: 348, desc: '軽量寄りの防具。' },
-    { id: 'muneate', ico: '🥋', name: '胸当て', price: 354, desc: '胴を守る防具。' },
-    { id: 'kote', ico: '🧤', name: '籠手', price: 360, desc: '腕と手を守る。' },
-    { id: 'menpo', ico: '🎭', name: '面頬', price: 366, desc: '顔面の防御用。' },
-    { id: 'shoulder_armor', ico: '🛡', name: '肩当て', price: 372, desc: '上半身の防御を強化。' },
-    { id: 'suneate', ico: '🦵', name: '脛当て', price: 378, desc: '脚を保護する装備。' },
-    { id: 'light_armor', ico: '🥋', name: '軽甲冑', price: 384, desc: '動きやすい軽装甲。' },
-    { id: 'shinobi_katana', ico: '🗡', name: '忍者刀', price: 390, desc: '直刀系の上位装備。' },
-    { id: 'shadow_scroll', ico: '📜', name: '影分身の巻物', price: 396, desc: '演出用の上位巻物。' },
-    { id: 'replacement_scroll', ico: '📜', name: '変わり身の巻物', price: 402, desc: '逃走向けの巻物。' },
-    { id: 'mizu_scroll', ico: '💧', name: '水遁の巻物', price: 408, desc: '水の術を学ぶ巻物。' },
-    { id: 'hi_scroll', ico: '🔥', name: '火遁の巻物', price: 414, desc: '火の術を学ぶ巻物。' },
-    { id: 'kaze_scroll', ico: '🌪', name: '風遁の巻物', price: 420, desc: '風の術を学ぶ巻物。' },
-    { id: 'tsuchi_scroll', ico: '🪨', name: '土遁の巻物', price: 426, desc: '土の術を学ぶ巻物。' },
-    { id: 'ninja_grimoire', ico: '📚', name: '忍術秘伝書', price: 432, desc: '忍術の総合宝典。' },
-    { id: 'shinobi_charm', ico: '🧿', name: '忍神のお守り', price: 438, desc: '最後のご褒美枠。' },
-    { id: 'gold_shuriken', ico: '🌟', name: '黄金手裏剣', price: 444, desc: 'コレクションの頂点。' }
+    { id: 'shuriken_black',   ico: '✸', name: 'くろ手裏剣',     price: 5,   desc: '基本の手裏剣。まずはこれから。' },
+    { id: 'makibishi',        ico: '✹', name: 'まきびし',       price: 8,   desc: '追手の足止めに使う。逃走向き。' },
+    { id: 'kunai',            ico: '🗡', name: '苦無',           price: 10,  desc: '掘る・はさむ・刺す、万能寄り。' },
+    { id: 'takezutsu',        ico: '🎋', name: '竹筒',           price: 12,  desc: '小物や薬草の携帯に便利。' },
+    { id: 'waraji',           ico: '👣', name: '草鞋',           price: 14,  desc: '素早い移動用の基本装備。' },
+    { id: 'tenugui',          ico: '🧣', name: '手ぬぐい',       price: 15,  desc: '隠す・拭く・縛る、地味に便利。' },
+    { id: 'shinobi_pouch',    ico: '🎒', name: '忍び袋',         price: 18,  desc: '道具をまとめて持ち歩ける。' },
+    { id: 'hikigane',         ico: '🔥', name: '火打石',         price: 20,  desc: '火起こし用。野営・合図にも。' },
+    { id: 'metsubushi',       ico: '💨', name: '目潰し粉',       price: 24,  desc: '相手の視界を奪う。短期決戦向き。' },
+    { id: 'kemuridama',       ico: '💣', name: '煙玉',           price: 28,  desc: '視界を切って姿を消す定番。' },
+    { id: 'kaginawa',         ico: '🪝', name: '鉤縄',           price: 32,  desc: '壁・塀・高所へ移動するための道具。' },
+    { id: 'tabi',             ico: '🧦', name: '足袋',           price: 36,  desc: '静かな移動のための履物。' },
+    { id: 'amigasa',          ico: '🎩', name: '編笠',           price: 40,  desc: '顔を隠して街に溶け込む。' },
+    { id: 'shinobi_mask',     ico: '🥷', name: '忍び面',         price: 45,  desc: '正体を見せないための面。' },
+    { id: 'kodachi',          ico: '⚔', name: '小太刀',         price: 50,  desc: '近接戦の軽量武器。' },
+    { id: 'mitsuduka',        ico: '📜', name: '密書筒',         price: 56,  desc: '秘密の文書を守って運ぶ。' },
+    { id: 'naruko',           ico: '🔔', name: '鳴子',           price: 62,  desc: '侵入者の接近を知らせる。' },
+    { id: 'henso_set',        ico: '🎭', name: '変装一式',       price: 68,  desc: '身分をごまかして潜入する。' },
+    { id: 'shikomizue',       ico: '🪄', name: '仕込み杖',       price: 75,  desc: '見た目を隠した携帯武器。' },
+    { id: 'shinobigatana',    ico: '🗡', name: '忍び刀',         price: 82,  desc: '携帯性重視の短い刀。' },
+    { id: 'kusarigama',       ico: '⛓', name: '鎖鎌',           price: 90,  desc: '間合いを取って戦う上級装備。' },
+    { id: 'tekkoukagi',       ico: '🪤', name: '手甲鉤',         price: 98,  desc: '引っ掛ける・奪う・登るの三役。' },
+    { id: 'kusari_katabira',  ico: '🛡', name: '鎖帷子',         price: 110, desc: '軽装ながら防御力の高い防具。' },
+    { id: 'muneate',          ico: '🥋', name: '胸当て',         price: 120, desc: '飛び道具対策の防具。' },
+    { id: 'mizugumo',         ico: '🌊', name: '水蜘蛛',         price: 135, desc: '水上・湿地の移動を助ける道具。' },
+    { id: 'shinobibune',      ico: '🛶', name: '忍び舟',         price: 150, desc: '水路の移動や密かな移送に。' },
+    { id: 'kagi_ladder',      ico: '🪜', name: '鉤梯子',         price: 165, desc: '高所攻略のための可搬梯子。' },
+    { id: 'kemuridake',       ico: '🗼', name: '狼煙筒',         price: 180, desc: '合図・連絡・撹乱に使う。' },
+    { id: 'denju',            ico: '📚', name: '忍術秘伝書',     price: 220, desc: '技能を体系的に学ぶための宝典。' },
+    { id: 'bunsin',           ico: '👥', name: '影分身の巻物',   price: 260, desc: '完全にロマン枠の上位商品。' }
   ];
 
   function safeGetText(key, fallback) {
@@ -367,7 +317,12 @@
     wrap.id = 'debug-launch-wrap';
     wrap.className = 'debug-launch-wrap';
     wrap.innerHTML = ''
-      + '<button type="button" id="debug-shuriken-btn" class="debug-shuriken" aria-label="デバッグモード">✸</button>';
+      + '<button type="button" id="debug-shuriken-btn" class="debug-shuriken" aria-label="デバッグモード">✸</button>'
+      + '<div class="debug-launch-text">'
+      + 'この手裏剣を10秒長押しするとデバッグモードに入れます。<br>'
+      + '入室時だけパスワードを求めます。'
+      + '<div class="debug-hold-meter" aria-hidden="true"><span id="debug-hold-bar"></span></div>'
+      + '</div>';
     adv.appendChild(wrap);
     bindDebugLauncher();
   }
@@ -379,8 +334,9 @@
       m.className = 'debug-password-mask';
       m.innerHTML = ''
         + '<div class="debug-password-card">'
-        + '<h4>確認</h4>'
-        + '<input id="debug-password-input" type="password" inputmode="numeric" autocomplete="off" maxlength="8">'
+        + '<h4>デバッグモード</h4>'
+        + '<div class="tip">パスワードを入力してください。</div>'
+        + '<input id="debug-password-input" type="password" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="16801680">'
         + '<div class="actions"><button type="button" class="cancel" id="debug-password-cancel">キャンセル</button><button type="button" class="ok" id="debug-password-ok">OK</button></div>'
         + '</div>';
       document.body.appendChild(m);
@@ -432,7 +388,8 @@
   }
 
   function setHoldMeter(pct) {
-    return pct;
+    var bar = document.getElementById('debug-hold-bar');
+    if (bar) bar.style.width = Math.max(0, Math.min(100, pct)) + '%';
   }
 
   function bindDebugLauncher() {
@@ -531,7 +488,6 @@
   function hideDebugPanel() {
     var overlay = document.getElementById('debug-panel-overlay');
     if (overlay) overlay.classList.remove('show');
-    safeSetText(DEBUG_UNLOCK_KEY, '0');
   }
 
   function updateBadgeRecord(id, on) {
@@ -827,31 +783,26 @@
     renderDebugPanel();
   }
 
-  function calcNormalStarReward(summary) {
+  function calcNormalStarReward(summary, completed) {
     if (!summary || !summary.tot) return 0;
-    var base = Math.max(1, Math.ceil(summary.tot / 6));
-    var courseBonus = 0;
-    if (curCourse === '20') courseBonus = 6;
-    else if (curCourse === 'all') courseBonus = 12;
-    else courseBonus = 2;
 
-    var accBonus = 0;
-    if (summary.acc === 100) accBonus = 5;
-    else if (summary.acc >= 90) accBonus = 3;
-    else if (summary.acc >= 70) accBonus = 1;
+    // 1問以上やっていれば最低1個。
+    // 途中終了は増やしすぎない。
+    var reward = 1;
+    if (!completed) return reward;
 
-    var sizeBonus = 0;
-    if (summary.tot >= 20) sizeBonus = 2;
-    if (summary.tot >= 40) sizeBonus = 5;
+    if (curCourse === '20') reward += 1;
+    else if (curCourse === 'all') reward += 2;
 
-    return base + courseBonus + accBonus + sizeBonus;
+    if (summary.acc === 100) reward += 1;
+    return reward;
   }
 
   function grantNormalStars(summary, completed) {
     if (sessMode !== 'normal') return 0;
     if (!summary || !summary.tot) return 0;
     if (sess && sess._starsAwarded) return 0;
-    var reward = calcNormalStarReward(summary);
+    var reward = calcNormalStarReward(summary, completed);
     if (reward <= 0) return 0;
     if (sess) sess._starsAwarded = true;
     addStarCount(reward, 'practice');
@@ -934,6 +885,10 @@
     ensureDebugOverlays();
     wrapAchievementRender();
     wrapFinishHooks();
+
+    if (isDebugUnlocked()) {
+      showDebugPanel();
+    }
 
     if (typeof renderShopCollection === 'function') {
       renderShopCollection();

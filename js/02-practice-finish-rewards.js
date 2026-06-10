@@ -81,31 +81,8 @@ function playFinishUnlockSequence(gems, badge, beforeTotal, onDone) {
   }
 
   function showChain(gems2, badge2) {
-    var effectOn = true;
-    try {
-      effectOn = getFx('fx_perfect') !== false;
-    } catch (e) {}
-    if (effectOn && typeof sndPerfect === 'function') {
-      sndPerfect();
-    } else if (typeof sndGoodFinish === 'function') {
-      sndGoodFinish();
-    }
-
-    setTimeout(function(){
-      if (typeof showPerfectEffect === 'function') {
-        showPerfectEffect(function(){
-          if (gems2.length > 0) {
-            showGemUnlockEffect(gems2[0].img, gems2[0].name, function(){
-              if (badge2) showBadgeUnlockEffect(badge2, finishMaybeLevelUp);
-              else finishMaybeLevelUp();
-            });
-          } else if (badge2) {
-            showBadgeUnlockEffect(badge2, finishMaybeLevelUp);
-          } else {
-            finishMaybeLevelUp();
-          }
-        });
-      } else if (gems2.length > 0) {
+    function continueChain() {
+      if (gems2.length > 0) {
         showGemUnlockEffect(gems2[0].img, gems2[0].name, function(){
           if (badge2) showBadgeUnlockEffect(badge2, finishMaybeLevelUp);
           else finishMaybeLevelUp();
@@ -115,7 +92,21 @@ function playFinishUnlockSequence(gems, badge, beforeTotal, onDone) {
       } else {
         finishMaybeLevelUp();
       }
-    }, 80);
+    }
+
+    if (getFx('fx_perfect')) {
+      sndPerfect();
+      setTimeout(function(){
+        showPerfectEffect(continueChain);
+      }, 80);
+    } else {
+      sndGoodFinish();
+      if (gems2.length > 0 || badge2) {
+        setTimeout(continueChain, 300);
+      } else {
+        finishMaybeLevelUp();
+      }
+    }
   }
   if (!gems || !gems.length) {
     if (badge) {
