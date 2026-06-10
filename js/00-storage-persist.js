@@ -33,6 +33,8 @@ function persistAppStateToStorage() {
   if (typeof savePraise === 'function') savePraise();
   else storageSaveJSON(LS_PRAISE, praiseList);
   storageSaveJSON(LS_BADGE, badgeData);
+  if (typeof saveShopData === 'function') saveShopData();
+  else if (typeof shopData !== 'undefined') storageSaveJSON(APP_KEYS.SHOP, shopData);
   storageSaveText(APP_KEYS.ANSWER_MODE, appState.session.answerMode);
 }
 

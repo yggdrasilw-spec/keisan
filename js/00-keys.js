@@ -14,5 +14,6 @@ var APP_KEYS = {
   PRAISE_AUDIO_NAMES: 'tashizan_praise_audio_names',
   IMGS: 'tashizan_imgs_custom',     // カスタム画像
   BADGE: 'tashizan_v2_badge',       // 実績
+  SHOP: 'tashizan_v2_shop',        // 商店購入データ
   ANSWER_MODE: 'tashizan_answerMode'
 };

@@ -284,9 +284,10 @@ function getAchievements() {
 // 制覇バッジ
 // ======================================================
 var badgeData = storageLoadJSON(LS_BADGE, {});
+var shopData = storageLoadJSON(APP_KEYS.SHOP, {});
 
 // 制覇バッジ定義（12個）
-// 条件: 全問正解 + 全問平均3秒以内（=合計ms / 問題数 <= 3000）
+// 条件: 全問正解
 var BADGES = [
   { id:'easy_20',  ico:'🟢', name:'かんたん\n20もん 制覇！', unlockTitle:'かんたん２０もん　せいはバッジ',
     group:'badge',
@@ -366,12 +367,14 @@ function awardBadgeById(id) {
   return null;
 }
 
-// finish() から呼ぶ: 全問正解 + 全問3秒以内 → バッジ付与
+// finish() から呼ぶ: 全問正解かつ全問3秒以内 → バッジ付与
 function checkAndAwardBadge(level, course, results) {
   if (!results || !results.length) return null;
-  var allOk  = results.every(function(r){ return r.ok; });
-  var allFast = results.every(function(r){ return r.el <= 3000; });
-  if (!allOk || !allFast) return null;
+  var allOk = results.every(function(r){ return r.ok; });
+  if (!allOk) return null;
+
+  var allFast = results.every(function(r){ return r && typeof r.el === 'number' && r.el < 3000; });
+  if (!allFast) return null;
 
   var id = level + '_' + course;
   return awardBadgeById(id); // 新規獲得 or null

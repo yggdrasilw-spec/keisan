@@ -2,7 +2,7 @@
 // ======================================================
 // アプリ状態のスナップショット / 復元
 // ======================================================
-var APP_DATA_VERSION = 1;
+var APP_DATA_VERSION = 2;
 
 function applyHistorySnapshot(historySnapshot) {
   if (typeof setHistorySnapshot === 'function') return setHistorySnapshot(historySnapshot);
@@ -81,6 +81,7 @@ function applyAppSnapshot(snapshot) {
   praiseAudioNames = s.praiseAudioNames || {};
   praiseList = Array.isArray(s.praiseList) && s.praiseList.length ? s.praiseList.slice() : DEFAULT_PRAISE.slice();
   badgeData = s.badgeData || {};
+  shopData = s.shopData || {};
 
   if (typeof applySessionSnapshot === 'function') {
     applySessionSnapshot({

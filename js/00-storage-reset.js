@@ -7,7 +7,7 @@ function getPersistedAppStorageKeys() {
     LS_GD, LS_KD, LS_RK, LS_FX,
     LS_PRAISE, LS_VOICE, APP_KEYS.VOICE_ON,
     LS_AUDIO, LS_AUDIO_NAMES, LS_IMG,
-    LS_BADGE, APP_KEYS.ANSWER_MODE
+    LS_BADGE, APP_KEYS.SHOP, APP_KEYS.ANSWER_MODE
   ];
 }
 
@@ -32,6 +32,17 @@ function resetPersistedRuntimeState() {
   praiseAudioNames = {};
   praiseList = DEFAULT_PRAISE.slice();
   badgeData = {};
+  shopData = {};
+  try {
+    sessionStorage.removeItem('tashizan_v2_debug_unlocked');
+    sessionStorage.removeItem('tashizan_v2_debug_auto_award');
+    sessionStorage.removeItem('tashizan_v2_debug_gem_overrides');
+  } catch (e) {}
+  if (typeof hideDebugPanel === 'function') {
+    try { hideDebugPanel(); } catch (e2) {}
+  }
+  var dbgMask = document.getElementById('debug-password-mask');
+  if (dbgMask) dbgMask.classList.remove('show');
 
   if (typeof applySessionSnapshot === 'function') {
     applySessionSnapshot({
