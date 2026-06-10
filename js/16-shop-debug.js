@@ -785,17 +785,24 @@
 
   function calcNormalStarReward(summary, completed) {
     if (!summary || !summary.tot) return 0;
+    if (completed === false) return 1;
 
-    // 1問以上やっていれば最低1個。
-    // 途中終了は増やしすぎない。
-    var reward = 1;
-    if (!completed) return reward;
+    var base = Math.max(1, Math.ceil(summary.tot / 6));
+    var courseBonus = 0;
+    if (curCourse === '20') courseBonus = 6;
+    else if (curCourse === 'all') courseBonus = 12;
+    else courseBonus = 2;
 
-    if (curCourse === '20') reward += 1;
-    else if (curCourse === 'all') reward += 2;
+    var accBonus = 0;
+    if (summary.acc === 100) accBonus = 5;
+    else if (summary.acc >= 90) accBonus = 3;
+    else if (summary.acc >= 70) accBonus = 1;
 
-    if (summary.acc === 100) reward += 1;
-    return reward;
+    var sizeBonus = 0;
+    if (summary.tot >= 20) sizeBonus = 2;
+    if (summary.tot >= 40) sizeBonus = 5;
+
+    return base + courseBonus + accBonus + sizeBonus;
   }
 
   function grantNormalStars(summary, completed) {
