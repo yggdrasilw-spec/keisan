@@ -805,11 +805,19 @@
     return base + courseBonus + accBonus + sizeBonus;
   }
 
+  function calcKotsuStarReward(summary, completed) {
+    if (!summary || !summary.tot) return 0;
+    if (completed === false) return 1;
+    return Math.max(1, Math.ceil(summary.tot / 6));
+  }
+
   function grantNormalStars(summary, completed) {
-    if (sessMode !== 'normal') return 0;
+    if (sessMode !== 'normal' && sessMode !== 'kotsu') return 0;
     if (!summary || !summary.tot) return 0;
     if (sess && sess._starsAwarded) return 0;
-    var reward = calcNormalStarReward(summary, completed);
+    var reward = (sessMode === 'kotsu')
+      ? calcKotsuStarReward(summary, completed)
+      : calcNormalStarReward(summary, completed);
     if (reward <= 0) return 0;
     if (sess) sess._starsAwarded = true;
     addStarCount(reward, 'practice');
