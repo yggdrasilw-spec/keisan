@@ -35,14 +35,23 @@ function renderFinishOutcome(summary, completed) {
       : (tot+'もんちゅう '+cor+'もん せいかい');
     show('result');
 
-    var unlocks = { gems: [], badge: null };
-    try {
-      unlocks = collectFinishUnlockRewards(completed) || unlocks;
-    } catch (e) {
-      console.error('[finish] collectFinishUnlockRewards failed', e);
+    var runUnlockSequence = function () {
+      var unlocks = { gems: [], badge: null };
+      try {
+        unlocks = collectFinishUnlockRewards(completed) || unlocks;
+      } catch (e) {
+        console.error('[finish] collectFinishUnlockRewards failed', e);
+      }
+      if (typeof updateCourseSelectSubtitles === 'function') updateCourseSelectSubtitles(curLevel);
+      playFinishUnlockSequence(unlocks.gems || [], unlocks.badge || null, unlocks.beforeTotal, null, { skipPerfectEffect: true });
+    };
+
+    if (getFx('fx_perfect') && typeof showPerfectEffect === 'function') {
+      try { sndPerfect(); } catch (e) {}
+      showPerfectEffect(runUnlockSequence);
+    } else {
+      runUnlockSequence();
     }
-    if (typeof updateCourseSelectSubtitles === 'function') updateCourseSelectSubtitles(curLevel);
-    playFinishUnlockSequence(unlocks.gems || [], unlocks.badge || null, unlocks.beforeTotal);
     return;
   } else if (acc===100 || acc>=70) {
     sndGoodFinish();

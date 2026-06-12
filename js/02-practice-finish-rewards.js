@@ -56,11 +56,15 @@ function collectFinishUnlockRewards(completed) {
   return { gems: newGems, badge: newBadge, beforeTotal: beforeTotal };
 }
 
-function playFinishUnlockSequence(gems, badge, beforeTotal, onDone) {
+function playFinishUnlockSequence(gems, badge, beforeTotal, onDone, options) {
   if (typeof beforeTotal === 'function') {
+    options = onDone;
     onDone = beforeTotal;
     beforeTotal = null;
   }
+
+  options = options || {};
+  var skipPerfectEffect = !!options.skipPerfectEffect;
 
   function finishMaybeLevelUp() {
     console.log('[DBG] playFinishUnlockSequence.finishMaybeLevelUp', {
@@ -94,7 +98,9 @@ function playFinishUnlockSequence(gems, badge, beforeTotal, onDone) {
       }
     }
 
-    if (getFx('fx_perfect')) {
+    if (skipPerfectEffect) {
+      continueChain();
+    } else if (getFx('fx_perfect')) {
       sndPerfect();
       setTimeout(function(){
         showPerfectEffect(continueChain);

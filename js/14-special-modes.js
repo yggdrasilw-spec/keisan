@@ -484,13 +484,15 @@
       if (rs2) rs2.textContent = completed ? '全問正解エフェクト！' : 'ここまでの きろく';
 
       if (completed) {
-        try {
-          sndPerfect();
-        } catch (e) {}
-        if (typeof showPerfectEffect === 'function') {
-          setTimeout(function () {
-            showPerfectEffect(function () {});
-          }, 140);
+        if (getFx('fx_perfect')) {
+          try { sndPerfect(); } catch (e) {}
+          if (typeof showPerfectEffect === 'function') {
+            setTimeout(function () {
+              showPerfectEffect(function () {});
+            }, 140);
+          }
+        } else {
+          try { sndGoodFinish(); } catch (e) {}
         }
       } else {
         try {
@@ -498,18 +500,31 @@
         } catch (e) {}
       }
     } else if (completed) {
-      sndGoodFinish();
       if (rbi) rbi.textContent = '⚡';
       if (rt2) rt2.textContent = (sessMode === 'shinsoku') ? (hasAllShinsokuBadges() ? 'ちょうしんそく クリア！' : 'しんそく クリア！') : 'むげん クリア！';
       if (rs2) rs2.textContent = summary.tot + 'もん ぜんぶ せいかい';
 
-      var unlocks = { gems: [], badge: null };
-      try {
-        unlocks = collectFinishUnlockRewards() || unlocks;
-      } catch (e) {
-        console.error('[finish] collectFinishUnlockRewards failed', e);
+      var startUnlockSequence = function () {
+        var unlocks = { gems: [], badge: null };
+        try {
+          unlocks = collectFinishUnlockRewards() || unlocks;
+        } catch (e) {
+          console.error('[finish] collectFinishUnlockRewards failed', e);
+        }
+        playFinishUnlockSequence(unlocks.gems || [], unlocks.badge || null, unlocks.beforeTotal, null, { skipPerfectEffect: true });
+      };
+
+      if (getFx('fx_perfect') && typeof showPerfectEffect === 'function') {
+        try { sndPerfect(); } catch (e) {}
+        show('result');
+        setTimeout(function () {
+          showPerfectEffect(startUnlockSequence);
+        }, 140);
+      } else {
+        try { sndGoodFinish(); } catch (e) {}
+        show('result');
+        startUnlockSequence();
       }
-      playFinishUnlockSequence(unlocks.gems || [], unlocks.badge || null, unlocks.beforeTotal);
     } else {
       sndTryAgain();
       if (rbi) rbi.textContent = '⚔';
