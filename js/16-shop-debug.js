@@ -329,12 +329,9 @@
       + '.dbg-mini{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#faf7ef;border:1px solid #eadfc6;border-radius:14px;padding:8px 10px;font-size:12px;font-weight:800;color:#3a2a00;}'
       + '.dbg-mini button{margin-left:auto;border:none;border-radius:10px;padding:6px 8px;font-size:11px;font-weight:900;cursor:pointer;background:#efefef;color:#3a2a00;}'
       + '.dbg-close{background:#f5a623;color:#2d2100;}'
-      + '.debug-launch-wrap{margin-top:18px;padding:14px 12px;border-radius:18px;background:#fff7e8;border:2px dashed #f0c66b;display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;}'
-      + '.debug-shuriken{width:62px;height:62px;border:none;border-radius:18px;background:linear-gradient(135deg,#fff,#ffe8b6);color:#5a3a05;font-size:30px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(0,0,0,.12);}'
+      + '.debug-launch-wrap{margin-top:18px;padding:18px 12px;border-radius:18px;background:#fff7e8;border:2px dashed #f0c66b;display:flex;align-items:center;justify-content:center;min-height:96px;}'
+      + '.debug-shuriken{width:62px;height:62px;border:none;border-radius:18px;background:linear-gradient(135deg,#fff,#ffe8b6);color:#5a3a05;font-size:30px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(0,0,0,.12);display:block;margin:0 auto;}'
       + '.debug-shuriken:active{transform:scale(.98);}'
-      + '.debug-launch-text{flex:1;min-width:180px;font-size:12px;font-weight:800;color:#7b5c2e;line-height:1.45;}'
-      + '.debug-hold-meter{height:8px;background:#eadfc6;border-radius:999px;overflow:hidden;margin-top:8px;flex-basis:100%;}'
-      + '.debug-hold-meter > span{display:block;height:100%;width:0%;background:linear-gradient(90deg,#f5a623,#d88b0a);border-radius:999px;transition:width .08s linear;}'
       + '.debug-password-mask{display:none;position:fixed;inset:0;z-index:10060;background:rgba(0,0,0,.56);align-items:center;justify-content:center;padding:16px;}'
       + '.debug-password-mask.show{display:flex;}'
       + '.debug-password-card{width:min(420px,92vw);background:#fff;border-radius:20px;padding:16px;border:2px solid rgba(140,108,50,.16);box-shadow:0 24px 70px rgba(0,0,0,.32);}'
@@ -387,12 +384,7 @@
     wrap.id = 'debug-launch-wrap';
     wrap.className = 'debug-launch-wrap';
     wrap.innerHTML = ''
-      + '<button type="button" id="debug-shuriken-btn" class="debug-shuriken" aria-label="デバッグモード">✸</button>'
-      + '<div class="debug-launch-text">'
-      + 'この手裏剣を10秒長押しするとデバッグモードに入れます。<br>'
-      + '入室時だけパスワードを求めます。'
-      + '<div class="debug-hold-meter" aria-hidden="true"><span id="debug-hold-bar"></span></div>'
-      + '</div>';
+      + '<button type="button" id="debug-shuriken-btn" class="debug-shuriken" aria-label="デバッグモード">✸</button>';
     adv.appendChild(wrap);
     bindDebugLauncher();
   }
@@ -405,8 +397,7 @@
       m.innerHTML = ''
         + '<div class="debug-password-card">'
         + '<h4>デバッグモード</h4>'
-        + '<div class="tip">パスワードを入力してください。</div>'
-        + '<input id="debug-password-input" type="password" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="16801680">'
+        + '<input id="debug-password-input" type="password" autocomplete="off" maxlength="8">'
         + '<div class="actions"><button type="button" class="cancel" id="debug-password-cancel">キャンセル</button><button type="button" class="ok" id="debug-password-ok">OK</button></div>'
         + '</div>';
       document.body.appendChild(m);
@@ -558,6 +549,7 @@
   function hideDebugPanel() {
     var overlay = document.getElementById('debug-panel-overlay');
     if (overlay) overlay.classList.remove('show');
+    safeSetText(DEBUG_UNLOCK_KEY, '0');
   }
 
   function updateBadgeRecord(id, on) {
