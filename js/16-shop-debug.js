@@ -119,6 +119,117 @@
     { id: 'complete_shinobi', ico: '🏅', name: '完全制覇の証', price: 1000, desc: 'すべてを集めた究極の記念章。' }
   ];
 
+  SHOP_ITEMS.forEach(function (item, index) {
+    item.shopIndex = index + 1;
+    item.img = 'img/item' + String(index + 1).padStart(3, '0') + '.png';
+  });
+
+  function getShopItemById(id) {
+    for (var i = 0; i < SHOP_ITEMS.length; i++) {
+      if (SHOP_ITEMS[i].id === id) return SHOP_ITEMS[i];
+    }
+    return null;
+  }
+
+  function pad3(n) {
+    return String(n).padStart(3, '0');
+  }
+
+  function buildShopFlavor(item) {
+    if (!item) return '';
+    var n = item.shopIndex || 0;
+    var extra = SHOP_FLAVOR_TEXTS[item.id];
+    if (extra) return '第' + n + '番の忍具。' + extra;
+    var tier = '基本の一品。';
+    if (item.price >= 300) tier = '到達のごほうびとして輝く上位品。';
+    else if (item.price >= 100) tier = '任務の幅を広げる中核装備。';
+    else if (item.price >= 30) tier = '実用性を高めた、現場向けの工夫が光る。';
+    else tier = '忍びの第一歩を支える、手に取りやすい道具。';
+
+    if (/巻物|秘伝書|大全|証/.test(item.name)) {
+      tier = '知識と達成を記す、物語性の強い品。';
+    } else if (/羽織|外套|頭巾|面|甲冑|鎧|胸当て/.test(item.name)) {
+      tier = '身を守り、気配を整えるための装い。';
+    } else if (/縄|梯子|橋|舟|水蜘蛛/.test(item.name)) {
+      tier = '移動と潜入を静かに支える機動装備。';
+    } else if (/煙玉|目潰し粉|火薬|狼煙|火打石/.test(item.name)) {
+      tier = '合図、攪乱、撤退のための一手。';
+    } else if (/手裏剣|苦無|小太刀|鎖鎌|万力鎖|手甲鉤|短刀|杖/.test(item.name)) {
+      tier = '間合いと扱いやすさを意識した忍具。';
+    }
+
+    return '第' + n + '番の忍具。' + tier + item.desc;
+  }
+
+  function getShopItemImageSrc(item) {
+    if (!item) return '';
+    return item.img || ('img/item' + pad3(item.shopIndex || 0) + '.png');
+  }
+
+  function ensureShopDetailModal() {
+    if (document.getElementById('shop-detail-mask')) return;
+    var mask = document.createElement('div');
+    mask.id = 'shop-detail-mask';
+    mask.className = 'shop-detail-mask';
+    mask.innerHTML = ''
+      + '<div class="shop-detail-card" role="dialog" aria-modal="true" aria-labelledby="shop-detail-title">'
+      + '<button type="button" class="shop-detail-close" aria-label="閉じる">×</button>'
+      + '<div class="shop-detail-top">'
+      + '<div class="shop-detail-img-wrap"><img id="shop-detail-img" alt="" loading="lazy"></div>'
+      + '<div class="shop-detail-meta">'
+      + '<div id="shop-detail-badge" class="shop-detail-badge"></div>'
+      + '<h3 id="shop-detail-title"></h3>'
+      + '<div id="shop-detail-price" class="shop-detail-price"></div>'
+      + '<p id="shop-detail-desc" class="shop-detail-desc"></p>'
+      + '</div></div>'
+      + '<div id="shop-detail-flavor" class="shop-detail-flavor"></div>'
+      + '</div>';
+    document.body.appendChild(mask);
+
+    var close = function () { hideShopDetailModal(); };
+    mask.addEventListener('click', function (e) { if (e.target === mask) close(); });
+    var btn = mask.querySelector('.shop-detail-close');
+    if (btn) btn.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && mask.classList.contains('show')) close();
+    });
+  }
+
+  function showShopDetailModal(item) {
+    if (!item) return;
+    ensureShopDetailModal();
+    var mask = document.getElementById('shop-detail-mask');
+    if (!mask) return;
+    var img = document.getElementById('shop-detail-img');
+    var title = document.getElementById('shop-detail-title');
+    var badge = document.getElementById('shop-detail-badge');
+    var price = document.getElementById('shop-detail-price');
+    var desc = document.getElementById('shop-detail-desc');
+    var flavor = document.getElementById('shop-detail-flavor');
+    var owned = hasShopItem(item.id);
+
+    if (img) {
+      img.src = getShopItemImageSrc(item);
+      img.alt = item.name;
+      img.onerror = function () {
+        img.removeAttribute('src');
+        img.alt = '画像を読み込めませんでした';
+      };
+    }
+    if (title) title.textContent = item.name;
+    if (badge) badge.textContent = owned ? '購入済み' : '未購入';
+    if (price) price.textContent = '★' + item.price + ' ・ ' + (owned ? '所持中' : 'ショップ販売中');
+    if (desc) desc.textContent = item.desc;
+    if (flavor) flavor.textContent = buildShopFlavor(item);
+
+    mask.classList.add('show');
+  }
+
+  function hideShopDetailModal() {
+    var mask = document.getElementById('shop-detail-mask');
+    if (mask) mask.classList.remove('show');
+  }
+
   function safeGetText(key, fallback) {
     try {
       var v = sessionStorage.getItem(key);
@@ -342,7 +453,7 @@
       + '.debug-password-card .actions button{flex:1;border:none;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:900;cursor:pointer;}'
       + '.debug-password-card .actions .ok{background:#f5a623;color:#2d2100;}'
       + '.debug-password-card .actions .cancel{background:#efefef;color:#3a2a00;}'
-      + '.shop-empty{padding:18px;border-radius:16px;background:#fff; border:1.5px dashed #eadfc6;color:#7b5c2e;font-size:13px;font-weight:800;text-align:center;}';
+      + '.shop-empty{padding:18px;border-radius:16px;background:#fff; border:1.5px dashed #eadfc6;color:#7b5c2e;font-size:13px;font-weight:800;text-align:center;}.shop-detail-mask{position:fixed;inset:0;z-index:10080;display:none;align-items:center;justify-content:center;background:rgba(10,14,24,.62);padding:16px;}.shop-detail-mask.show{display:flex;}.shop-detail-card{position:relative;width:min(720px,96vw);max-height:min(88vh,920px);overflow:auto;background:linear-gradient(180deg,#fffdf7,#fff);border-radius:24px;box-shadow:0 28px 80px rgba(0,0,0,.36);padding:18px;border:2px solid rgba(140,108,50,.18);}.shop-detail-close{position:absolute;top:12px;right:12px;width:38px;height:38px;border:none;border-radius:999px;background:#f4e7c8;color:#5a3a05;font-size:24px;font-weight:900;cursor:pointer;}.shop-detail-top{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start;}.shop-detail-img-wrap{border-radius:20px;background:linear-gradient(135deg,#f9f3e3,#eef5ff);padding:12px;min-height:220px;display:flex;align-items:center;justify-content:center;}.shop-detail-img-wrap img{max-width:100%;max-height:320px;object-fit:contain;image-rendering:auto;display:block;filter:drop-shadow(0 10px 18px rgba(0,0,0,.12));}.shop-detail-meta{padding:4px 4px 4px 0;}.shop-detail-badge{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;background:#dff4e2;color:#26633a;font-size:11px;font-weight:900;margin-bottom:8px;}.shop-detail-title,.shop-detail-meta h3{margin:0;font-size:24px;line-height:1.2;color:#3a2a00;}.shop-detail-price{margin-top:8px;font-size:14px;font-weight:900;color:#8a5b14;}.shop-detail-desc{margin:10px 0 0;font-size:14px;line-height:1.8;color:#5e503d;font-weight:700;}.shop-detail-flavor{margin-top:14px;padding:14px 16px;border-radius:18px;background:#faf6ea;border:1px solid #eadfc6;color:#6e572f;font-size:13px;line-height:1.9;font-weight:700;}';
     var style = document.createElement('style');
     style.id = 'shop-debug-style';
     style.textContent = css;
@@ -778,7 +889,7 @@
     head.innerHTML = ''
       + '<div><div class="shop-title">★ を つかって にんじゃどうぐを かう</div>'
       + '<div class="shop-count-line">購入済み ' + ownedCount + ' / ' + SHOP_ITEMS.length + '</div></div>'
-      + '<div class="shop-meta">ためた★: ★×' + total + '<br>高い道具ほど強い</div>';
+      + '<div class="shop-meta">ためた★: ★×' + total + '<br>購入済みはタップで詳細</div>';
     el.appendChild(head);
 
     if (!SHOP_ITEMS.length) {
@@ -793,16 +904,28 @@
     grid.className = 'ach-shop-grid';
     SHOP_ITEMS.forEach(function (item) {
       var owned = hasShopItem(item.id);
+      var afford = total >= item.price;
       var card = document.createElement('div');
       card.className = 'shop-card' + (owned ? ' owned' : '');
-      var title = owned ? '購入済み' : ('★' + item.price + 'で かう');
-      var afford = total >= item.price;
       card.innerHTML = ''
         + '<div class="shop-ico">' + item.ico + '</div>'
         + '<div class="shop-name">' + item.name + '</div>'
         + '<div class="shop-desc">' + item.desc + '</div>'
-        + '<div class="shop-price"><span>' + title + '</span><small>' + (owned ? '所持中' : (afford ? '買える' : '★がたりない')) + '</small></div>';
+        + '<div class="shop-price"><span>' + (owned ? '購入済み' : ('★' + item.price + 'で かう')) + '</span><small>' + (owned ? '所持中' : (afford ? '買える' : '★がたりない')) + '</small></div>';
       if (owned) {
+        card.style.cursor = 'pointer';
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', item.name + ' の詳細を表示');
+        card.onclick = function () {
+          showShopDetailModal(item);
+        };
+        card.onkeydown = function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showShopDetailModal(item);
+          }
+        };
         var tag = document.createElement('div');
         tag.className = 'shop-owned-tag';
         tag.textContent = '購入済み';
@@ -813,7 +936,8 @@
         btn.className = 'shop-buy';
         btn.textContent = '★' + item.price + ' で かう';
         btn.disabled = !afford;
-        btn.onclick = function () {
+        btn.onclick = function (e) {
+          e.stopPropagation();
           purchaseShopItem(item.id);
         };
         card.appendChild(btn);
@@ -958,6 +1082,7 @@
     ensureStyle();
     wrapGemChecks();
     ensureAchievementShopDom();
+    ensureShopDetailModal();
     ensureDebugLauncherDom();
     ensureDebugOverlays();
     wrapAchievementRender();
@@ -984,6 +1109,8 @@
   window.purchaseShopItem = purchaseShopItem;
   window.renderShopCollection = renderShopCollection;
   window.showDebugPanel = showDebugPanel;
+  window.showShopDetailModal = showShopDetailModal;
+  window.hideShopDetailModal = hideShopDetailModal;
   window.hideDebugPanel = hideDebugPanel;
   window.renderDebugPanel = renderDebugPanel;
   window.isDebugAutoAwardOn = isDebugAutoAwardOn;
