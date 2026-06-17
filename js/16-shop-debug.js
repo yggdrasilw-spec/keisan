@@ -118,117 +118,181 @@
     { id: 'yamiyo_seiha', ico: '🏅', name: '闇夜制覇の証', price: 990, desc: '闇夜の支配者を示す証。' },
     { id: 'complete_shinobi', ico: '🏅', name: '完全制覇の証', price: 1000, desc: 'すべてを集めた究極の記念章。' }
   ];
-
-  SHOP_ITEMS.forEach(function (item, index) {
-    item.shopIndex = index + 1;
-    item.img = 'img/item' + String(index + 1).padStart(3, '0') + '.png';
-  });
-
-  function getShopItemById(id) {
-    for (var i = 0; i < SHOP_ITEMS.length; i++) {
-      if (SHOP_ITEMS[i].id === id) return SHOP_ITEMS[i];
-    }
-    return null;
+  function getShopItemImagePath(index) {
+    var num = String(index + 1);
+    while (num.length < 3) num = '0' + num;
+    return 'img/item' + num + '.png';
   }
 
-  function pad3(n) {
-    return String(n).padStart(3, '0');
+  function trimJapanesePeriod(text) {
+    return String(text || '').replace(/[。．\.]+$/g, '');
   }
 
-  function buildShopFlavor(item) {
-    if (!item) return '';
-    var n = item.shopIndex || 0;
-    var extra = SHOP_FLAVOR_TEXTS[item.id];
-    if (extra) return '第' + n + '番の忍具。' + extra;
-    var tier = '基本の一品。';
-    if (item.price >= 300) tier = '到達のごほうびとして輝く上位品。';
-    else if (item.price >= 100) tier = '任務の幅を広げる中核装備。';
-    else if (item.price >= 30) tier = '実用性を高めた、現場向けの工夫が光る。';
-    else tier = '忍びの第一歩を支える、手に取りやすい道具。';
+  function buildShopFlavor(item, index) {
+    var name = String(item && item.name ? item.name : '');
+    var desc = trimJapanesePeriod(item && item.desc ? item.desc : '');
+    var price = item && typeof item.price === 'number' ? item.price : 0;
+    var lead = '第' + (index + 1) + '番の忍具。' + name + 'は' + desc + '。';
+    var tags = [];
 
-    if (/巻物|秘伝書|大全|証/.test(item.name)) {
-      tier = '知識と達成を記す、物語性の強い品。';
-    } else if (/羽織|外套|頭巾|面|甲冑|鎧|胸当て/.test(item.name)) {
-      tier = '身を守り、気配を整えるための装い。';
-    } else if (/縄|梯子|橋|舟|水蜘蛛/.test(item.name)) {
-      tier = '移動と潜入を静かに支える機動装備。';
-    } else if (/煙玉|目潰し粉|火薬|狼煙|火打石/.test(item.name)) {
-      tier = '合図、攪乱、撤退のための一手。';
-    } else if (/手裏剣|苦無|小太刀|鎖鎌|万力鎖|手甲鉤|短刀|杖/.test(item.name)) {
-      tier = '間合いと扱いやすさを意識した忍具。';
+    function push(text) {
+      if (text) tags.push(text);
     }
 
-    return '第' + n + '番の忍具。' + tier + item.desc;
+    if (/証/.test(name)) {
+      push('これは使うための道具ではなく、歩んだ道を示す札だ。');
+    } else if (/巻物/.test(name)) {
+      push('紙に閉じた知恵や術が、持ち歩ける重みになる。');
+    } else if (/羽織|外套/.test(name)) {
+      push('まとうと輪郭が変わり、忍びの気配が一段深くなる。');
+    } else if (/頭巾|面|マスク/.test(name)) {
+      push('顔の情報をそっと隠し、視線を外へ流すための装いだ。');
+    } else if (/甲冑|鎧|胸当て|鎖帷子/.test(name)) {
+      push('守りを足しつつ、動きの重さをできるだけ抑えている。');
+    } else if (/縄|鉤縄/.test(name)) {
+      push('引く・登る・結ぶの動作が、ひとつの道になる。');
+    } else if (/梯子/.test(name)) {
+      push('一瞬で足場を作れる、地味だけど頼れる相棒だ。');
+    } else if (/舟|橋|水蜘蛛/.test(name)) {
+      push('水や段差を越えるための、静かな抜け道になってくれる。');
+    } else if (/煙玉|煙/.test(name)) {
+      push('視界を切って、気配だけを残して消えるための札だ。');
+    } else if (/火薬|狼煙|目潰し粉|火打石/.test(name)) {
+      push('合図・攪乱・起こし火に使える、場面を動かす品だ。');
+    } else if (/手裏剣|苦無|小太刀|忍刀|鎖鎌|鎖|鉤|短刀|杖/.test(name)) {
+      push('手の内で扱いを変えやすく、忍びの距離感に合っている。');
+    } else if (/草鞋|靴|履|足/.test(name)) {
+      push('足運びを整えて、音と疲れを少しずつ軽くする。');
+    } else if (/袋|筒|入れ|箱|籠|印籠|携帯食|水筒/.test(name)) {
+      push('小物をまとめて持ち歩く、旅の実務を支える道具だ。');
+    } else if (/変装|変身|旅路/.test(name)) {
+      push('正体をぼかして、別の顔で街に溶け込むための一式だ。');
+    } else if (/夜目鏡|千里眼|未来視/.test(name)) {
+      push('暗さや距離の壁を越えて、先を見る感覚を補う。');
+    } else if (/分身/.test(name)) {
+      push('本体と影の境目をあいまいにする、上位の気配がある。');
+    } else if (/龍|鳳凰|雷神|天雷|霜刃|朧影|幻影|金剛|黒曜石/.test(name)) {
+      push('名前の通り、ただの道具を超えた圧と格をまとっている。');
+    } else if (/蒐集家|頭領|皆伝|上忍|忍神|総帥|制覇|統合/.test(name)) {
+      push('集め切った先の到達点を、静かに示す記念章だ。');
+    } else {
+      push('忍びの仕事を、地味に確実に押し上げてくれる。');
+    }
+
+    if (/黒/.test(name)) push('黒の色味は影に溶けやすく、存在感を細くする。');
+    if (/竹/.test(name)) push('竹素材の軽さとしなりが、扱いやすさにつながる。');
+    if (/皮巻き/.test(name)) push('握りの安定感が少し増し、実用の匂いが濃くなる。');
+    if (/静音|無音/.test(name)) push('音を立てにくいのが、忍びの流儀にきれいに合う。');
+    if (/漆/.test(name)) push('漆の艶が、耐久と品のよさを同時に足してくれる。');
+    if (/折り畳み|折り/.test(name)) push('収納と展開の速さが、そのまま機動力になる。');
+    if (/黄金|金/.test(name)) push('金色のきらめきが、ご褒美らしい達成感を強める。');
+    if (/霜|氷/.test(name)) push('ひんやりした気配が、触れた相手の判断を鈍らせる。');
+    if (/雷|電/.test(name)) push('稲妻の気配が、ひと目で上位品だと伝えてくる。');
+    if (/鳳|凰|羽/.test(name)) push('羽ばたくような意匠が、装飾以上の格を生む。');
+    if (/影/.test(name)) push('影の名前を持つだけで、静けさの説得力が増す。');
+
+    if (price >= 500) {
+      push('終盤にふさわしい、集めること自体が勲章になる品だ。');
+    } else if (price >= 100) {
+      push('中盤以降の頼もしさがあり、道具箱の主役になっていく。');
+    } else if (price >= 20) {
+      push('まずは手に入れると、できることがひとつ増える。');
+    } else {
+      push('最初の一歩にちょうどいい、基本の気配がある。');
+    }
+
+    return lead + ' ' + tags.join(' ');
   }
 
-  function getShopItemImageSrc(item) {
-    if (!item) return '';
-    return item.img || ('img/item' + pad3(item.shopIndex || 0) + '.png');
-  }
+  function ensureShopDetailOverlay() {
+    if (document.getElementById('shop-detail-overlay')) return;
 
-  function ensureShopDetailModal() {
-    if (document.getElementById('shop-detail-mask')) return;
-    var mask = document.createElement('div');
-    mask.id = 'shop-detail-mask';
-    mask.className = 'shop-detail-mask';
-    mask.innerHTML = ''
-      + '<div class="shop-detail-card" role="dialog" aria-modal="true" aria-labelledby="shop-detail-title">'
-      + '<button type="button" class="shop-detail-close" aria-label="閉じる">×</button>'
-      + '<div class="shop-detail-top">'
-      + '<div class="shop-detail-img-wrap"><img id="shop-detail-img" alt="" loading="lazy"></div>'
-      + '<div class="shop-detail-meta">'
-      + '<div id="shop-detail-badge" class="shop-detail-badge"></div>'
-      + '<h3 id="shop-detail-title"></h3>'
-      + '<div id="shop-detail-price" class="shop-detail-price"></div>'
-      + '<p id="shop-detail-desc" class="shop-detail-desc"></p>'
-      + '</div></div>'
-      + '<div id="shop-detail-flavor" class="shop-detail-flavor"></div>'
+    var overlay = document.createElement('div');
+    overlay.id = 'shop-detail-overlay';
+    overlay.className = 'shop-detail-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.innerHTML = ''
+      + '<div class="shop-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="shop-detail-title">'
+      + '  <button type="button" class="shop-detail-close" id="shop-detail-close" aria-label="閉じる">×</button>'
+      + '  <div class="shop-detail-top">'
+      + '    <div class="shop-detail-media">'
+      + '      <img id="shop-detail-img" class="shop-detail-img" alt="">'
+      + '      <div id="shop-detail-img-fallback" class="shop-detail-img-fallback" style="display:none;"></div>'
+      + '    </div>'
+      + '    <div class="shop-detail-head">'
+      + '      <div class="shop-detail-badge" id="shop-detail-badge"></div>'
+      + '      <h3 id="shop-detail-title"></h3>'
+      + '      <div class="shop-detail-meta" id="shop-detail-meta"></div>'
+      + '    </div>'
+      + '  </div>'
+      + '  <p class="shop-detail-flavor" id="shop-detail-flavor"></p>'
+      + '  <div class="shop-detail-desc" id="shop-detail-desc"></div>'
       + '</div>';
-    document.body.appendChild(mask);
+    document.body.appendChild(overlay);
 
-    var close = function () { hideShopDetailModal(); };
-    mask.addEventListener('click', function (e) { if (e.target === mask) close(); });
-    var btn = mask.querySelector('.shop-detail-close');
-    if (btn) btn.addEventListener('click', close);
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && mask.classList.contains('show')) close();
+    overlay.addEventListener('click', function (ev) {
+      if (ev.target === overlay) closeShopDetailOverlay();
     });
+    document.addEventListener('keydown', function (ev) {
+      var node = document.getElementById('shop-detail-overlay');
+      if (!node || !node.classList.contains('show')) return;
+      if (ev.key === 'Escape') closeShopDetailOverlay();
+    });
+
+    var closeBtn = document.getElementById('shop-detail-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeShopDetailOverlay);
   }
 
-  function showShopDetailModal(item) {
+  function closeShopDetailOverlay() {
+    var overlay = document.getElementById('shop-detail-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  function openShopDetailOverlay(item, index) {
     if (!item) return;
-    ensureShopDetailModal();
-    var mask = document.getElementById('shop-detail-mask');
-    if (!mask) return;
+    ensureShopDetailOverlay();
+    var overlay = document.getElementById('shop-detail-overlay');
+    if (!overlay) return;
+
     var img = document.getElementById('shop-detail-img');
-    var title = document.getElementById('shop-detail-title');
+    var fallback = document.getElementById('shop-detail-img-fallback');
     var badge = document.getElementById('shop-detail-badge');
-    var price = document.getElementById('shop-detail-price');
-    var desc = document.getElementById('shop-detail-desc');
+    var title = document.getElementById('shop-detail-title');
+    var meta = document.getElementById('shop-detail-meta');
     var flavor = document.getElementById('shop-detail-flavor');
-    var owned = hasShopItem(item.id);
+    var desc = document.getElementById('shop-detail-desc');
+
+    if (badge) badge.textContent = '購入済み';
+    if (title) title.textContent = item.name || '';
+    if (meta) meta.textContent = '★' + item.price + ' / ' + (index + 1) + '番';
+    if (flavor) flavor.textContent = buildShopFlavor(item, index);
+    if (desc) desc.textContent = item.desc || '';
 
     if (img) {
-      img.src = getShopItemImageSrc(item);
-      img.alt = item.name;
+      img.onload = null;
+      img.onerror = null;
+      img.alt = item.name || '';
+      img.src = getShopItemImagePath(index);
+      img.style.display = '';
+      if (fallback) fallback.style.display = 'none';
       img.onerror = function () {
-        img.removeAttribute('src');
-        img.alt = '画像を読み込めませんでした';
+        img.style.display = 'none';
+        if (fallback) {
+          fallback.textContent = item.ico || '★';
+          fallback.style.display = 'flex';
+        }
+      };
+      img.onload = function () {
+        if (fallback) fallback.style.display = 'none';
       };
     }
-    if (title) title.textContent = item.name;
-    if (badge) badge.textContent = owned ? '購入済み' : '未購入';
-    if (price) price.textContent = '★' + item.price + ' ・ ' + (owned ? '所持中' : 'ショップ販売中');
-    if (desc) desc.textContent = item.desc;
-    if (flavor) flavor.textContent = buildShopFlavor(item);
 
-    mask.classList.add('show');
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
   }
 
-  function hideShopDetailModal() {
-    var mask = document.getElementById('shop-detail-mask');
-    if (mask) mask.classList.remove('show');
-  }
 
   function safeGetText(key, fallback) {
     try {
@@ -413,6 +477,21 @@
       + '.ach-shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}'
       + '.shop-card{background:#fff;border:1.5px solid #eadfc6;border-radius:18px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:8px;min-height:176px;}'
       + '.shop-card.owned{border-color:#9ad8a0;background:linear-gradient(180deg,#ffffff,#f3fff4);}'
+      + '.shop-card.owned{cursor:pointer;}'
+      + '.shop-card.owned:focus{outline:3px solid rgba(245,166,35,.35);outline-offset:2px;}'
+      + '.shop-detail-overlay{position:fixed;inset:0;z-index:10080;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.58);padding:16px;}'
+      + '.shop-detail-overlay.show{display:flex;}'
+      + '.shop-detail-dialog{width:min(920px,96vw);max-height:min(90vh,940px);overflow:auto;background:#fffdf7;border-radius:24px;box-shadow:0 30px 90px rgba(0,0,0,.38);border:2px solid rgba(140,108,50,.16);padding:18px;position:relative;}'
+      + '.shop-detail-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border:none;border-radius:999px;background:#f2ead9;color:#5a3a05;font-size:24px;font-weight:900;cursor:pointer;}'
+      + '.shop-detail-top{display:grid;grid-template-columns:160px minmax(0,1fr);gap:14px;align-items:center;margin-bottom:14px;}'
+      + '.shop-detail-media{width:160px;height:160px;border-radius:22px;background:linear-gradient(135deg,#fff2d5,#ffffff);border:1.5px solid #eadfc6;display:flex;align-items:center;justify-content:center;overflow:hidden;}'
+      + '.shop-detail-img{width:100%;height:100%;object-fit:contain;display:block;}'
+      + '.shop-detail-img-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:72px;}'
+      + '.shop-detail-badge{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;background:#dff4e2;color:#26633a;font-size:11px;font-weight:900;margin-bottom:8px;}'
+      + '.shop-detail-head h3{margin:0;font-size:24px;line-height:1.2;color:#3a2a00;font-weight:900;}'
+      + '.shop-detail-meta{margin-top:6px;font-size:13px;font-weight:800;color:#8a5b14;}'
+      + '.shop-detail-flavor{font-size:15px;font-weight:800;line-height:1.8;color:#5f4a2a;margin:10px 0 12px;}'
+      + '.shop-detail-desc{padding:12px 14px;border-radius:18px;background:#faf6ed;border:1px solid #eadfc6;font-size:14px;font-weight:700;line-height:1.8;color:#6e5835;}'
       + '.shop-ico{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(135deg,#fff0d4,#fff);font-size:28px;flex-shrink:0;}'
       + '.shop-name{font-size:15px;font-weight:900;color:#3a2a00;line-height:1.2;}'
       + '.shop-desc{font-size:11px;font-weight:700;color:#7d6a51;line-height:1.45;min-height:2.8em;}'
@@ -453,7 +532,7 @@
       + '.debug-password-card .actions button{flex:1;border:none;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:900;cursor:pointer;}'
       + '.debug-password-card .actions .ok{background:#f5a623;color:#2d2100;}'
       + '.debug-password-card .actions .cancel{background:#efefef;color:#3a2a00;}'
-      + '.shop-empty{padding:18px;border-radius:16px;background:#fff; border:1.5px dashed #eadfc6;color:#7b5c2e;font-size:13px;font-weight:800;text-align:center;}.shop-detail-mask{position:fixed;inset:0;z-index:10080;display:none;align-items:center;justify-content:center;background:rgba(10,14,24,.62);padding:16px;}.shop-detail-mask.show{display:flex;}.shop-detail-card{position:relative;width:min(720px,96vw);max-height:min(88vh,920px);overflow:auto;background:linear-gradient(180deg,#fffdf7,#fff);border-radius:24px;box-shadow:0 28px 80px rgba(0,0,0,.36);padding:18px;border:2px solid rgba(140,108,50,.18);}.shop-detail-close{position:absolute;top:12px;right:12px;width:38px;height:38px;border:none;border-radius:999px;background:#f4e7c8;color:#5a3a05;font-size:24px;font-weight:900;cursor:pointer;}.shop-detail-top{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start;}.shop-detail-img-wrap{border-radius:20px;background:linear-gradient(135deg,#f9f3e3,#eef5ff);padding:12px;min-height:220px;display:flex;align-items:center;justify-content:center;}.shop-detail-img-wrap img{max-width:100%;max-height:320px;object-fit:contain;image-rendering:auto;display:block;filter:drop-shadow(0 10px 18px rgba(0,0,0,.12));}.shop-detail-meta{padding:4px 4px 4px 0;}.shop-detail-badge{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;background:#dff4e2;color:#26633a;font-size:11px;font-weight:900;margin-bottom:8px;}.shop-detail-title,.shop-detail-meta h3{margin:0;font-size:24px;line-height:1.2;color:#3a2a00;}.shop-detail-price{margin-top:8px;font-size:14px;font-weight:900;color:#8a5b14;}.shop-detail-desc{margin:10px 0 0;font-size:14px;line-height:1.8;color:#5e503d;font-weight:700;}.shop-detail-flavor{margin-top:14px;padding:14px 16px;border-radius:18px;background:#faf6ea;border:1px solid #eadfc6;color:#6e572f;font-size:13px;line-height:1.9;font-weight:700;}';
+      + '.shop-empty{padding:18px;border-radius:16px;background:#fff; border:1.5px dashed #eadfc6;color:#7b5c2e;font-size:13px;font-weight:800;text-align:center;}';
     var style = document.createElement('style');
     style.id = 'shop-debug-style';
     style.textContent = css;
@@ -889,7 +968,7 @@
     head.innerHTML = ''
       + '<div><div class="shop-title">★ を つかって にんじゃどうぐを かう</div>'
       + '<div class="shop-count-line">購入済み ' + ownedCount + ' / ' + SHOP_ITEMS.length + '</div></div>'
-      + '<div class="shop-meta">ためた★: ★×' + total + '<br>購入済みはタップで詳細</div>';
+      + '<div class="shop-meta">ためた★: ★×' + total + '<br>購入済みの品はタップで詳細を見られる</div>';
     el.appendChild(head);
 
     if (!SHOP_ITEMS.length) {
@@ -902,30 +981,32 @@
 
     var grid = document.createElement('div');
     grid.className = 'ach-shop-grid';
-    SHOP_ITEMS.forEach(function (item) {
+    SHOP_ITEMS.forEach(function (item, index) {
       var owned = hasShopItem(item.id);
-      var afford = total >= item.price;
       var card = document.createElement('div');
       card.className = 'shop-card' + (owned ? ' owned' : '');
+      var title = owned ? '購入済み' : ('★' + item.price + 'で かう');
+      var afford = total >= item.price;
       card.innerHTML = ''
         + '<div class="shop-ico">' + item.ico + '</div>'
         + '<div class="shop-name">' + item.name + '</div>'
         + '<div class="shop-desc">' + item.desc + '</div>'
-        + '<div class="shop-price"><span>' + (owned ? '購入済み' : ('★' + item.price + 'で かう')) + '</span><small>' + (owned ? '所持中' : (afford ? '買える' : '★がたりない')) + '</small></div>';
+        + '<div class="shop-price"><span>' + title + '</span><small>' + (owned ? '詳細を見る' : (afford ? '買える' : '★がたりない')) + '</small></div>';
+
       if (owned) {
-        card.style.cursor = 'pointer';
+        card.tabIndex = 0;
         card.setAttribute('role', 'button');
-        card.setAttribute('tabindex', '0');
-        card.setAttribute('aria-label', item.name + ' の詳細を表示');
-        card.onclick = function () {
-          showShopDetailModal(item);
-        };
-        card.onkeydown = function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            showShopDetailModal(item);
+        card.setAttribute('aria-label', item.name + ' の詳細を見る');
+        card.addEventListener('click', function () {
+          openShopDetailOverlay(item, index);
+        });
+        card.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            openShopDetailOverlay(item, index);
           }
-        };
+        });
+
         var tag = document.createElement('div');
         tag.className = 'shop-owned-tag';
         tag.textContent = '購入済み';
@@ -936,8 +1017,8 @@
         btn.className = 'shop-buy';
         btn.textContent = '★' + item.price + ' で かう';
         btn.disabled = !afford;
-        btn.onclick = function (e) {
-          e.stopPropagation();
+        btn.onclick = function (ev) {
+          if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
           purchaseShopItem(item.id);
         };
         card.appendChild(btn);
@@ -1082,7 +1163,6 @@
     ensureStyle();
     wrapGemChecks();
     ensureAchievementShopDom();
-    ensureShopDetailModal();
     ensureDebugLauncherDom();
     ensureDebugOverlays();
     wrapAchievementRender();
@@ -1109,8 +1189,6 @@
   window.purchaseShopItem = purchaseShopItem;
   window.renderShopCollection = renderShopCollection;
   window.showDebugPanel = showDebugPanel;
-  window.showShopDetailModal = showShopDetailModal;
-  window.hideShopDetailModal = hideShopDetailModal;
   window.hideDebugPanel = hideDebugPanel;
   window.renderDebugPanel = renderDebugPanel;
   window.isDebugAutoAwardOn = isDebugAutoAwardOn;
