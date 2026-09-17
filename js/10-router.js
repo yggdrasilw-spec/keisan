@@ -26,12 +26,11 @@ function clearRuntimeTimers() {
   try { if (typeof countdownTimer !== 'undefined' && countdownTimer) { clearTimeout(countdownTimer); countdownTimer = null; } } catch (e) {}
   try { if (typeof clearScreenTransitionTimer === 'function') clearScreenTransitionTimer(); } catch (e) {}
   try { if (typeof tIv !== 'undefined' && tIv) { clearInterval(tIv); tIv = null; } } catch (e) {}
-  try { if (typeof specialModeTimerIv !== 'undefined' && specialModeTimerIv) { clearInterval(specialModeTimerIv); specialModeTimerIv = null; } } catch (e) {}
   try { if (typeof window !== 'undefined' && window.specialModeFinishTimerIv) { clearTimeout(window.specialModeFinishTimerIv); window.specialModeFinishTimerIv = null; } } catch (e) {}
 }
 
 function show(n) {
-  if (!n) return;
+  if (!n || (typeof recitationActive === 'function' && recitationActive())) return;
   // 前回の遷移タイマーだけは先に止める
   if (typeof clearScreenTransitionTimer === 'function') clearScreenTransitionTimer();
   // 比較は更新前に行う

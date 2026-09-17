@@ -13,19 +13,18 @@ function submitPracticeAnswer(v, btn, p) {
 function resolvePracticeAnswer(v, btn, p, submitted) {
   var fx = playAnswerFeedback(submitted.ok, submitted.elapsed, btn, p);
   renderAnswerFeedbackToUI(fx);
-  if (!submitted.ok && sessMode === 'mugen') {
-    if (sess) sess._specialOver = true;
-    clearSpecialModeTimer();
-    if (tIv) { clearInterval(tIv); tIv = null; }
-    setTimeout(function() {
-      finish(false);
-    }, fx && fx.delay ? fx.delay : 900);
+  if (!submitted.ok && recitationEnabled('immediate')) {
+    startRecitation([p], function() { queueNextQuestion(0); });
     return;
   }
   queueNextQuestion(fx.delay);
 }
 
 function chk(v,btn,p) {
+  if (!sess || sess._answerSubmitted || sess._sessionEnding || recitationActive() || !sess.queue || sess.queue[sess.idx] !== p || _currentScreen !== 'practice') return;
+  sess._answerSubmitted = true;
+  sess._calcDone = true;
   var submitted = submitPracticeAnswer(v, btn, p);
+  if (!submitted || submitted.gameOver) return;
   resolvePracticeAnswer(v, btn, p, submitted);
 }

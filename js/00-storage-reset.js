@@ -7,7 +7,7 @@ function getPersistedAppStorageKeys() {
     LS_GD, LS_KD, LS_RK, LS_FX,
     LS_PRAISE, LS_VOICE, APP_KEYS.VOICE_ON,
     LS_AUDIO, LS_AUDIO_NAMES, LS_IMG,
-    LS_BADGE, APP_KEYS.SHOP, APP_KEYS.ANSWER_MODE
+    LS_BADGE, APP_KEYS.SHOP, APP_KEYS.ANSWER_MODE, 'tashizan_learning_v1'
   ];
 }
 
@@ -24,6 +24,8 @@ function resetPersistedRuntimeState() {
     rkD = {};
   }
 
+  learningPrefs = {};
+  syncMasterDescriptions();
   fxSettings = {};
   voiceOn = true;
   voiceCfg = { voiceName: '', pitch: 1.0, rate: 0.9 };

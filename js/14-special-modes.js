@@ -303,7 +303,7 @@
       sess._sessionEnding = true;
       sess._specialOver = true;
       sess.specialGameOverReason = reason || 'timeout';
-      sess.specialGameOverElapsed = Date.now() - (sess.sessStartTime || Date.now());
+      sess.specialGameOverElapsed = (sess._specialFailureAt || Date.now()) - (sess.sessStartTime || Date.now());
     }
     if (typeof finish === 'function') finish(false);
   }
@@ -425,7 +425,11 @@
     sess._specialAnswerLocked = true;
 
     if (v !== p.ans) {
-      finishSpecialGameOver('miss');
+      sess._specialFailureAt = now;
+      recordAndFeedbackAnswer(v, btn, p, el);
+      if (recitationEnabled('immediate')) {
+        startRecitation([p], function() { finishSpecialGameOver('miss'); });
+      } else finishSpecialGameOver('miss');
       return { ok: false, elapsed: el, gameOver: true };
     }
 
@@ -439,11 +443,7 @@
     if (_resolvePracticeAnswer) return _resolvePracticeAnswer(v, btn, p, submitted);
   };
 
-  chk = function (v, btn, p) {
-    var submitted = submitPracticeAnswer(v, btn, p);
-    if (submitted && submitted.gameOver) return;
-    resolvePracticeAnswer(v, btn, p, submitted);
-  };
+  // All modes use the guarded chk() entry in 02-practice-answer.js.
 
   // ── finish screen hooks ─────────────────────────────
   var _renderFinishSummaryToResultPage = typeof renderFinishSummaryToResultPage === 'function' ? renderFinishSummaryToResultPage : null;
@@ -478,9 +478,9 @@
     show('result');
 
     if (sessMode === 'mugen') {
-      addMugenBestCount(curLevel, summary.tot);
+      addMugenBestCount(curLevel, summary.cor);
       if (rbi) rbi.textContent = completed ? '🎉' : '⚔';
-      if (rt2) rt2.textContent = completed ? ('1000問 ぜんぶ せいかい！') : ('記録 ' + summary.tot + '問');
+      if (rt2) rt2.textContent = completed ? ('1000問 ぜんぶ せいかい！') : ('記録 ' + summary.cor + '問');
       if (rs2) rs2.textContent = completed ? '全問正解エフェクト！' : 'ここまでの きろく';
 
       if (completed) {
@@ -528,7 +528,7 @@
     } else {
       sndTryAgain();
       if (rbi) rbi.textContent = '⚔';
-      if (rt2) rt2.textContent = '記録 ' + summary.tot + '問';
+      if (rt2) rt2.textContent = '記録 ' + summary.cor + '問';
       if (rs2) rs2.textContent = 'ここまでの きろく';
     }
 

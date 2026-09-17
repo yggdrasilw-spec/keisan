@@ -14,7 +14,7 @@ function getFeedbackText(ok, isFast, streak, ans) {
 
 function buildAnswerFeedbackSpec(ok, el, btn, p) {
   if (ok) {
-    var isFast = el < 3000;
+    var isFast = isMasterTime(el);
     var shuriOrigin = (btn && btn._calcOrigin) ? btn._calcOrigin : btn;
     return {
       ok: true,
@@ -36,7 +36,7 @@ function buildAnswerFeedbackSpec(ok, el, btn, p) {
 
 function disableAnswerButtons() {
   var abtns = document.querySelectorAll('.abtn');
-  for (var i = 0; i < abtns.length; i++) abtns[i].onclick = null;
+  for (var i = 0; i < abtns.length; i++) abtns[i].disabled = true;
   return abtns;
 }
 
@@ -53,9 +53,9 @@ function markAnswerButtons(btn, ok, p) {
 }
 
 function playAnswerFeedback(ok, el, btn, p) {
+  if (ok) sess.streak++;
   var spec = buildAnswerFeedbackSpec(ok, el, btn, p);
   if (spec.ok) {
-    sess.streak++;
     showImg('seikai', 600);
     if (sess.streak >= 3) {
       sndStreak(sess.streak);

@@ -12,7 +12,7 @@
   var HOLD_MS = 10000;
   var _origRenderAchievementCollections = typeof renderAchievementCollections === 'function' ? renderAchievementCollections : null;
   var _origCollectFinishUnlockRewards = typeof collectFinishUnlockRewards === 'function' ? collectFinishUnlockRewards : null;
-  var _origRenderFinishOutcome = typeof renderFinishOutcome === 'function' ? renderFinishOutcome : null;
+  var _origRenderFinishOutcome = null;
 
   var DEBUG_GEM_OVERRIDES_KEY = 'tashizan_v2_debug_gem_overrides';
 
@@ -849,6 +849,7 @@
         showToast('自動付与を ' + (isDebugAutoAwardOn() ? 'ON' : 'OFF') + ' にしました');
       };
       autoRow.appendChild(btn);
+      renderMasterControl(autoRow);
     }
 
     var controls = document.getElementById('dbg-star-controls');
@@ -1180,6 +1181,8 @@
     }
 
     if (typeof renderFinishOutcome === 'function') {
+      // Capture after special-mode hooks have been installed.
+      _origRenderFinishOutcome = renderFinishOutcome;
       window.renderFinishOutcome = function (summary, completed) {
         var ret = _origRenderFinishOutcome ? _origRenderFinishOutcome(summary, completed) : undefined;
         maybeAwardNormalStars(summary, completed);

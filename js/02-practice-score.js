@@ -35,6 +35,7 @@ function recordAnswerResult(p, ok, el) {
   updateAnswerStats(meta.store, meta.key, ok, el);
   persistAnswerStats(meta.lsKey, meta.store);
   appendSessionResult(p, ok, el);
+  if (typeof NinjaRaid !== 'undefined') NinjaRaid.answer(ok);
 }
 
 function computeSessionSummary() {

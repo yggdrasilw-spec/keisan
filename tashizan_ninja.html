@@ -107,6 +107,7 @@ body.booting #app {
 <link rel="stylesheet" href="./css/03-pages.css">
 <link rel="stylesheet" href="./css/04-handwriting.css">
 <link rel="stylesheet" href="./css/05-achievement.css">
+<link rel="stylesheet" href="./css/06-learning-layout.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 
@@ -418,6 +419,7 @@ body.booting #app {
       <div id="timebar" style="width:100%;height:100%;background:linear-gradient(90deg,#FFB44C,#F5A623);border-radius:999px;"></div>
     </div>
   </div>
+  <div class="practice-workspace"><div class="practice-answer-panel">
   <div class="pcard" id="pcard">
     <div class="peq" id="peq">? ＋ ? ＝ ？</div>
     <div class="ptimer" id="ptimer">⏱ 0.0 びょう</div>
@@ -446,6 +448,7 @@ body.booting #app {
   </div>
 
   <div class="stk" id="stk"></div>
+  </div><aside class="practice-hint-panel"><h2>かんがえる ヒント</h2><p>10の まとまりを つくってみよう</p>
   <div id="hint-area" style="display:none;margin-top:10px;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
       <button id="hint-btn" data-action="toggleHint" style="border-radius:16px;padding:5px 14px;font-size:12px;font-weight:700;background:#FFF3D6;border:2px solid #F5A623;color:#7A5000;cursor:pointer;font-family:inherit;">💡 ヒントをみる</button>
@@ -459,6 +462,7 @@ body.booting #app {
       </div>
     </div>
   </div>
+</aside></div>
 </div>
 
 
@@ -910,6 +914,7 @@ body.booting #app {
 <script src="./js/00-problem.js"></script>
 <script src="./js/00-ranking.js"></script>
 <script src="./js/00-prefs.js"></script>
+<script src="./js/00-learning-settings.js"></script>
 <script src="./js/00-fx-settings.js"></script>
 <script src="./js/00-state-core.js"></script>
 <script src="./js/00-state-ui.js"></script>
@@ -993,6 +998,8 @@ body.booting #app {
 <script src="./js/14-special-modes.js"></script>
 
 <script src="./js/15-global-hud.js"></script>
+<script src="./js/17-recitation.js"></script>
+<script src="./js/18-raid.js"></script>
 
 <script>
 window.addEventListener('DOMContentLoaded', function () {

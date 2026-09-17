@@ -4,8 +4,9 @@
 // ======================================================
 function getSt(r) {
   if (!r || !r.att || !r.last) return 'unseen';
-  if (!r.last.ok || r.last.el >= 8000) return 'weak';
-  if (r.last.ok && r.last.el < 3000) return 'master';
+  if (!r.last.ok) return 'weak';
+  if (isMasterTime(r.last.el)) return 'master';
+  if (r.last.el >= 8000) return 'weak';
   return 'ok';
 }
 

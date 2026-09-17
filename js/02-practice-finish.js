@@ -74,6 +74,16 @@ function finish(completed) {
   if (typeof clearNextQuestionTimer === 'function') clearNextQuestionTimer();
   if (typeof clearSpecialFinishTimer === 'function') clearSpecialFinishTimer();
   if (tIv){clearInterval(tIv);tIv=null;}
+  if (sess._finishRendered || recitationActive()) return;
+  if (!sess._recitationFinished && recitationEnabled('end')) {
+    var missed = uniqueMissedProblems(sess.results || []);
+    if (missed.length) {
+      sess._recitationFinished = true;
+      startRecitation(missed, function() { finish(completed); });
+      return;
+    }
+  }
+  sess._finishRendered = true;
   var summary = computeSessionSummary();
   renderFinishSummaryToResultPage(summary, completed);
   renderFinishOutcome(summary, completed);

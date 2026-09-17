@@ -42,6 +42,7 @@ function collectAppSnapshot() {
       kD: stateSnapshot.data.kD,
       rkD: stateSnapshot.data.rkD,
       fxSettings: fxSettings,
+      learningPrefs: learningPrefs,
       voiceOn: stateSnapshot.session.voiceOn,
       voiceCfg: voiceCfg,
       imgCustom: imgCustom,
@@ -73,6 +74,9 @@ function applyAppSnapshot(snapshot) {
     rkD = s.rkD || {};
   }
 
+  learningPrefs = s.learningPrefs && typeof s.learningPrefs === 'object' ? s.learningPrefs : {};
+  saveLearningPrefs();
+  syncMasterDescriptions();
   fxSettings = s.fxSettings || {};
   voiceOn = (s.voiceOn === undefined) ? true : !!s.voiceOn;
   voiceCfg = s.voiceCfg || { voiceName: '', pitch: 1.0, rate: 0.9 };

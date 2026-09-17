@@ -25,6 +25,11 @@ function hwCheckAnswer(recognized) {
       chk(correct, pcardEl, p);
     }, 400);
   } else {
+    if (recitationEnabled('immediate') || recitationEnabled('end')) {
+      hwAnswerLocked = true;
+      chk(recognized, document.getElementById('pcard'), p);
+      return;
+    }
     if(hintEl) {
       hintEl.textContent='もう1かい かいてみて ✏️';
       hintEl.className='hw-hint ng';

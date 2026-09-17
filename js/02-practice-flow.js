@@ -7,6 +7,7 @@ function preparePracticeQuestion(p, tot) {
   renderPracticeTop(p, tot);
   calcInput = '';
   sess._calcDone = false;
+  sess._answerSubmitted = false;
   hwBeginQuestion();
   hwOnShowP();
   renderPracticeHint(p);

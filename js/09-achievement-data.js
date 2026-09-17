@@ -373,7 +373,7 @@ function checkAndAwardBadge(level, course, results) {
   var allOk = results.every(function(r){ return r.ok; });
   if (!allOk) return null;
 
-  var allFast = results.every(function(r){ return r && typeof r.el === 'number' && r.el < 3000; });
+  var allFast = results.every(function(r){ return r && typeof r.el === 'number' && isMasterTime(r.el); });
   if (!allFast) return null;
 
   var id = level + '_' + course;

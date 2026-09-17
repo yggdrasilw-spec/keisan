@@ -11,7 +11,7 @@ function hintDraw() {
   msg.textContent = '';
 
   var W = hintBoardW();
-  var dotPx = Math.max(14, Math.round(W / 22));
+  var dotPx = Math.max(14, Math.min(24, Math.round(W / 22)));
   var gap   = Math.max(3,  Math.round(dotPx * 0.25));
   var step  = dotPx + gap;
   var fs    = Math.max(12, Math.round(dotPx * 0.9));

@@ -20,6 +20,7 @@ function renderFxAndAudioSettings() {
 
 function renderSettingsScreen() {
   setAnswerMode(answerMode);
+  if (typeof renderRecitationSettings === 'function') renderRecitationSettings();
   renderFxAndAudioSettings();
 }
 

@@ -1,0 +1,68 @@
+.learning-settings { padding:18px; margin:18px 0; border:2px solid #e8d8b8; border-radius:18px; background:#fff; color:#493c29; }
+.learning-settings h2 {font-size:18px; margin-bottom:12px;}
+.learning-settings label {display:block; margin:12px 0; font-weight:700;}
+.learning-settings input,.learning-settings select {font:inherit; padding:8px; max-width:100%;}
+.learning-settings p {font-size:13px; line-height:1.7;}
+.practice-hint-panel {padding:16px; border-radius:20px; background:#fff; border:2px solid #eee0c8;}
+.practice-hint-panel h2 {font-size:20px; color:#795623; margin-bottom:6px;}
+.practice-hint-panel > p {color:#8a7050; font-size:14px;}
+.practice-hint-panel:has(#hint-area[style*="display: none"]) {display:none;}
+#recitation-overlay[hidden] {display:none;}
+#recitation-overlay {position:fixed; inset:0; z-index:100000; display:grid; place-items:center; padding:20px; background:#172339ed; overflow:auto;}
+.recitation-card {width:min(820px,100%); padding:clamp(18px,4vh,40px); border-radius:28px; text-align:center; background:#fff9ef; color:#3a2a00; box-shadow:0 20px 80px #0006;}
+.recitation-card h1 {font-size:clamp(22px,4vw,34px);}
+.recitation-card h2 {font-size:clamp(16px,2.5vw,24px); margin:16px 0;}
+.recitation-card p {margin:12px 0; font-size:14px;}
+#recitation-equation {font-size:clamp(36px,7vw,74px); font-weight:900; padding:18px 0;}
+.recitation-card button {font:inherit; font-weight:800; border:2px solid #bf841c; border-radius:14px; padding:12px 24px; margin:6px; cursor:pointer;}
+#recitation-next {background:#ffd16a;}
+#recitation-peek {background:#fff;}
+.raid-row {display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:10px 0;}
+.raid-row input {width:140px;}
+.raid-row button {padding:10px; border-radius:10px; border:1px solid #c8b58e; font:inherit; cursor:pointer;}
+#raid-status {font-size:13px; line-height:1.6;}
+#practice-raid-status {min-height:20px; font-size:13px; text-align:center; color:#5b4a83;}
+@media (min-width:800px) and (min-aspect-ratio:4/3) {
+  body:has(#practice.on) #app {max-width:none; width:100%; height:100dvh; min-height:0; padding:52px 24px 12px; overflow:hidden; scrollbar-gutter:auto;}
+  #practice.on {display:flex; flex-direction:column; height:100%; max-width:1600px; margin:auto;}
+  #practice .ptop {padding-top:0; margin-bottom:6px; flex-shrink:0;}
+  #practice .pgwrap {margin-bottom:8px; flex-shrink:0;}
+  .practice-workspace {flex:1; min-height:0; display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:24px; align-items:center;}
+  .practice-answer-panel {min-width:0; max-height:100%; display:flex; flex-direction:column; justify-content:center;}
+  .practice-workspace:not(:has(#hint-area[style*="display: block"])) {grid-template-columns:minmax(0,800px); justify-content:center;}
+  #practice .pcard {padding:clamp(10px,2.4vh,24px) 16px; margin-bottom:8px; flex-shrink:0;}
+  #practice .peq {font-size:clamp(36px,4.2vw,64px)!important; margin-bottom:2px;}
+  #practice .fbl {margin-bottom:4px; min-height:22px; height:auto; font-size:16px;}
+  #practice .agrid {width:100%; gap:10px;}
+  #practice .abtn {padding:clamp(12px,2.7vh,26px) 0; font-size:30px;}
+  #practice #calcgrid {width:min(100%,420px); gap:7px; margin-bottom:4px; max-width:420px;}
+  #practice .cbtn {padding:clamp(5px,1.3vh,15px) 0; font-size:26px;}
+  #practice .ans-mode-tabs {margin:4px 0;}
+  #practice .stk {min-height:18px; margin:0;}
+  .practice-hint-panel {min-width:0; width:100%; padding:18px;}
+  #practice #hint-board {height:270px!important;}
+  #practice #hint-msg {font-size:16px!important; min-height:44px!important;}
+  #practice #hint-area button {font-size:15px!important; padding:9px 15px!important;}
+  #practice .hw-area {gap:4px;}
+  #practice .hw-board-wrap {max-width:500px;}
+  #practice #hw-canvas,#practice #hw-overlay {height:clamp(120px,24vh,220px);}
+}
+@media (min-width:800px) and (min-aspect-ratio:4/3) and (max-height:650px) {
+  body:has(#practice.on) #app {padding:42px 16px 8px;}
+  .practice-workspace {gap:16px; grid-template-rows:minmax(0,1fr);}
+  .practice-hint-panel {padding:10px;}
+  .practice-hint-panel h2 {font-size:17px; margin-bottom:2px;}
+  .practice-hint-panel > p {font-size:12px;}
+  #practice #hint-board {height:175px!important;}
+  #practice #hint-msg {font-size:13px!important; min-height:32px!important; margin-bottom:2px!important;}
+  #practice #hint-area {margin-top:6px!important;}
+  #practice #hint-area button {font-size:13px!important; padding:6px 10px!important;}
+  #practice .pcard {padding:10px; margin-bottom:4px;}
+  #practice .peq {font-size:36px!important;}
+  #practice .abtn {padding:10px 0; font-size:26px;}
+  #practice .cbtn {padding:4px 0; font-size:23px;}
+  #practice .ans-tab {padding:5px;}
+  #practice .hw-area {gap:2px;}
+  #practice #hw-canvas,#practice #hw-overlay {height:120px;}
+}
+
