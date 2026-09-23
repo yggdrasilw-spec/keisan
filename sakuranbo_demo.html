@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>さくらんぼ・バナナ計算</title>
+<style>
+:root{font-family:"Arial Rounded MT Bold","Hiragino Maru Gothic ProN","BIZ UDPGothic","Yu Gothic",sans-serif;color:#382b43;background:#fcefdc}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:24px;display:grid;place-items:center;background:radial-gradient(circle at 11% 18%,#ffd97d 0 13px,transparent 14px),radial-gradient(circle at 88% 77%,#ff9faf 0 10px,transparent 11px),radial-gradient(circle at 83% 17%,#91d9c5 0 9px,transparent 10px),#fcefdc}
+main{width:min(1040px,100%,calc((100dvh - 180px)*1.7));padding:20px;border:4px solid #4b3c58;border-radius:28px;background:#fff8e9;box-shadow:0 10px 0 #dec49e,0 20px 35px #5a3a3230}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:15px}
+h1{font-size:clamp(22px,3vw,33px);margin:0;color:#6c3f90;letter-spacing:.02em;text-shadow:2px 3px 0 #ead7fa}.controls{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-weight:900;font-size:15px;padding:10px 17px;background:#fff;color:#564261;border:2px solid #bd9bd6;border-radius:15px;box-shadow:0 4px 0 #bca7cb;cursor:pointer;transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
+button:hover{transform:translateY(-2px);box-shadow:0 6px 0 #bca7cb}button:active{transform:translateY(3px);box-shadow:0 1px 0 #bca7cb}button[aria-pressed="true"]{background:#8654bc;border-color:#63398f;color:white;box-shadow:0 4px 0 #63398f}button:focus-visible{outline:3px solid #f6a31a;outline-offset:3px}
+.paper{background:#fffdf8;border:4px solid #ebc889;border-radius:21px;box-shadow:inset 0 0 0 5px #fff5df,0 6px 0 #e2bb77;overflow:hidden}
+svg{display:block;width:100%;height:auto}svg[hidden]{display:none}
+.top,.bottom,.child{font-family:"Trebuchet MS","Arial Rounded MT Bold","BIZ UDPGothic",sans-serif;font-weight:900;paint-order:stroke fill;stroke:#fffdf8;stroke-width:3px;stroke-linejoin:round}
+.top{font-size:140px;fill:#56326f}.bottom{font-size:79px;fill:#56326f}.child{font-size:72px;fill:#5a326f}
+.branch{fill:none;stroke:#568fce;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.circle{fill:#ffc5d1;stroke:#db6e8e;stroke-width:3}
+.group{fill:#fff2a7;fill-opacity:.72;stroke:#e5a621;stroke-width:3}
+.muted{fill:#e9785f}.box{fill:#c7f5e5;stroke:#30a889;stroke-width:4}
+.arrow{fill:none;stroke:#ef6846;stroke-width:7;stroke-linecap:round}
+.arrowhead{fill:#ef6846}
+.top-answer{fill:#1da381}
+.caption{min-height:2.5em;margin:13px 6px 0;font-size:clamp(13px,1.5vw,16px);font-weight:800;color:#66516d;text-align:center;line-height:1.5}
+.piece{opacity:1;transition:opacity .28s ease}.replaying .piece{opacity:0}.replaying .piece.revealed{opacity:1}
+.draw{stroke-dasharray:1;stroke-dashoffset:0}.replaying .draw{stroke-dashoffset:1}
+.replaying .draw.revealed{transition:stroke-dashoffset .58s ease;stroke-dashoffset:0}
+@media(max-width:650px){body{padding:10px}main{padding:12px;border-radius:20px}.toolbar{justify-content:center}button{font-size:13px;padding:8px 10px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="toolbar">
+    <h1>さくらんぼ・バナナ計算</h1>
+    <div class="controls" aria-label="例題と動き">
+      <button type="button" class="example" data-example="eight" aria-pressed="true">8＋3</button>
+      <button type="button" class="example" data-example="three" aria-pressed="false">3＋9</button>
+      <button type="button" id="replay">もういちど</button>
+      <button type="button" id="sound" aria-pressed="true" aria-label="よみあげを切る">🔊</button>
+    </div>
+  </div>
+  <div class="paper">
+    <svg id="eight" class="sheet" viewBox="0 0 980 525" role="img" aria-label="8＋3。3を2と1に分け、8と2を斜めの囲みで結び、下に四角で囲んだ10＋1＝11を書く">
+      <ellipse class="group piece group-step draw" pathLength="1" cx="180" cy="219" rx="237" ry="83" transform="rotate(47 180 219)"/>
+      <path class="branch piece split-step draw" pathLength="1" d="M346 171 L279 282 M346 171 L420 282"/>
+      <circle class="circle piece split-step" cx="279" cy="328" r="47"/>
+      <circle class="circle piece split-step" cx="420" cy="328" r="47"/>
+      <text class="top muted" x="35" y="156">8</text><text class="top" x="168" y="156">＋</text>
+      <text class="top" x="301" y="156">3</text><text class="top" x="435" y="156">＝</text>
+      <text class="top top-answer piece result-step" x="565" y="156">11</text>
+      <text class="child muted piece split-step" x="279" y="353" text-anchor="middle">2</text>
+      <text class="child piece split-step" x="420" y="353" text-anchor="middle">1</text>
+      <path class="arrow piece group-step draw" pathLength="1" d="M92 386 Q120 341 158 311"/>
+      <path class="arrowhead piece group-step" d="M148 314 L164 302 L161 320 Z"/>
+      <rect class="box piece group-step draw" pathLength="1" x="43" y="387" width="237" height="96"/>
+      <text class="bottom piece group-step" x="102" y="471">10</text>
+      <text class="bottom piece result-step" x="299" y="471">＋</text>
+      <text class="bottom piece result-step" x="390" y="471">1</text>
+      <text class="bottom piece result-step" x="508" y="471">＝</text>
+      <text class="bottom piece result-step" x="582" y="471">11</text>
+    </svg>
+    <svg id="three" class="sheet" viewBox="0 0 980 525" role="img" aria-label="3＋9。3を2と1に分け、1と9を斜めの囲みで結び、下に2＋10＝12を書く" hidden>
+      <ellipse class="group piece group-step draw" pathLength="1" cx="336" cy="206" rx="229" ry="85" transform="rotate(-49 336 206)"/>
+      <path class="branch piece split-step draw" pathLength="1" d="M163 169 L95 282 M163 169 L235 282"/>
+      <circle class="circle piece split-step" cx="95" cy="328" r="47"/>
+      <circle class="circle piece split-step" cx="235" cy="328" r="47"/>
+      <text class="top" x="124" y="156">3</text><text class="top" x="251" y="156">＋</text>
+      <text class="top muted" x="390" y="156">9</text><text class="top" x="524" y="156">＝</text>
+      <text class="top top-answer piece result-step" x="655" y="156">12</text>
+      <text class="child piece split-step" x="95" y="353" text-anchor="middle">2</text>
+      <text class="child muted piece split-step" x="235" y="353" text-anchor="middle">1</text>
+      <path class="arrow piece group-step draw" pathLength="1" d="M339 381 L332 278"/>
+      <path class="arrowhead piece group-step" d="M332 265 L323 283 L341 282 Z"/>
+      <text class="bottom piece result-step" x="61" y="470">2</text>
+      <text class="bottom piece result-step" x="148" y="470">＋</text>
+      <text class="bottom piece group-step" x="286" y="470">10</text>
+      <text class="bottom piece result-step" x="477" y="470">＝</text>
+      <text class="bottom piece result-step" x="573" y="470">12</text>
+    </svg>
+  </div>
+  <p class="caption" id="caption" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const sheets=[...document.querySelectorAll('.sheet')], buttons=[...document.querySelectorAll('.example')];
+  const narration={
+    eight:[
+      '大きい方の数、8は、あと2で10だね。',
+      'それに合わせて、小さい方の数を分けるよ。',
+      '3を2と1に分けます。さくらんぼ。',
+      '8たす2で10をつくるよ。バナナ。',
+      'さいごに10とのこりの1をたして、こたえは11。'
+    ],
+    three:[
+      '大きい方の数、9は、あと1で10だね。',
+      'それに合わせて、小さい方の数を分けるよ。',
+      '3を2と1に分けます。さくらんぼ。',
+      '1たす9で10をつくるよ。バナナ。',
+      'さいごにのこりの2と10をたして、こたえは12。'
+    ]
+  };
+  const caption=document.getElementById('caption'),soundButton=document.getElementById('sound');
+  let current='eight', timer=0, generation=0, soundOn=true;
+  function stop(){generation++;clearTimeout(timer);if('speechSynthesis' in window)window.speechSynthesis.cancel()}
+  function reveal(sheet,name){sheet.querySelectorAll('.'+name).forEach(p=>p.classList.add('revealed'))}
+  function playStage(stage,token){
+    if(token!==generation)return;
+    const sheet=document.getElementById(current),line=narration[current][stage];
+    if(stage===2)reveal(sheet,'split-step');
+    if(stage===3)reveal(sheet,'group-step');
+    if(stage===4)reveal(sheet,'result-step');
+    caption.textContent=line;
+    if(stage===4){if(soundOn&&'speechSynthesis' in window){const u=new SpeechSynthesisUtterance(line);u.lang='ja-JP';u.rate=.95;u.pitch=1.08;window.speechSynthesis.speak(u)}return}
+    let advanced=false;
+    const advance=()=>{if(advanced||token!==generation)return;advanced=true;clearTimeout(timer);timer=setTimeout(()=>playStage(stage+1,token),500)};
+    timer=setTimeout(advance,soundOn?5200:2300);
+    if(soundOn&&'speechSynthesis' in window){
+      const u=new SpeechSynthesisUtterance(line);u.lang='ja-JP';u.rate=.95;u.pitch=1.08;
+      u.onend=advance;u.onerror=advance;window.speechSynthesis.speak(u);
+    }
+  }
+  function replay(){
+    stop();const sheet=document.getElementById(current),token=generation;
+    sheet.querySelectorAll('.revealed').forEach(p=>p.classList.remove('revealed'));
+    sheet.classList.add('replaying');
+    playStage(0,token);
+  }
+  function select(name){
+    stop();current=name;sheets.forEach(s=>s.id===name?s.removeAttribute('hidden'):s.setAttribute('hidden',''));
+    buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.example===name)));
+    replay();
+  }
+  buttons.forEach(b=>b.addEventListener('click',()=>select(b.dataset.example)));
+  document.getElementById('replay').addEventListener('click',replay);
+  soundButton.addEventListener('click',()=>{soundOn=!soundOn;soundButton.textContent=soundOn?'🔊':'🔇';soundButton.setAttribute('aria-pressed',String(soundOn));soundButton.setAttribute('aria-label',soundOn?'よみあげを切る':'よみあげを入れる');replay()});
+  replay();
+})();
+</script>
+</body>
+</html>
