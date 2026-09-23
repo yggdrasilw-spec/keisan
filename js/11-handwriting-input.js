@@ -10,12 +10,14 @@ function hwInitCanvas() {
 
   var ctx  = canvas.getContext('2d');
   var octx = overlay.getContext('2d');
+  var answerTimer = null;
 
   ctx.fillStyle='white'; ctx.fillRect(0,0,500,220);
 
   function start(e) {
     if (document.getElementById('hw-area').style.display==='none') return;
     e.preventDefault();
+    if (answerTimer) { clearTimeout(answerTimer); answerTimer = null; }
     hwDrawing=true;
     hwResetBox();
     var p=hwGetPos(e,canvas);
@@ -68,8 +70,12 @@ function hwInitCanvas() {
         hwStroke2Box=box; hwDrawBoxes(octx);
         hwOnesDigit=await hwPredict(hwStroke2Box,canvas);
         if (hwAnswerLocked || hwQuestionSerial !== questionSerial) return;
+        if (hwDrawing) return;
         var recognized=(hwTensDigit*10)+hwOnesDigit;
-        hwCheckAnswer(recognized);
+        answerTimer=setTimeout(function() {
+          answerTimer=null;
+          if (!hwDrawing && !hwAnswerLocked && hwQuestionSerial===questionSerial) hwCheckAnswer(recognized);
+        }, 700);
       }
       return;
     }
@@ -79,6 +85,8 @@ function hwInitCanvas() {
     hwDrawBoxes(octx);
     hwOnesDigit=await hwPredict(hwStroke2Box,canvas);
     if (hwAnswerLocked || hwQuestionSerial !== questionSerial) return;
+    if (hwDrawing) return;
+    if (answerTimer) { clearTimeout(answerTimer); answerTimer=null; }
     var recognized=(hwTensDigit*10)+hwOnesDigit;
     hwCheckAnswer(recognized);
   }
