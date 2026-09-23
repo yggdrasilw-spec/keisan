@@ -39,7 +39,9 @@ body:has(#title-screen) {--bg:#17263c;--text:#fff9ef;--muted:#b9c6da;--accent:#f
   #screen-result,#screen-gameover {gap:10px;}
   #screen-result .result-emoji,#screen-gameover .result-emoji {font-size:54px;}
 }
-@media(prefers-reduced-motion:reduce) {* {transition:none!important;animation:none!important;}}
+/* Counting and merging motion conveys the lesson, so it must remain visible.
+   Only decorative button movement is reduced by the system preference. */
+@media(prefers-reduced-motion:reduce) {button {transition-property:background-color,color,border-color;} button:active {transform:none;}}
 @media(min-width:760px) and (min-aspect-ratio:4/3) {
   #keypad {grid-auto-rows:1fr;}
   #keypad .key-btn {height:100%;}

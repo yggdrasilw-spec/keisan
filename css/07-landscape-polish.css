@@ -103,7 +103,8 @@ button:focus-visible,a:focus-visible {outline:3px solid #2162bd;outline-offset:4
   #practice .hw-clear-btn {min-height:34px;padding:4px 16px;}
 }
 @media (prefers-reduced-motion:reduce) {
-  #home *,#course-select *,#kiso-home *,#practice * {animation:none!important;transition:none!important;}
+  /* Do not disable instructional dot, hint, progress or feedback animation. */
+  #home .top-btn,#course-select .course-btn,#kiso-home .course-btn {transition-property:background-color,color,border-color,outline-color;}
   #home .top-btn:hover,#course-select .course-btn:hover,#kiso-home .course-btn:hover {transform:none;}
   .startup-title-img {animation:none!important;opacity:1;transform:none;}
   .startup-tip {animation:none!important;}
