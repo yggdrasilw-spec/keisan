@@ -31,6 +31,8 @@ function clearRuntimeTimers() {
 
 function show(n) {
   if (!n || (typeof recitationActive === 'function' && recitationActive())) return;
+  if (n !== 'practice' && typeof cancelHintMotion === 'function') cancelHintMotion();
+  if (n !== 'kiso-activity' && typeof disposeKisoActivity === 'function') disposeKisoActivity();
   // 前回の遷移タイマーだけは先に止める
   if (typeof clearScreenTransitionTimer === 'function') clearScreenTransitionTimer();
   // 比較は更新前に行う

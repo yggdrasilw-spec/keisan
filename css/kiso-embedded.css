@@ -1,0 +1,46 @@
+/* Loaded only inside the ninja host. Standalone URLs retain their original UI. */
+:root {--bg:#fff9f0;--primary:#b76a15;--primary-light:#ffedc4;--card-bg:#fff;--text-dark:#19283d;--text-mid:#596373;--radius:16px;}
+body {background:linear-gradient(135deg,#fff9f0,#eef1f5);color:#19283d;padding:56px 20px 16px;}
+#global-hud-back {display:none!important;}
+button {font-family:inherit;}
+button:focus-visible {outline:3px solid #2162bd;outline-offset:3px;}
+.start-btn,.retry-btn {border-radius:12px;box-shadow:0 4px 0 #66401c;}
+button:active {transform:translateY(2px);}
+#screen-title,#screen-result,#screen-gameover {min-height:0;}
+#title-screen {overflow:auto;padding:56px 16px 20px;justify-content:flex-start;}
+#title-screen .game-title {font-size:40px;}
+/* Number finding keeps its high-contrast night palette. */
+body:has(#title-screen) {--bg:#17263c;--text:#fff9ef;--muted:#b9c6da;--accent:#ffd16a;background:#17263c;color:var(--text);}
+#hud {padding-right:200px;}
+@media(min-width:760px) and (min-aspect-ratio:4/3) {
+  body {padding:52px 30px 14px;}
+  #screen-title {width:100%;max-width:1060px;display:grid;grid-template-columns:1fr 1fr;gap:18px 40px;align-content:center;align-items:center;height:calc(100dvh - 70px);}
+  #screen-title > :first-child {grid-column:1;grid-row:1/3;}
+  #screen-title .title-logo {font-size:clamp(30px,4vw,52px);}
+  #screen-title .setting-box {grid-column:2;grid-row:1/3;width:100%;padding:18px;}
+  #screen-title .hud-inline-star {grid-column:1;grid-row:3;}
+  #screen-title .start-btn {grid-column:2;grid-row:3;width:100%;margin:0;}
+  #screen-game {max-width:1100px;width:100%;}
+  body:has(#dot-svg) #screen-game:not([style*="display: none"]) {display:grid!important;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto 8px 64px minmax(0,1fr);gap:12px 30px;height:calc(100dvh - 70px);}
+  body:has(#dot-svg) #screen-game:not([style]) {display:none!important;}
+  #screen-game .game-header {grid-column:1/-1;}
+  #screen-game .progress-bar-wrap {grid-column:1/-1;}
+  #question-area {grid-column:1;grid-row:3/5;height:100%;aspect-ratio:auto;min-height:0;}
+  #dot-stage,#finger-stage {height:100%;}
+  #answer-display {grid-column:2;grid-row:3;width:100%;height:100%;margin:0;}
+  #keypad {grid-column:2;grid-row:4;width:100%;height:100%;gap:10px;}
+  #keypad .key-btn {padding:4px;min-height:44px;font-size:28px;}
+  #screen-game .game-area {height:min(380px,calc(100dvh - 180px));min-height:260px;width:100%;}
+  #screen-game .x-banner {margin:6px 0;font-size:26px;}
+  #title-screen:not(.hidden) {display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:12px 48px;padding:52px 8vw 20px;}
+  #title-screen .game-title {grid-column:1;grid-row:1;font-size:clamp(42px,6vw,72px);}
+  #title-screen .game-subtitle {grid-column:1;grid-row:2;}
+  #title-screen .config-panel {grid-column:2;grid-row:1/4;width:100%;max-width:480px;gap:10px;margin:0;}
+  #screen-result,#screen-gameover {gap:10px;}
+  #screen-result .result-emoji,#screen-gameover .result-emoji {font-size:54px;}
+}
+@media(prefers-reduced-motion:reduce) {* {transition:none!important;animation:none!important;}}
+@media(min-width:760px) and (min-aspect-ratio:4/3) {
+  #keypad {grid-auto-rows:1fr;}
+  #keypad .key-btn {height:100%;}
+}

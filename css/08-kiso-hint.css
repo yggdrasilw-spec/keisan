@@ -1,0 +1,18 @@
+body:has(#kiso-activity.on) #app {width:100%;max-width:none;padding:12px 20px;height:100dvh;min-height:0;overflow:hidden;}
+#kiso-activity.on {display:flex;flex-direction:column;height:100%;max-width:1600px;margin:auto;}
+#kiso-activity .page-head {flex:none;gap:16px;margin-bottom:10px;}
+#kiso-stage {position:relative;flex:1;min-height:0;border:2px solid #dec394;border-radius:20px;overflow:hidden;background:#fff9f0;}
+#kiso-frame {display:block;width:100%;height:100%;border:0;}
+#kiso-loading {position:absolute;inset:0;z-index:2;padding:30px;background:#fff9f0;text-align:center;}
+#hint-methods:not([hidden]) {display:flex;gap:6px;margin:0 0 6px;}
+#hint-methods button {flex:1;border:2px solid #e0c28b;border-radius:10px;background:white;color:#574123;font-family:inherit;font-weight:800;cursor:pointer;}
+#hint-methods button[aria-pressed="true"] {background:#24354b;color:#fff;border-color:#24354b;}
+#hint-methods button:focus-visible {outline:3px solid #d37508;outline-offset:2px;}
+.five-hint-svg {width:100%;height:100%;display:block;}
+.five-hint-svg circle {transition:none;}
+.five-hint-svg circle[data-moving] {stroke-width:2.5;}
+#hint-box button:disabled {cursor:wait;opacity:.65;}
+.five-hint-svg text {font-family:inherit;font-weight:800;fill:#24354b;}
+@media(prefers-reduced-motion:reduce) {.five-hint-svg circle {transition:none;}}
+@media(max-width:600px) {body:has(#kiso-activity.on) #app {padding:6px;}#kiso-activity .page-head {gap:6px;}#kiso-title {font-size:16px;}}
+body:has(#kiso-activity.on) > #sound-bar {display:none;}

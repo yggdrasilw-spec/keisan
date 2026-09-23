@@ -1,0 +1,130 @@
+/* Wide-screen dojo. Keep the question calm; give menu choices a solid, tactile edge. */
+:root { --dojo-ink:#19283d; --dojo-gold:#efad29; }
+body:has(#home.on),body:has(#course-select.on),body:has(#kiso-home.on),body:has(#practice.on) {
+  background:radial-gradient(ellipse at 10% 0%,#ffedbd 0,transparent 48%),linear-gradient(135deg,#fffaf0,#eef1f5);
+}
+#home .top-btn,#course-select .course-btn,#kiso-home .course-btn {
+  position:relative; isolation:isolate; border-width:3px; border-radius:12px 24px 12px 24px;
+  box-shadow:0 5px 0 var(--choice-edge,#38465b),0 9px 18px #18283d12;
+  transition:transform 120ms ease,box-shadow 120ms ease,outline-color 120ms ease;
+  min-height:78px; outline:3px solid transparent; outline-offset:3px;
+}
+#home .top-btn-kiso {--choice-edge:#624194; background:linear-gradient(115deg,#f0e6ff,#fff); border-color:#7852b0;}
+#home .top-btn-easy {--choice-edge:#367052; background:linear-gradient(115deg,#dff5e6,#fff); border-color:#42835e;}
+#home .top-btn-hard {--choice-edge:#435691; background:linear-gradient(115deg,#e4eaff,#fff); border-color:#526caf;}
+#home .top-btn-random {--choice-edge:#a66a1a; background:linear-gradient(115deg,#ffe8aa,#fff); border-color:#c28a2b;}
+#home .top-btn-title {color:var(--dojo-ink); line-height:1.3;}
+#home .top-btn-sub,#course-select .course-btn-sub,#kiso-home .course-btn-sub {color:#526071; line-height:1.6;}
+#home .top-btn-arr,#course-select .course-btn-arr,#kiso-home .course-btn-arr {color:var(--dojo-ink); opacity:1; font-weight:900;}
+#home .top-btn-ico,#course-select .course-btn-ico,#kiso-home .course-btn-ico {display:grid;place-items:center; width:56px;height:56px;border-radius:14px;background:#ffffffa8;}
+#course-select .course-btn-title,#kiso-home .course-btn-title {color:var(--dojo-ink);line-height:1.4;}
+#home .bot-nav-btn {color:#3c4c62;min-height:54px;}
+#home .bot-nav-ach-sub {color:#d0dbea;}
+@media (hover:hover) {
+  #home .top-btn:hover,#course-select .course-btn:hover,#kiso-home .course-btn:hover {
+    transform:translateY(-4px);outline-color:var(--dojo-gold);box-shadow:0 8px 0 var(--choice-edge,#38465b),0 14px 24px #18283d26;
+  }
+}
+#home .top-btn:active,#course-select .course-btn:active,#kiso-home .course-btn:active {
+  transform:translateY(4px) scale(.99);box-shadow:0 1px 0 var(--choice-edge,#38465b);outline-color:var(--dojo-gold);
+}
+button:focus-visible,a:focus-visible {outline:3px solid #2162bd;outline-offset:4px;}
+#practice .abtn,#practice .cbtn {min-height:48px;border-radius:12px;}
+#practice .ans-tab,#practice .stopbtn,#practice .hw-clear-btn {min-height:42px;}
+#practice .ans-tab.on {background:var(--dojo-ink);border-color:var(--dojo-ink);}
+#practice .pcard {background:#fffaf0;border-color:#d29424;box-shadow:0 5px 0 #d8b56f;}
+#practice .peq {color:var(--dojo-ink);}
+#practice .pctr {color:#526071;}
+#practice .pgbar {background:linear-gradient(90deg,#f0ba40,#e38b1f);}
+@media (min-width:900px) and (min-aspect-ratio:4/3) {
+  body:has(#home.on) #app,body:has(#course-select.on) #app,body:has(#kiso-home.on) #app {
+    max-width:1440px;padding:60px clamp(28px,5vw,88px) 24px;scrollbar-gutter:auto;
+  }
+  #home.on {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;align-content:center;min-height:100%;}
+  #home .hdr {grid-column:1/-1;text-align:left;padding:0 0 10px;}
+  #home .hdr-t {font-size:clamp(28px,2.8vw,42px);letter-spacing:.06em;color:var(--dojo-ink);}
+  #home .hdr-s {font-size:15px;margin-top:8px;color:#526071;}
+  #home .top-btn {margin:0;padding:24px;min-height:132px;gap:18px;}
+  #home .top-btn-title {font-size:clamp(23px,2vw,32px);}
+  #home .top-btn-sub {font-size:14px;}
+  #home .top-btn-ico {width:68px;height:68px;font-size:40px;flex-shrink:0;}
+  #home .bot-nav-achievement {margin:4px 0 0;min-height:76px;}
+  #home .bot-nav {margin:4px 0 0;gap:10px;}
+  #home .bot-nav-btn {font-size:14px;}
+  #home .bot-nav-ico {font-size:22px;}
+  #course-select.on,#kiso-home.on {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px;align-content:center;min-height:100%;}
+  #course-select .page-head,#kiso-home .page-head {grid-column:1/-1;margin:0 0 8px;gap:18px;background:transparent;}
+  #course-select .page-title,#kiso-home .page-title {font-size:clamp(20px,2vw,28px);color:var(--dojo-ink);}
+  #course-select .bkbtn,#kiso-home .bkbtn {min-height:44px;font-size:14px;}
+  #course-select .course-btn,#kiso-home .course-btn {margin:0;padding:18px 20px;min-height:104px;}
+  #course-select .course-btn-title,#kiso-home .course-btn-title {font-size:22px;}
+  #course-select .course-btn-sub,#kiso-home .course-btn-sub {font-size:13px;}
+  #course-select > div:not(.page-head),#kiso-home > .hdr,#kiso-home > .hud-inline-star {grid-column:1/-1;}
+  #kiso-home .hdr {text-align:left;padding:0;}
+  body:has(#practice.on) #app {padding:60px clamp(24px,4vw,72px) 16px;overflow-y:auto;}
+  #practice.on {max-width:1500px;}
+  #practice .practice-workspace {gap:clamp(24px,4vw,64px);align-items:center;}
+  #practice .practice-answer-panel {padding:6px;}
+  #practice .ptop {min-height:44px;}
+  #practice .pctr,#practice .pbdg {font-size:15px;}
+  #practice .pcard {padding:clamp(16px,2.5vh,30px) 18px;}
+  #practice .peq {font-size:clamp(44px,4.5vw,72px)!important;}
+  #practice .practice-hint-panel {border-color:#d7dfeb;box-shadow:0 5px 0 #dfe4ed;padding:22px;}
+  #practice .practice-hint-panel h2 {color:var(--dojo-ink);}
+  #practice .practice-hint-panel > p {color:#526071;}
+  #practice .ans-mode-tabs {gap:8px;margin:10px 0;}
+  #practice .ans-tab {font-size:14px;}
+  #practice #calcgrid {max-width:440px;gap:8px;}
+  #practice .cbtn {padding:8px 0;}
+  #practice .abtn {padding:clamp(12px,2vh,24px) 0;}
+}
+@media (min-width:900px) and (min-aspect-ratio:4/3) and (max-height:760px) {
+  #home.on {gap:14px 20px;}
+  #home .top-btn {min-height:112px;padding:18px 22px;}
+  #course-select.on,#kiso-home.on {gap:12px 20px;}
+  #course-select .course-btn,#kiso-home .course-btn {min-height:88px;padding:12px 18px;}
+  #practice .pcard {padding:12px 16px;}
+  #practice .ans-mode-tabs {margin:5px 0;}
+  #practice #hint-board {height:240px!important;}
+}
+@media (min-width:800px) and (min-aspect-ratio:4/3) and (max-height:650px) {
+  body:has(#practice.on) #app {padding:48px 20px 8px;}
+  #practice .ptop {min-height:36px;}
+  #practice .practice-workspace {gap:20px;}
+  #practice .practice-answer-panel {padding:0;}
+  #practice .practice-hint-panel {padding:10px;}
+  #practice .pcard {padding:8px 12px;}
+  #practice .peq {font-size:36px!important;}
+  #practice #hint-board {height:160px!important;}
+  #practice .ans-mode-tabs {margin:3px 0;}
+  #practice .ans-tab {min-height:34px;font-size:12px;padding:4px;}
+  #practice .cbtn {min-height:42px;padding:3px 0;}
+  #practice .abtn {min-height:44px;padding:7px 0;}
+  #practice .hw-clear-btn {min-height:34px;padding:4px 16px;}
+}
+@media (prefers-reduced-motion:reduce) {
+  #home *,#course-select *,#kiso-home *,#practice * {animation:none!important;transition:none!important;}
+  #home .top-btn:hover,#course-select .course-btn:hover,#kiso-home .course-btn:hover {transform:none;}
+  .startup-title-img {animation:none!important;opacity:1;transform:none;}
+  .startup-tip {animation:none!important;}
+}
+/* Keep the optional classroom raid controls in the same landscape viewport. */
+@media(min-width:900px) and (min-aspect-ratio:4/3) {
+  #home > .learning-settings {grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:4px 24px;margin:0;padding:14px 18px;align-items:center;}
+  #home > .learning-settings h2 {grid-column:1;grid-row:1;margin:0;font-size:17px;}
+  #home > .learning-settings > p {grid-column:1;margin:0;font-size:12px;}
+  #home > .learning-settings .raid-row {grid-column:2;margin:0;gap:8px;}
+  #home > .learning-settings .raid-row:nth-of-type(1) {grid-row:1/3;}
+  #home > .learning-settings .raid-row:nth-of-type(2) {grid-row:3;}
+  #home > .learning-settings label {margin:0;font-size:13px;}
+  #home > .learning-settings input {width:120px;padding:6px;}
+  #home > .learning-settings select {padding:6px;}
+  #home > .learning-settings button {padding:7px 12px;min-height:36px;}
+}
+@media(min-width:900px) and (min-aspect-ratio:4/3) and (max-height:760px) {
+  body:has(#home.on) #app {padding-top:48px;padding-bottom:12px;}
+  #home.on {gap:12px 20px;}
+  #home .hdr {padding-bottom:0;}
+  #home .top-btn {min-height:100px;padding:12px 20px;}
+  #home .bot-nav-achievement {min-height:64px;}
+}

@@ -31,6 +31,7 @@
     },
     launchKisoGame: function (value) {
       if (!value) return;
+      if (typeof openKisoActivity === 'function') return openKisoActivity(value);
       if (typeof window !== 'undefined') {
         window.location.href = value;
       }

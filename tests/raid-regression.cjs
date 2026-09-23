@@ -22,6 +22,7 @@ const assert=require('node:assert/strict');
  });
  await page.goto('http://127.0.0.1:8873/tashizan_ninja.html');
  await page.evaluate(()=>{document.getElementById('startup-overlay')?.remove();document.body.classList.remove('booting');});
+ await page.locator('#dojo-raid-open').click();
  assert.equal(await page.locator('#raid-code').inputValue(),'');
  await page.evaluate(()=>NinjaRaid.answer(true));assert.equal(await page.evaluate(()=>raidMock.logs.length),0);
  await page.locator('#raid-code').fill('ＡＢＣＤ');await page.locator('#raid-name').fill('にんじゃ');await page.locator('#raid-connect').click();

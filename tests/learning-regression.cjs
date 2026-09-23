@@ -15,7 +15,8 @@ const assert=require('node:assert/strict');
   await page.setViewportSize({width,height});await start();
   for(const mode of ['btn','calc','hw']) {
    await page.evaluate(mode=>{setAnsTab(mode);if(!hintVisible)toggleHint();hintReset();},mode);
-   for(let n=0;n<5;n++)await page.evaluate(()=>hintNext());
+   await page.waitForFunction(()=>!document.querySelector('[data-action="hintNext"]').disabled);
+   for(let n=0;n<5;n++){await page.evaluate(()=>hintNext());await page.waitForFunction(()=>!document.querySelector('[data-action="hintNext"]').disabled);}
    await page.waitForTimeout(300);
    const dims=await page.evaluate(()=>{
     const app=document.getElementById('app');

@@ -1,0 +1,114 @@
+/* Ink, vermilion and parchment: one focused dojo, with auxiliary tools off the desk. */
+:root {--dojo-ink:#202b3c;--dojo-red:#aa3338;--dojo-paper:#fbf6e9;--dojo-gold:#c7a463;}
+body:has(#home.on),body:has(#course-select.on),body:has(#kiso-home.on),body:has(#kotsu-home.on),body:has(#kotsu-sub.on),body:has(#practice.on) {background:repeating-linear-gradient(135deg,#c0a77b08 0 1px,transparent 1px 12px),#f0ece1;}
+#home .dojo-heading {display:flex;align-items:center;gap:15px;text-align:left;margin:0;padding:0;}
+.dojo-seal {display:grid;place-items:center;flex:none;width:52px;height:58px;background:var(--dojo-red);border:3px double #edc8a0;color:#fff3da;font:700 30px serif;transform:rotate(-3deg);}
+.dojo-eyebrow {color:#967146;letter-spacing:.18em;font-size:11px;font-weight:800;margin-bottom:3px;}
+#home .hdr-t {font-size:28px;letter-spacing:.07em;color:var(--dojo-ink);}
+#home .hdr-s {font-size:12px;margin-top:3px;color:#756e61;}
+.dojo-home-workspace {display:grid;grid-template-columns:minmax(220px,.72fr) minmax(0,1.8fr);gap:20px;min-height:0;}
+.dojo-hero {position:relative;isolation:isolate;min-height:0;overflow:hidden;border-radius:6px 22px 6px 22px;background:#202329;border:1px solid #b59a68;display:flex;flex-direction:column;justify-content:flex-end;}
+.dojo-hero-image {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 48%;z-index:-2;}
+.dojo-hero::after {content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#10151cc9,transparent 35%,transparent 62%,#10151cf5);pointer-events:none;}
+.dojo-hero-copy {position:absolute;left:20px;top:22px;color:#fff7df;}
+.dojo-hero-copy>span {font-size:11px;letter-spacing:.22em;color:#e4bf7d;}
+.dojo-hero-copy h2 {font-size:26px;line-height:1.55;margin-top:8px;letter-spacing:.1em;}
+#home .dojo-hero .bot-nav-achievement {margin:12px;padding:12px;background:#192337e8;border:1px solid #b89a64;border-radius:9px;min-height:60px;}
+#home .dojo-hero .bot-nav-ach-sub {font-size:11px;}
+.dojo-missions {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:18px;min-width:0;min-height:0;}
+#home .top-btn {display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:0;text-align:left;padding:22px;margin:0;gap:12px;border:1px solid #d9cbb2;border-left:5px solid var(--choice-edge);border-radius:5px 18px 5px 18px;background:var(--dojo-paper);box-shadow:0 4px 0 #d4c7ae,0 10px 20px #30271309;}
+#home .top-btn-kiso {--choice-edge:#795d91;}
+#home .top-btn-easy {--choice-edge:#4b7164;}
+#home .top-btn-hard {--choice-edge:#ab4349;}
+#home .top-btn-random {--choice-edge:#b78a39;}
+#home .top-btn .top-btn-ico {width:46px;height:46px;font-size:26px;background:#eee7d8;border-radius:8px;}
+#home .top-btn-title {font-size:25px;letter-spacing:.04em;}
+#home .top-btn-sub {font-size:12px;margin-top:6px;color:#706959;}
+#home .top-btn-arr {position:absolute;right:20px;bottom:22px;font-size:25px;color:var(--choice-edge);}
+#home .bot-nav {display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0;}
+#home .bot-nav-btn {display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;border:1px solid #d4c8b1;border-radius:8px;background:#f9f5ec;color:#5e574d;padding:8px;min-height:48px;font-size:13px;}
+#home .bot-nav-ico {font-size:19px;margin:0;}
+#home .top-btn:hover {outline-color:#b59150;box-shadow:0 6px 0 #b9a279,0 12px 22px #30271316;}
+#home .top-btn:active {box-shadow:0 1px 0 #b9a279;}
+.dojo-dialog {width:min(760px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;margin:auto;padding:24px;border:2px solid #b59a68;border-radius:18px;background:#fbf6e9;color:#243145;}
+.dojo-dialog::backdrop {background:#111c2bd9;}
+.dojo-dialog .page-head {justify-content:space-between;}
+.dojo-dialog .page-head h2 {font-size:22px;}
+.dojo-dialog .learning-settings {margin:12px 0 0;}
+#course-select .course-btn,#kiso-home .course-btn {background:var(--dojo-paper);border:1px solid #d4c4a8;border-left:5px solid #9a7651;box-shadow:0 4px 0 #d1bea0;border-radius:6px 18px 6px 18px;}
+#course-select [data-action="startEndMode"] {background:#253044;border-color:#b29868;color:#fff2d5;}
+#course-select [data-action="startEndMode"] :is(.course-btn-title,.course-btn-arr){color:#f8e5ba;}
+#course-select [data-action="startEndMode"] .course-btn-sub {color:#d4d4cc;}
+#course-select [data-action="startEndMode"] .course-btn-ico {background:#ffffff15;}
+#practice .practice-hint-panel {border-color:#cfb88d;background:#fffaf0;border-radius:8px 20px 8px 20px;box-shadow:0 4px 0 #d8c6a6;}
+#practice .pcard {border-color:#ad8a4f;border-radius:8px 20px 8px 20px;}
+#practice .practice-hint-panel h2::before {content:'巻';display:inline-grid;place-items:center;margin-right:9px;width:26px;height:26px;font:700 16px serif;background:#a93a3d;color:#fff4d7;border-radius:3px;}
+@media(min-width:800px) and (min-aspect-ratio:4/3) {
+  body:has(#home.on) #app,body:has(#course-select.on) #app,body:has(#kiso-home.on) #app,body:has(#kotsu-home.on) #app,body:has(#kotsu-sub.on) #app {max-width:1480px;width:100%;height:100dvh;min-height:0;padding:48px clamp(20px,3vw,52px) 18px;scrollbar-gutter:auto;}
+  #home.on {display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:76px minmax(0,1fr) 52px;min-height:0;height:100%;gap:18px;align-content:stretch;}
+  #home .hdr,#home .bot-nav {grid-column:auto;}
+  #home .hdr {padding:0;}
+  #course-select.on {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:56px repeat(2,minmax(0,1fr));gap:18px;min-height:0;height:100%;align-content:stretch;}
+  #course-select .page-head,#kiso-home .page-head {grid-column:1/-1;margin:0;}
+  #course-select .dojo-challenge-heading {display:none;}
+  #course-select .course-btn {display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:16px;min-height:0;padding:22px;margin:0;position:relative;}
+  #course-select .course-btn-arr {position:absolute;right:18px;bottom:18px;}
+  #course-select .course-btn-title {font-size:23px;}
+  #course-select .course-btn-sub {font-size:13px;}
+  #kiso-home.on {height:100%;min-height:0;grid-template-rows:48px 54px 32px repeat(2,minmax(0,1fr));gap:12px 20px;align-content:stretch;}
+  #kiso-home .hdr,#kiso-home .hud-inline-star {margin:0!important;}
+  #kiso-home .course-btn {min-height:0;margin:0;padding:18px;}
+  #kotsu-home.on,#kotsu-sub.on {height:100%;display:flex;flex-direction:column;justify-content:center;gap:12px;}
+  #kotsu-home .num-grid {grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0;}
+  #kotsu-home .num-card {padding:16px 8px;}
+  #kotsu-sub .kotsu-sub-desc {text-align:center;font-size:24px;padding:24px;}
+  #kotsu-sub .go-btn {max-width:700px;width:100%;align-self:center;}
+}
+@media(min-width:800px) and (min-aspect-ratio:4/3) and (max-height:650px) {
+  body:has(#home.on) #app,body:has(#course-select.on) #app,body:has(#kiso-home.on) #app,body:has(#kotsu-home.on) #app,body:has(#kotsu-sub.on) #app {padding-top:40px;padding-bottom:12px;}
+  #home.on {grid-template-rows:58px minmax(0,1fr) 44px;gap:12px;}
+  #home .hdr-t {font-size:24px;}
+  .dojo-seal {width:40px;height:46px;font-size:24px;}
+  .dojo-home-workspace,.dojo-missions {gap:12px;}
+  #home .top-btn {padding:12px 16px;gap:6px;}
+  #home .top-btn .top-btn-ico {width:32px;height:32px;font-size:22px;}
+  #home .top-btn-title {font-size:21px;}
+  #home .top-btn-sub {font-size:11px;margin-top:3px;}
+  #home .bot-nav-btn {min-height:44px;}
+  #course-select.on {gap:12px;grid-template-rows:44px repeat(2,minmax(0,1fr));}
+  #course-select .course-btn {padding:14px;gap:10px;}
+  #course-select .course-btn-ico {height:36px;width:36px;font-size:24px;}
+  #course-select .course-btn-title {font-size:19px;}
+  #course-select .course-btn-sub {font-size:12px;}
+  #kiso-home.on {grid-template-rows:44px 42px 28px repeat(2,minmax(0,1fr));gap:8px 16px;}
+  #kiso-home .hdr-t {font-size:18px;}
+  #kiso-home .course-btn {padding:12px;}
+}
+@media(max-width:799px),(max-aspect-ratio:4/3) {
+  #home .dojo-heading {margin:24px 0;}
+  .dojo-home-workspace {grid-template-columns:1fr;}
+  .dojo-hero {min-height:190px;}
+  .dojo-hero-image {object-position:center 28%;}
+  #home .dojo-hero .bot-nav-achievement {align-self:flex-end;width:60%;}
+  .dojo-hero-copy {top:16px;left:16px;}
+  .dojo-hero-copy h2 {font-size:20px;}
+  .dojo-missions {gap:12px;}
+  #home .top-btn {min-height:160px;padding:14px;}
+  #home .top-btn-title {font-size:20px;}
+  #home .top-btn-sub {font-size:11px;}
+  #home .bot-nav {grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px;}
+  #home .bot-nav-btn {font-size:12px;}
+}
+@media(prefers-reduced-motion:reduce){#home .top-btn {transform:none;}}
+#home .dojo-hero .bot-nav-achievement {width:calc(100% - 24px);flex-shrink:0;}
+.dojo-hero-copy h2 {font-size:19px;white-space:nowrap;}
+@media(min-width:800px) and (min-aspect-ratio:4/3) {
+ .dojo-hero-image {inset:70px 0 82px;height:calc(100% - 152px);object-fit:contain;}
+ .dojo-hero-copy {top:16px;}
+}
+#home .top-btn-main {width:100%;padding-right:18px;}
+@media(max-width:799px),(max-aspect-ratio:4/3) {
+ .dojo-hero-copy h2 {white-space:normal;max-width:110px;font-size:18px;}
+ #home .dojo-hero .bot-nav-achievement {width:60%;}
+ #home .top-btn .top-btn-arr {right:12px;bottom:14px;}
+}
