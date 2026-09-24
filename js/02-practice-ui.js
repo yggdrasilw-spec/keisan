@@ -42,8 +42,8 @@ function renderPracticeHint(p) {
   var ha = document.getElementById('hint-area');
   if (!ha) return;
   var isCarry = (p.a + p.b >= 11);
-  ha.style.display = isCarry ? 'block' : 'none';
-  if (isCarry) hintSetProblem(p);
+  ha.style.display = 'block';
+  hintSetProblem(p);
 }
 
 // Special challenge timers are owned by 14-special-modes.js.

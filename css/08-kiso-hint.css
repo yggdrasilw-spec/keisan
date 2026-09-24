@@ -5,6 +5,12 @@ body:has(#kiso-activity.on) #app {width:100%;max-width:none;padding:12px 20px;he
 #kiso-frame {display:block;width:100%;height:100%;border:0;}
 #kiso-loading {position:absolute;inset:0;z-index:2;padding:30px;background:#fff9f0;text-align:center;}
 #hint-methods:not([hidden]) {display:flex;gap:6px;margin:0 0 6px;}
+.hint-settings {border:2px solid #e0c28b;border-radius:16px;padding:12px 14px;margin:0 0 16px;background:#fffbf0;}
+.hint-settings legend {font-size:14px;font-weight:800;color:#3a2a00;padding:0 5px;}
+.hint-settings p {font-size:12px;margin:2px 0 8px;color:#705636;}
+.hint-settings label {display:block;padding:6px 0;font-size:13px;font-weight:700;cursor:pointer;}
+.hint-settings input {width:18px;height:18px;vertical-align:middle;accent-color:#8654bc;}
+#hint-methods button[hidden] {display:none!important;}
 #hint-methods button {flex:1;border:2px solid #e0c28b;border-radius:10px;background:white;color:#574123;font-family:inherit;font-weight:800;cursor:pointer;}
 #hint-methods button[aria-pressed="true"] {background:#24354b;color:#fff;border-color:#24354b;}
 #hint-methods button:focus-visible {outline:3px solid #d37508;outline-offset:2px;}

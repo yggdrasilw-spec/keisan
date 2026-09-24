@@ -584,6 +584,15 @@ body.booting #app {
     </div>
   </div>
 
+  <fieldset class="hint-settings">
+    <legend>💡 ヒントの せってい</legend>
+    <p>つかう ヒントを えらんでね</p>
+    <label><input type="checkbox" data-hint-setting="dots"> ドットで かぞえる（くりあがりなし）</label>
+    <label><input type="checkbox" data-hint-setting="ten"> 10をつくる</label>
+    <label><input type="checkbox" data-hint-setting="five"> ５のかたまり</label>
+    <label><input type="checkbox" data-hint-setting="sakura"> さくらんぼ・バナナ計算</label>
+  </fieldset>
+
   <div data-action="show" data-value="advanced-settings"
     style="border-radius:18px;padding:14px 16px;background:linear-gradient(135deg,#F0F0FF,#E8E8F8);border:2.5px solid #AAAAE8;cursor:pointer;transition:transform .12s;display:flex;align-items:center;gap:12px;margin-bottom:12px;"
     onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform=''">
@@ -965,6 +974,7 @@ body.booting #app {
 <script src="./js/05-hint-five.js"></script>
 <script src="./js/06-voice-engine.js"></script>
 <script src="./js/05-hint-sakura.js"></script>
+<script src="./js/05-hint-options.js"></script>
 <script src="./js/06-voice-list.js"></script>
 <script src="./js/06-voice-ui.js"></script>
 <script src="./js/06-voice-settings.js"></script>
