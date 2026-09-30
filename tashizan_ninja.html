@@ -595,7 +595,16 @@ body.booting #app {
 
   <div style="margin-top:18px;padding:14px;border:2px solid #E8D8B8;border-radius:16px;background:#fff;">
     <div style="font-size:14px;font-weight:800;margin-bottom:6px;">先生用</div>
-    <div style="font-size:11px;color:#8A7050;margin-bottom:10px;">今えらんでいる難易度・コースを児童用URLにします</div>
+    <div style="font-size:11px;color:#8A7050;margin-bottom:10px;">難易度・問題数・回答方法を児童用URLにします</div>
+    <label style="display:block;font-size:12px;font-weight:700;margin-bottom:8px;">むずかしさ
+      <select id="ninja-preset-level" style="margin-left:8px;padding:6px;border-radius:8px;font:inherit;"><option value="easy">かんたん（くりあがりなし）</option><option value="hard">むずかしい（くりあがりあり）</option><option value="mix">ばらばら</option></select>
+    </label>
+    <label style="display:block;font-size:12px;font-weight:700;margin-bottom:10px;">もんだい
+      <select id="ninja-preset-course" style="margin-left:8px;padding:6px;border-radius:8px;font:inherit;"><option value="20">20もん</option><option value="all">ぜんぶ</option><option value="weak">にがて</option></select>
+    </label>
+    <label style="display:block;font-size:12px;font-weight:700;margin-bottom:10px;">こたえかた
+      <select id="ninja-preset-answer" style="margin-left:8px;padding:6px;border-radius:8px;font:inherit;"><option value="random">ボタンで えらぶ</option><option value="calc">でんたく</option><option value="hw">てがき</option></select>
+    </label>
     <button type="button" onclick="createNinjaPresetUrl()" style="width:100%;border:0;border-radius:12px;padding:10px;background:#5AAA30;color:#fff;font-weight:800;font-family:inherit;cursor:pointer;">この設定で児童用URLを作る</button>
     <div id="ninja-preset-result" style="display:none;margin-top:10px;">
       <input id="ninja-preset-url" readonly aria-label="児童用URL" style="box-sizing:border-box;width:100%;padding:8px;border:1px solid #C8D8E8;border-radius:8px;font-size:11px;">

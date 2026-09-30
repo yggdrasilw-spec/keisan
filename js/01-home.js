@@ -41,10 +41,17 @@ function getWeakPs(level) {
 }
 
 function createNinjaPresetUrl() {
+  var levelInput = document.getElementById('ninja-preset-level');
+  var courseInput = document.getElementById('ninja-preset-course');
+  var answerInput = document.getElementById('ninja-preset-answer');
+  var level = levelInput && ['easy','hard','mix'].indexOf(levelInput.value) >= 0 ? levelInput.value : curLevel;
+  var course = courseInput && ['20','all','weak'].indexOf(courseInput.value) >= 0 ? courseInput.value : curCourse;
+  var answer = answerInput && ['random','calc','hw'].indexOf(answerInput.value) >= 0 ? answerInput.value : answerMode;
   var params = new URLSearchParams();
   params.set('preset', '1');
-  params.set('level', curLevel === 'hard' || curLevel === 'mix' ? curLevel : 'easy');
-  params.set('course', curCourse === 'all' || curCourse === 'weak' ? curCourse : '20');
+  params.set('level', ['easy','hard','mix'].indexOf(level) >= 0 ? level : 'easy');
+  params.set('course', ['20','all','weak'].indexOf(course) >= 0 ? course : '20');
+  params.set('answer', ['random','calc','hw'].indexOf(answer) >= 0 ? answer : 'random');
   var url = new URL(window.location.href);
   url.search = params.toString();
   url.hash = '';
@@ -80,13 +87,25 @@ function applyNinjaPreset() {
   if (params.get('preset') !== '1') return;
   var level = params.get('level');
   var course = params.get('course');
+  var answer = params.get('answer');
   setSessionField('curLevel', level === 'hard' || level === 'mix' ? level : 'easy');
-  setSessionField('curCourse', course === 'all' || course === 'weak' ? course : '20');
+  if (['20','all','weak'].indexOf(course) < 0) course = '20';
+  if (['random','calc','hw'].indexOf(answer) >= 0) setAnswerMode(answer);
+  setSessionField('curCourse', course);
   updateCourseSelectSubtitles(curLevel);
-  setTimeout(function() { startCourse(curCourse); }, 250);
+  setTimeout(function() {
+    if (course === 'weak' && getWeakPs(curLevel).length === 0) startCourse('20');
+    else startCourse(course);
+  }, 250);
 }
 
 window.addEventListener('load', function() {
+  var levelInput = document.getElementById('ninja-preset-level');
+  var courseInput = document.getElementById('ninja-preset-course');
+  var answerInput = document.getElementById('ninja-preset-answer');
+  if (levelInput) levelInput.value = curLevel;
+  if (courseInput) courseInput.value = curCourse;
+  if (answerInput) answerInput.value = answerMode;
   if (document.readyState === 'complete') applyNinjaPreset();
   else window.addEventListener('pageshow', applyNinjaPreset, { once: true });
 }, { once: true });
