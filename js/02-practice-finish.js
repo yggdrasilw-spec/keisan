@@ -83,6 +83,7 @@ function finish(completed) {
       return;
     }
   }
+  if (typeof NinjaBattle !== 'undefined' && NinjaBattle.finish(completed, function() { finish(completed); })) return;
   sess._finishRendered = true;
   var summary = computeSessionSummary();
   renderFinishSummaryToResultPage(summary, completed);

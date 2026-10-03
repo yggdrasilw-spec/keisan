@@ -34,6 +34,7 @@ function countdownBeep(freqs, dur, vol, type) {
 }
 
 function beginCountdown(done) {
+  if (typeof NinjaBattle !== 'undefined') NinjaBattle.prepare();
   hideCountdownOverlay();
   fitEq('? ＋ ? ＝ ？');
   var fbl = document.getElementById('fbl');

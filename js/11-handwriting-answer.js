@@ -25,6 +25,7 @@ function hwCheckAnswer(recognized) {
       chk(correct, pcardEl, p);
     }, 400);
   } else {
+    if (typeof NinjaBattle !== 'undefined' && !recitationEnabled('immediate') && !recitationEnabled('end')) NinjaBattle.miss();
     if (recitationEnabled('immediate') || recitationEnabled('end')) {
       hwAnswerLocked = true;
       chk(recognized, document.getElementById('pcard'), p);

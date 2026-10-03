@@ -1,0 +1,22 @@
+/* Side scenery never receives input. Central equation and answers retain their size. */
+#ninja-battle[hidden],#battle-skip[hidden],#battle-result[hidden]{display:none!important;}
+#ninja-battle{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden;}
+.battle-wing{position:absolute;bottom:64px;width:192px;height:252px;}
+.battle-wing-left{left:12px;}.battle-wing-right{right:12px;}
+.battle-wing canvas{display:block;position:absolute;bottom:0;width:192px;height:216px;image-rendering:pixelated;}
+.battle-enemy-info{position:absolute;top:0;left:12px;right:12px;color:#444a46;font-size:12px;font-weight:800;text-align:center;line-height:1.5;}
+.battle-enemy-info small{display:block;font-size:10px;color:#73786c;font-weight:600;}
+.battle-hp{height:7px;margin:5px 0;background:#ddd9cb;border:1px solid #5c6652;border-radius:2px;overflow:hidden;}
+.battle-hp span{display:block;height:100%;background:#63866c;}
+.battle-caption{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;font-weight:800;color:#4e5b54;}
+#practice.battle-layout{position:relative;}
+#practice.battle-layout .practice-answer-panel{transform:translateX(var(--battle-offset,0px));}
+#practice.battle-layout .practice-hint-panel{position:absolute;right:0;top:74px;padding:8px 12px;width:auto;max-width:210px;align-self:start;box-shadow:none;background:#fffaf0;}
+#practice.battle-layout .practice-hint-panel>h2,#practice.battle-layout .practice-hint-panel>p{display:none;}
+#practice.battle-layout #hint-area{margin-top:0!important;}
+#battle-skip{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10001;border:2px solid #9e8053;background:#fff4d8;color:#493c29;padding:10px 24px;border-radius:12px;font:700 16px inherit;cursor:pointer;}
+#battle-result{margin:10px auto;padding:8px 16px;border:1px solid #d4c4a8;border-radius:8px;width:fit-content;color:#5d6955;background:#f6f3e8;font-size:14px;}
+#battle-settings{margin-top:14px;}
+#battle-settings select{font:inherit;padding:8px;border:1px solid #b9aa8d;border-radius:8px;}
+@media(min-width:1500px) and (min-height:850px){.battle-wing{width:256px;height:326px;bottom:68px;}.battle-wing canvas{width:256px;height:288px;}.battle-wing-left{left:28px;}.battle-wing-right{right:28px;}}
+@media(max-width:959px),(max-height:539px),(max-aspect-ratio:4/3){#ninja-battle{display:none!important;}}

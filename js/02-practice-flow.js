@@ -12,6 +12,7 @@ function preparePracticeQuestion(p, tot) {
   hwOnShowP();
   renderPracticeHint(p);
   startPracticeTimer();
+  if (typeof NinjaBattle !== 'undefined') NinjaBattle.question();
 }
 
 function showP() {

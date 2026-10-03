@@ -1156,6 +1156,7 @@ function submitAnswer() {
   clearInterval(timerInterval);
   locked = true;
   const userAns = parseInt(inputStr);
+  if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('answer',{ok:userAns===currentAnswer,index:currentQ});
 
   if (userAns === currentAnswer) {
     // 正解
@@ -1210,6 +1211,7 @@ function showScreen(id) {
 }
 
 function startGame() {
+  if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('start',{total:TOTAL_Q});
   currentQ = 0;
   correctCount = 0;
   loadStars();
@@ -1223,6 +1225,7 @@ function startGame() {
 }
 
 function showResult() {
+  if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('finish');
   clearInterval(timerInterval);
   const perfect = correctCount === TOTAL_Q;
   if (perfect) {
@@ -1245,6 +1248,7 @@ function showResult() {
 }
 
 function showGameOver() {
+  if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('leave');
   document.getElementById('go-stars-count').textContent = '★'.repeat(totalStars) + `（${totalStars}）`;
   showScreen('screen-gameover');
 }

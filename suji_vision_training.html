@@ -515,6 +515,7 @@ if (new URLSearchParams(window.location.search).get('open') === 'kiso-home') {
 }
 
   function startGame() {
+    if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('start',{total:cfg.count});
     if (!canvas) { canvas = $('particle-canvas'); ctx = canvas.getContext('2d'); }
     document.body.classList.toggle('hint-on', cfg.hint);
     field.innerHTML = '';
@@ -605,6 +606,7 @@ if (new URLSearchParams(window.location.search).get('open') === 'kiso-home') {
     const el = e.currentTarget;
     const tapped = +el.dataset.num;
     if (tapped !== sequence[currentIdx]) {
+      if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('answer',{ok:false,index:currentIdx,advance:false});
       playMissSound();
       combo = 0; // コンボリセット
       el.classList.add('wrong');
@@ -643,6 +645,7 @@ if (new URLSearchParams(window.location.search).get('open') === 'kiso-home') {
     el.classList.add('hit');
     el.addEventListener('animationend', () => el.remove(), { once: true });
     currentIdx++;
+    if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('answer',{ok:true,index:currentIdx-1});
     updateHUD();
     if (currentIdx >= sequence.length) { finishGame(); return; }
     highlightTarget();
@@ -660,6 +663,7 @@ if (new URLSearchParams(window.location.search).get('open') === 'kiso-home') {
   function stopTimer() { if (timerRaf) { cancelAnimationFrame(timerRaf); timerRaf = null; } }
 
   function finishGame() {
+    if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('finish');
     const elapsed = performance.now() - startTime;
     stopTimer();
     const orderLabel = {asc:'昇順',desc:'降順',any:'ランダム'}[cfg.order];

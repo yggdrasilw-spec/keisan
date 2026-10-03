@@ -23,6 +23,7 @@ function syncFullBleedScreenClass(screenName) {
 }
 
 function clearRuntimeTimers() {
+  if (typeof NinjaBattle !== 'undefined') NinjaBattle.leave();
   try { if (typeof countdownTimer !== 'undefined' && countdownTimer) { clearTimeout(countdownTimer); countdownTimer = null; } } catch (e) {}
   try { if (typeof clearScreenTransitionTimer === 'function') clearScreenTransitionTimer(); } catch (e) {}
   try { if (typeof tIv !== 'undefined' && tIv) { clearInterval(tIv); tIv = null; } } catch (e) {}
@@ -31,6 +32,7 @@ function clearRuntimeTimers() {
 
 function show(n) {
   if (!n || (typeof recitationActive === 'function' && recitationActive())) return;
+  if (n !== 'practice' && typeof NinjaBattle !== 'undefined') NinjaBattle.leave();
   if (n !== 'practice' && typeof cancelHintMotion === 'function') cancelHintMotion();
   if (n !== 'kiso-activity' && typeof disposeKisoActivity === 'function') disposeKisoActivity();
   // 前回の遷移タイマーだけは先に止める

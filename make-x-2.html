@@ -710,6 +710,7 @@ function showScreen(id) {
 }
 
 function startGame() {
+  if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('start',{total:TOTAL_Q});
   currentQ = 0; correctCount = 0;
   loadStars();
   showScreen('screen-game');
@@ -797,6 +798,7 @@ function onCardClick(idx) {
   clearInterval(timerInterval);
 
   const isCorrect = (idx === correctIdx);
+  if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('answer',{ok:isCorrect,index:currentQ});
   const selectedCard = document.getElementById(`card-${idx}`);
 
   if (isCorrect) {
@@ -965,6 +967,7 @@ function showEquation(isCorrect, idx, leftSvgEl, leftSvgRect, rightSvgEl, rightS
 }
 
 function onTimeout() {
+  if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('leave');
   locked = true;
   playTimeout();
   setTimeout(() => {
@@ -974,6 +977,7 @@ function onTimeout() {
 }
 
 function showFinalResult() {
+  if(window.ninjaKisoBattleEvent)ninjaKisoBattleEvent('finish');
   clearInterval(timerInterval);
   const perfect = correctCount === TOTAL_Q;
   if (perfect) {

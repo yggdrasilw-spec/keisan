@@ -1,0 +1,72 @@
+{
+  "createdAt": "2026-10-03",
+  "tool": "built-in image_gen.imagegen",
+  "transparentBackground": true,
+  "heroPrompt": "Use case: stylized-concept. Asset type: production transparent pixel-art sprite sheet for a side-view educational ninja battle. Input image is a character design reference only, not an edit target. Make authentic 16-bit SNES-style manually placed chunky square pixels, limited palette, crisp outline, no anti-aliasing, no painterly or smooth shading. ONE coherent ninja character viewed side-on facing RIGHT in every cell, cool capable small ninja, black clothing; preserve the reference costume, headband colors, armor and weapon. Transparent alpha background. Strict uniform invisible grid of FOUR columns and SEVEN rows, exactly 28 full-body frames, no extras. Each equal-size cell has ample empty transparent padding, no overlap into adjacent cells. Fixed camera, fixed scale, feet on the same baseline at 90% of each cell's height, neutral body center at 50% width; sprite occupies about 65% cell height, max 75% cell width with sword. No ground, no shadows outside character, no labels, no grid lines, no text, no borders. Rows top to bottom: 1 idle breathing 4 distinct frames; 2 katana slash wind-up, strike, follow-through, recover; 3 shuriken attack wind-up, release, extended arm, recover; 4 fast shadow-clone technique crouch, hand sign, attack, recover (one main character per cell, clone effect will be added in engine); 5 receiving hit recoils 4 frames without blood; 6 victory putting sword away 4 frames; 7 smoke bomb retreat crouch, throw smoke bomb, partial smoke covering body, dispersing smoke and no body. Each row is the same character with consistent costume, face and size. Proportions athletic chibi, head approximately 1/3 body height; readable side-view silhouette. Aim for 64x64-style detailed pixel sprites enlarged with nearest neighbor inside each cell. Canvas portrait 1024x1792 with precisely evenly spaced seven rows. Priority exact frame count and alignment, then visual quality.",
+  "enemyPrompt": "Use case: stylized-concept. Asset type: production transparent pixel-art sprite sheet for an educational side-view ninja battle. The reference image is only for SNES pixel style and proportions; create the enemy described below, not the red ninja. Authentic 16-bit pixel art, crisp square pixel clusters, no anti-aliasing, limited palette, athletic chibi silhouette, expressive strong poses, child-friendly, no blood. Strict FOUR columns by FIVE rows invisible evenly spaced grid, exactly 20 full-body frames. Transparent background with actual alpha. Equal cell dimensions, four frames on each row, ample empty space around all limbs and weapons, never overlap or cross cells. Fixed scale and camera, facing RIGHT throughout; engine flips to left. Foot baseline 90% of cell height, center 50% cell width. Rows top to bottom: 1 idle breathing, 4 frames; 2 attack wind-up, strike, follow-through, recover; 3 hit recoil then recover, 4 frames; 4 defeated dissolving into smoke, 4 frames, last frame only dissipating smoke; 5 acknowledges training completion with a small nod/bow, 4 frames. No text, no grid lines, no borders, no floor, no background scenery, no captions. Output portrait 1024x1280, precisely 4 by 5 equal cells. Character about 65% of each cell's height. Detailed but readable 64x64-style sprites enlarged by nearest neighbor.",
+  "heroes": [
+    {
+      "file": "hero-1.png",
+      "reference": "../ninja_1.png",
+      "subject": "Stage 1 apprentice: red headband and red lower face mask, plain black outfit, no armor or aura, modest short katana."
+    },
+    {
+      "file": "hero-2.png",
+      "reference": "../ninja_2.png",
+      "subject": "Stage 2 trainee: blue headband with silver plate, red trailing ribbons, black face mask, blue forearm and shoulder details, silver katana."
+    },
+    {
+      "file": "hero-3.png",
+      "reference": "../ninja_3.png",
+      "subject": "Stage 3 shadow ninja: red headband with gold plate, gold shoulder armor and wrist bands, black face mask, gold decorated katana. Do not paint permanent aura; engine adds it."
+    },
+    {
+      "file": "hero-4.png",
+      "reference": "../ninja_4.png",
+      "subject": "Stage 4 legendary ninja: red headband with gold plate, ornate gold shoulder/wrist/knee armor and gold trim, black face mask, long gold decorated katana. Do not paint permanent aura; engine adds it."
+    }
+  ],
+  "enemies": [
+    {
+      "file": "ninja.png",
+      "reference": "hero-1.png",
+      "subject": "An enemy ninja in deep violet and charcoal robes, purple headband, purple lower face mask, pale violet scarf tails, a steel katana, no gold armor. Clearly different from the apprentice red ninja."
+    },
+    {
+      "file": "samurai.png",
+      "reference": "hero-1.png",
+      "subject": "A formidable armored samurai, dark burgundy lamellar armor, bronze trim, black kabuto helmet with golden crescent crest, steel katana, fierce eyes visible behind armored mask."
+    },
+    {
+      "file": "oni.png",
+      "reference": "hero-1.png",
+      "subject": "A large Japanese red oni, two pale horns, shaggy navy hair, russet red skin, tusks, tiger-pattern sash, navy pants, heavy steel-spiked club. Strong intimidating but charming child-friendly enemy."
+    },
+    {
+      "file": "tengu.png",
+      "reference": "hero-1.png",
+      "subject": "A Japanese tengu, red face and characteristic long nose, small black tokin cap, dark feathered wings, black/purple yamabushi clothing, a golden feather fan weapon."
+    },
+    {
+      "file": "serpent.png",
+      "reference": "hero-1.png",
+      "subject": "A coiled Japanese giant snake enemy, dark emerald scales, cream gold underbelly, red sharp eyes, proud high raised head, compact coiled tail on baseline, striking and recoiling poses."
+    },
+    {
+      "file": "dragon.png",
+      "reference": "hero-1.png",
+      "subject": "A majestic Japanese serpentine dragon, jade green scales, ornate gold antlers and whiskers, cream underbelly, four clawed legs, flowing dark teal mane, coiled silhouette, luminous yellow eyes. No bat wings."
+    },
+    {
+      "file": "master.png",
+      "reference": "hero-1.png",
+      "subject": "An elderly ninja dojo master, sage green/ivory ninja robes, white short beard and bushy eyebrows, muted brown headband, wooden training sword. Friendly competent mentor. A defeated animation is a respectful kneeling rest instead of dissolution."
+    },
+    {
+      "file": "dummy.png",
+      "reference": "hero-1.png",
+      "subject": "A Japanese wooden training dummy/karakuri doll, honey brown wood grain, simple carved wooden face, round wooden joints, upright torso, arms with practice sticks, small wooden base feet. Its hit animation rocks slightly, its defeat and training completion are a nod, no destruction."
+    }
+  ],
+  "ninjaCorrection": "Change only third row from shuriken throwing to receiving-hit frames: braces, torso recoils and eyes closed, crouches and holds shoulder, neutral idle guard. Preserve rows 1, 2, 4 and 5, 4x5 grid, transparency and design. No blood."
+}
