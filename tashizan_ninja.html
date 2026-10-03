@@ -1062,5 +1062,22 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+
+<!-- Distribution settings -->
+<script src="js/student-profile.js"></script>
+<script src="js/teacher-bridge.js"></script>
+<script src="js/lesson-connections.js"></script>
+<script src="js/lesson-share.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){
+var F=function(key,label,options,get,set,multiple){return {key:key,label:label,options:options,get:get,set:set,multiple:!!multiple};}; var S=LessonShare.select,C=LessonShare.checkbox;
+
+var fields=[S('level','難易度','ninja-preset-level'),S('course','問題数・コース','ninja-preset-course'),F('answer','回答方法',[['random','ボタン'],['calc','電卓'],['hw','手書き']],function(){return document.getElementById('ninja-preset-answer').value;},function(v){setAnswerMode(v);document.getElementById('ninja-preset-answer').value=v;})];
+document.querySelectorAll('[data-hint-setting]').forEach(function(el){fields.push(C('hint-'+el.dataset.hintSetting,'ヒント：'+el.parentElement.textContent.trim(),'[data-hint-setting="'+el.dataset.hintSetting+'"]'));});
+LessonShare.init({id:'tashizan-ninja',name:'足し算忍者',mount:'#settings',raid:true,fields:fields,afterRestore:function(){setSessionField('curLevel',document.getElementById('ninja-preset-level').value);setSessionField('curCourse',document.getElementById('ninja-preset-course').value);updateCourseSelectSubtitles(curLevel);}});
+createNinjaPresetUrl=function(){LessonShare.open();};
+
+},0);});
+</script>
 </body>
 </html>
