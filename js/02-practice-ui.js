@@ -49,6 +49,8 @@ function renderPracticeHint(p) {
 // Special challenge timers are owned by 14-special-modes.js.
 function startPracticeTimer() {
   sess.startTime = Date.now();
+  var timerLabel = document.getElementById('ptimer');
+  if (timerLabel) timerLabel.textContent = '⏱ 0.0 びょう';
   if (tIv) clearInterval(tIv);
   tIv = setInterval(function() {
     var el = document.getElementById('ptimer');

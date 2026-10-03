@@ -87,6 +87,7 @@ function renderAnswerFeedbackToUI(fx) {
 var nextQuestionTimer = null;
 
 function clearNextQuestionTimer() {
+  if (typeof NinjaCorrection !== 'undefined') NinjaCorrection.stop();
   if (nextQuestionTimer) {
     clearTimeout(nextQuestionTimer);
     nextQuestionTimer = null;

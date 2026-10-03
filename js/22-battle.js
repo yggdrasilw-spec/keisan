@@ -68,7 +68,7 @@
   function react(type){
     if(pending)return;
     if(!root||root.hidden){animation=null;return;}
-    animation={type:type,start:performance.now(),duration:quiet()?230:sessMode==='shinsoku'?320:520};
+    animation={type:type,start:performance.now(),duration:quiet()?230:type==='hurt'?1100:800};
     update();startDraw();
   }
   function blockers(){return hintVisible||recitationActive()||document.hidden||
@@ -207,10 +207,10 @@
     sync();update();
     if(!state.outcome||root.hidden){state.ended=true;return false;}
     pending={session:sess,done:done};
-    animation={type:state.outcome,start:performance.now(),duration:quiet()?350:1400};
+    animation={type:state.outcome,start:performance.now(),duration:quiet()?350:2400};
     skip.hidden=false;skip.textContent='結果へ進む ›';
     // Watchdog also resolves when requestAnimationFrame is throttled.
-    finishTimer=setTimeout(complete,quiet()?400:1550);update();startDraw();return true;
+    finishTimer=setTimeout(complete,quiet()?400:2550);update();startDraw();return true;
   }
   function cancel(reset){
     clearTimeout(finishTimer);finishTimer=0;pending=null;animation=null;stopDraw();
@@ -242,6 +242,7 @@
     new ResizeObserver(scheduleSync).observe(document.querySelector('.practice-answer-panel'));
   }
   window.NinjaBattle={
+    feedbackDelay:function(){return root&&!root.hidden&&!quiet()?1200:0;},
     prepare:function(){safe(prepare);},
     question:function(){safe(question);},answer:function(ok){safe(function(){answer(ok);});},miss:function(){safe(miss);},
     finish:function(completed,done){return safe(function(){return finish(completed,done);});},leave:function(){safe(leave);},

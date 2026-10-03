@@ -13,25 +13,14 @@ function submitPracticeAnswer(v, btn, p) {
 function resolvePracticeAnswer(v, btn, p, submitted) {
   var fx = playAnswerFeedback(submitted.ok, submitted.elapsed, btn, p);
   renderAnswerFeedbackToUI(fx);
-  if (!submitted.ok && recitationEnabled('immediate')) {
-    startRecitation([p], function() { queueNextQuestion(0); });
+  if (!submitted.ok && typeof NinjaCorrection !== 'undefined') {
+    NinjaCorrection.afterMiss(p, function() {
+      if (recitationEnabled('immediate')) startRecitation([p], function() { queueNextQuestion(0); });
+      else queueNextQuestion(0);
+    }, fx.delay);
     return;
   }
-  // Carry problems need a concrete next step after an error. Open the first
-  // ten-making hint while the correction is still visible, so the child sees
-  // the relationship instead of only hearing the final answer.
-  if (!submitted.ok && p && p.a + p.b >= 11) {
-    var hintArea = document.getElementById('hint-area');
-    var hintBox = document.getElementById('hint-box');
-    if (hintArea && hintBox && typeof toggleHint === 'function' && typeof hintReset === 'function') {
-      hintArea.style.display = 'block';
-      hintReset();
-      if (!hintVisible) toggleHint();
-      if (typeof hintNext === 'function') hintNext();
-      fx.delay = Math.max(fx.delay, 2200);
-    }
-  }
-  queueNextQuestion(fx.delay);
+  queueNextQuestion(Math.max(fx.delay, typeof NinjaBattle !== 'undefined' ? NinjaBattle.feedbackDelay() : 0));
 }
 
 function chk(v,btn,p) {

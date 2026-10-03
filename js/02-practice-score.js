@@ -51,7 +51,7 @@ function computeSessionSummary() {
     cor: cor,
     sumT: sumT,
     acc: tot ? Math.round(cor / tot * 100) : 0,
-    avgT: tot ? (sumT / tot / 1000).toFixed(1) : '0',
+    avgT: tot ? (sumT / tot / 1000).toFixed(1) : '0.0',
     totalMs: sumT
   };
 }

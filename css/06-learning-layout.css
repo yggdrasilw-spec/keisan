@@ -66,3 +66,8 @@
   #practice #hw-canvas,#practice #hw-overlay {height:120px;}
 }
 
+.ptimer, #timebar-label, .rsbv, .ranking-time {font-variant-numeric:tabular-nums;}
+#ptimer {min-width:12ch;}
+#correction-continue {padding:10px 18px;border:0;border-radius:12px;background:#5aaa30;color:#fff;font:inherit;font-weight:800;cursor:pointer;}
+.correction-active [data-action="hintNext"], .correction-active [data-action="hintReset"] {display:none;}
+#correction-continue:disabled {opacity:.6;cursor:default;}

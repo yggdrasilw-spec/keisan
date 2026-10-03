@@ -427,9 +427,12 @@
     if (v !== p.ans) {
       sess._specialFailureAt = now;
       recordAndFeedbackAnswer(v, btn, p, el);
-      if (recitationEnabled('immediate')) {
-        startRecitation([p], function() { finishSpecialGameOver('miss'); });
-      } else finishSpecialGameOver('miss');
+      var afterMiss = function() {
+        if (recitationEnabled('immediate')) startRecitation([p], function() { finishSpecialGameOver('miss'); });
+        else finishSpecialGameOver('miss');
+      };
+      if (typeof NinjaCorrection !== 'undefined') NinjaCorrection.afterMiss(p, afterMiss);
+      else afterMiss();
       return { ok: false, elapsed: el, gameOver: true };
     }
 
