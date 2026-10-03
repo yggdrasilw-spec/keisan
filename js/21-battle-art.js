@@ -4,32 +4,94 @@
   'use strict';
   var poses = ['idle','slash','throw','clone','hurt','win','smoke','bow','defeat'];
   var cache = {};
-  var generated = {}, loading = {};
+  var generated = {}, loading = {}, diagnostics = {};
   var heroRows=['idle','slash','throw','clone','hurt','win','smoke'];
   var enemyRows=['idle','slash','hurt','defeat','bow'];
+  // Generated art is arranged in rows, but its weapons and feet do not obey
+  // equal-sized cells. Follow transparent seams instead of cropping a grid.
+  // Detached props cannot always be assigned by transparency alone. These two
+  // source-space ownership hints keep the star/bomb with the throwing hand.
+  var propHints={hero1:[{pose:'smoke',boundary:2,top:1506/1659,bottom:1545/1659,min:496/948}],hero3:[{pose:'throw',boundary:2,top:568/1659,bottom:618/1659,min:520/948}]};
+  function splitFrames(source,rows,key){
+    var w=source.width,h=source.height,data=source.getContext('2d').getImageData(0,0,w,h).data;
+    var projection=new Uint32Array(h),cuts=[0],frames=[],report={width:w,height:h,cuts:cuts,rows:[],cutPixels:0,gridCutPixels:0,sourcePixels:0,coveredPixels:0};
+    for(var y=0;y<h;y++)for(var x=0;x<w;x++)if(data[(y*w+x)*4+3]>32){projection[y]++;report.sourcePixels++;}
+    for(var r=1;r<rows.length;r++){
+      var target=Math.round(h*r/rows.length),range=Math.round(h/rows.length*.22),best=target,score=Infinity;
+      for(y=target-range;y<=target+range;y++){var value=projection[y]*10000+Math.abs(y-target);if(value<score){score=value;best=y;}}
+      cuts.push(best);report.cutPixels+=projection[best];
+      report.gridCutPixels+=projection[target];
+    }
+    cuts.push(h);
+    for(r=0;r<rows.length;r++){
+      var top=cuts[r],bottom=cuts[r+1],height=bottom-top,seams=[];
+      for(var boundary=1;boundary<4;boundary++){
+        var nominal=Math.round(w*boundary/4),reach=Math.round(w/4*.36),lo=nominal-reach,hi=nominal+reach,span=hi-lo+1;
+        var hint=(propHints[key]||[]).filter(function(item){return item.pose===rows[r]&&item.boundary===boundary;})[0];
+        var prev=new Float64Array(span),next=new Float64Array(span),back=new Int16Array(span*height);
+        for(var yy=0;yy<height;yy++){
+          for(var i=0;i<span;i++){
+            x=lo+i;var alpha=data[((top+yy)*w+x)*4+3];
+            var cost=(alpha>32?1000+alpha:alpha/255)+Math.abs(x-nominal)/span*.015;
+            if(hint&&top+yy>=hint.top*h&&top+yy<=hint.bottom*h&&x<hint.min*w)cost=Infinity;
+            var parent=i,total=yy?prev[i]:0;
+            if(yy){for(var step=-2;step<=2;step++){var p=i+step;if(p>=0&&p<span&&prev[p]+Math.abs(step)*.02<total){parent=p;total=prev[p]+Math.abs(step)*.02;}}}
+            next[i]=cost+total;back[yy*span+i]=parent;
+          }
+          var swap=prev;prev=next;next=swap;
+        }
+        var last=0;for(i=1;i<span;i++)if(prev[i]<prev[last])last=i;
+        var seam=new Uint16Array(height);for(yy=height-1;yy>=0;yy--){seam[yy]=lo+last;last=back[yy*span+last];}
+        seams.push(seam);
+        for(yy=0;yy<height;yy++){
+          if(data[((top+yy)*w+seam[yy])*4+3]>32)report.cutPixels++;
+          if(data[((top+yy)*w+nominal)*4+3]>32)report.gridCutPixels++;
+        }
+      }
+      report.rows.push(seams.map(function(s){return Array.from(s);}));
+      for(var frame=0;frame<4;frame++){
+        var minX=w,minY=height,maxX=-1,maxY=-1,count=0;
+        for(yy=0;yy<height;yy++){
+          var left=frame?seams[frame-1][yy]:0,right=frame<3?seams[frame][yy]:w;
+          for(x=left;x<right;x++)if(data[((top+yy)*w+x)*4+3]>32){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,yy);maxY=Math.max(maxY,yy);count++;}
+        }
+        if(maxX<0)throw new Error('Empty sprite frame');
+        // Copy the full alpha, retaining antialiased edge pixels around bounds.
+        minX=Math.max(0,minX-2);minY=Math.max(0,minY-2);maxX=Math.min(w-1,maxX+2);maxY=Math.min(height-1,maxY+2);
+        var canvas=document.createElement('canvas');canvas.width=maxX-minX+1;canvas.height=maxY-minY+1;
+        var context=canvas.getContext('2d'),pixels=context.createImageData(canvas.width,canvas.height);
+        for(yy=minY;yy<=maxY;yy++){
+          left=frame?seams[frame-1][yy]:0;right=frame<3?seams[frame][yy]:w;
+          for(x=Math.max(left,minX);x<=maxX&&x<right;x++){
+            var src=((top+yy)*w+x)*4,dst=((yy-minY)*canvas.width+x-minX)*4;
+            pixels.data.set(data.subarray(src,src+4),dst);
+          }
+        }
+        context.putImageData(pixels,0,0);report.coveredPixels+=count;
+        frames.push({pose:rows[r],frame:frame,canvas:canvas,box:{x:minX,y:top+minY,w:canvas.width,h:canvas.height},pixels:count});
+      }
+    }
+    report.frames=frames.map(function(f){return {pose:f.pose,frame:f.frame,box:f.box,pixels:f.pixels};});
+    return {frames:frames,report:report};
+  }
   function loadGenerated(kind,stage){
     var key=kind+stage;if(loading[key])return;loading[key]='loading';
     var image=new Image();image.onload=function(){
       try{
-        // Normalize uniform PNG frames into the shared 64px runtime atlas.
+        // Normalize complete, individually separated PNG frames into the atlas.
         // Alpha bounds supply the feet anchor; one scale is used for all poses.
-        var rows=kind==='hero'?heroRows:enemyRows,w=image.naturalWidth/4,h=image.naturalHeight/rows.length;
+        var rows=kind==='hero'?heroRows:enemyRows;
         var source=document.createElement('canvas');source.width=image.naturalWidth;source.height=image.naturalHeight;
         var sc=source.getContext('2d');sc.drawImage(image,0,0);
-        var frames=[],maxWidth=0,maxHeight=0;
-        rows.forEach(function(pose,row){for(var frame=0;frame<4;frame++){
-          var sx=Math.round(frame*w),sy=Math.round(row*h),cw=Math.round((frame+1)*w)-sx,ch=Math.round((row+1)*h)-sy;
-          var pixels=sc.getImageData(sx,sy,cw,ch).data,minX=cw,minY=ch,maxX=-1,maxY=-1;
-          for(var y=0;y<ch;y++)for(var x=0;x<cw;x++)if(pixels[(y*cw+x)*4+3]>32){minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);}
-          var box=maxX<0?null:{x:sx+minX,y:sy+minY,w:maxX-minX+1,h:maxY-minY+1};
-          frames.push({pose:pose,frame:frame,box:box});if(box){maxWidth=Math.max(maxWidth,box.w);maxHeight=Math.max(maxHeight,box.h);}
-        }});
+        var split=splitFrames(source,rows,key),frames=split.frames,maxWidth=0,maxHeight=0;
+        diagnostics[key]=split.report;
+        frames.forEach(function(f){maxWidth=Math.max(maxWidth,f.box.w);maxHeight=Math.max(maxHeight,f.box.h);});
         if(!maxWidth||!maxHeight)throw new Error('Empty sprite atlas');
         var atlas=document.createElement('canvas');atlas.width=256;atlas.height=poses.length*64;
         var c=atlas.getContext('2d');c.imageSmoothingEnabled=false;
         var scale=Math.min(60/maxWidth,56/maxHeight);
         frames.forEach(function(f){if(!f.box)return;var b=f.box,dw=Math.max(1,Math.round(b.w*scale)),dh=Math.max(1,Math.round(b.h*scale));
-          c.drawImage(source,b.x,b.y,b.w,b.h,f.frame*64+Math.round((64-dw)/2),poses.indexOf(f.pose)*64+58-dh,dw,dh);
+          c.drawImage(f.canvas,0,0,b.w,b.h,f.frame*64+Math.round((64-dw)/2),poses.indexOf(f.pose)*64+58-dh,dw,dh);
         });
         // Non-player poses are not needed on the hero sheet. Provide safe idle
         // copies for diagnostics/asset previews instead of empty unexpected rows.
@@ -189,5 +251,5 @@
     c.translate(Math.round(x),Math.round(y));if(flip){c.translate(64*scale,0);c.scale(-1,1);}
     c.drawImage(sheet(kind,stage),frame*64,row*64,64,64,0,0,64*scale,64*scale);c.restore();
   }
-  window.NinjaBattleArt={draw:draw,sheet:sheet,star:star,rect:rect,poly:poly,poses:poses,status:function(){return Object.assign({},loading);}};
+  window.NinjaBattleArt={draw:draw,sheet:sheet,star:star,rect:rect,poly:poly,poses:poses,status:function(){return Object.assign({},loading);},diagnostics:function(kind,stage){return diagnostics[kind+(kind==='hero'?stage:1)];}};
 })();
